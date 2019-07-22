@@ -17,14 +17,14 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // delete our options
-delete_option( 'ph-api-key' );
-delete_option( 'ph-access-token' );
-delete_option( 'ph-project-id' );
-delete_option( 'ph-parent-url' );
-delete_option( 'ph-signature' );
-delete_option( 'ph-child-plugin-installed' );
-delete_option( 'ph-admin-enabled' );
-delete_option( 'ph-allow-guests' );
-delete_option( 'ph_connection_status' );
-delete_option( 'ph_commenters' );
-delete_option( 'ph_manual_connection' );
+delete_option( 'ph_child_api_key' );
+delete_option( 'ph_child_access_token' );
+delete_option( 'ph_child_project_id' );
+delete_option( 'ph_child_parent_url' );
+delete_option( 'ph_child_signature' );
+delete_option( 'ph_child_installed' );
+delete_option( 'ph_child_admin_enabled' );
+delete_option( 'ph_child_allow_guests' );
+delete_option( 'ph_child_connection_status' );
+delete_option( 'ph_child_commenters' );
+delete_option( 'ph_child_manual_connection' );

@@ -4,11 +4,10 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Author URI: http://projecthuddle.io
  * Version: 1.0.0
  *
- * Requires at least: 3.8
- * Tested up to: 5.0
+ * Requires at least: 5.2
+ * Tested up to: 5.2.2
  *
  * Text Domain: ph-child
  * Domain Path: languages
@@ -55,13 +54,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 	 */
 	final class PH_Child {
 		/**
-		 * Installed option name
-		 *
-		 * @var string
-		 */
-		protected $installed_option_name = 'ph-child-plugin-installed';
-
-		/**
 		 * Make sure to whitelist our option names
 		 *
 		 * @var array
@@ -73,27 +65,27 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function __construct() {
 			$this->whitelist_option_names = array(
-				'ph-api-key'                => array(
+				'ph_child_api_key'      => array(
 					'description'       => __( 'Public API key for the script loader.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
-				'ph-access-token'           => array(
+				'ph_child_access_token' => array(
 					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
-				'ph-project-id'             => array(
+				'ph_child_project_id'   => array(
 					'description'       => __( 'Website project ID.', 'project-huddle' ),
 					'sanitize_callback' => 'intval',
 				),
-				'ph-parent-url'             => array(
+				'ph_child_parent_url'   => array(
 					'description'       => __( 'Parent Site URL.', 'project-huddle' ),
 					'sanitize_callback' => 'esc_url',
 				),
-				'ph-signature'              => array(
+				'ph_child_signature'    => array(
 					'description'       => __( 'Secret signature to verify identity.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
-				'ph-child-plugin-installed' => array(
+				'ph_child_installed'    => array(
 					'description'       => __( 'Is the plugin installed?', 'project-huddle' ),
 					'sanitize_callback' => 'boolval',
 				),
@@ -105,7 +97,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			// show script on front end and maybe admin
 			add_action( 'wp_footer', array( $this, 'script' ) );
-			if ( get_option( 'ph-admin-enabled', false ) ) {
+			if ( get_option( 'ph_child_admin', false ) ) {
 				add_action( 'admin_footer', array( $this, 'script' ) );
 			}
 
@@ -124,6 +116,23 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			// redirect to the options page after activating
 			add_action( 'activated_plugin', array( $this, 'redirect_options_page' ) );
+
+			// Add settings link to plugins page
+			add_filter( 'plugin_action_links_' . plugin_basename( PH_CHILD_PLUGIN_FILE ), array( $this, 'add_settings_link' ) );
+		}
+
+		/**
+		 * Add settings link to plugin list table
+		 *
+		 * @param  array $links Existing links
+		 *
+		 * @since 1.0.0
+		 * @return array        Modified links
+		 */
+		public function add_settings_link( $links ) {
+			$settings_link = '<a href="' . admin_url( 'options-general.php?page=feedback-connection-options' ) . '">' . __( 'Settings', 'ph-child' ) . '</a>';
+			array_push( $links, $settings_link );
+			return $links;
 		}
 
 		/**
@@ -133,8 +142,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function remove_disconnect_args( $args ) {
-			array_push( $args, 'ph-site-disconnect-nonce' );
-			array_push( $args, 'ph-site-disconnect' );
+			array_push( $args, 'ph-child-site-disconnect-nonce' );
+			array_push( $args, 'ph-child-site-disconnect' );
 			return $args;
 		}
 
@@ -144,11 +153,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function maybe_disconnect() {
-			if ( ! isset( $_GET['ph-site-disconnect'] ) ) {
+			if ( ! isset( $_GET['ph-child-site-disconnect'] ) ) {
 				return;
 			}
 			// nonce check
-			if ( ! isset( $_GET['ph-site-disconnect-nonce'] ) || ! wp_verify_nonce( $_GET['ph-site-disconnect-nonce'], 'ph-site-disconnect-nonce' ) ) {
+			if ( ! isset( $_GET['ph-child-site-disconnect-nonce'] ) || ! wp_verify_nonce( $_GET['ph-child-site-disconnect-nonce'], 'ph-site-disconnect-nonce' ) ) {
 				wp_die( 'That\'s not allowed' );
 			}
 
@@ -169,7 +178,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function register_installation() {
-			update_option( $this->installed_option_name, true );
+			update_option( 'ph_child_installed', true );
 		}
 
 		/**
@@ -178,7 +187,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function deregister_installation() {
-			delete_option( $this->installed_option_name );
+			delete_option( 'ph_child_installed' );
 		}
 
 		/**
@@ -223,7 +232,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			);
 
 			add_settings_field(
-				'ph-enabled-comment-roles',
+				'ph_child_enabled_comment_roles',
 				__( 'Who should comment?', 'ph-child' ),
 				array( $this, 'commenters_checklist' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
@@ -234,11 +243,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// Finally, we register the fields with WordPress
 			register_setting(
 				'ph_child_general_options',
-				'ph-enabled-comment-roles'
+				'ph_child_enabled_comment_roles'
 			);
 
 			add_settings_field(
-				'ph-allow-guests',
+				'ph_child_allow_guests',
 				__( 'Allow Guests', 'ph-child' ),
 				array( $this, 'allow_guests' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
@@ -249,14 +258,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// regsister setting
 			register_setting(
 				'ph_child_general_options',
-				'ph-allow-guests',
+				'ph_child_allow_guests',
 				array(
 					'type' => 'boolean',
 				)
 			);
 
 			add_settings_field(
-				'ph-admin-enabled',
+				'ph_child_admin',
 				__( 'Admin Commenting', 'ph-child' ),
 				array( $this, 'allow_admin' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
@@ -267,7 +276,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// regsister setting
 			register_setting(
 				'ph_child_general_options',
-				'ph-admin-enabled',
+				'ph_child_admin',
 				array(
 					'type' => 'boolean',
 				)
@@ -290,7 +299,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			);
 
 			add_settings_field(
-				'ph_manual_connection',
+				'ph_child_manual_connection',
 				__( 'Manual Connection Details', 'ph-child' ),
 				array( $this, 'manual_connection' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_connection_options',    // The page on which this option will be displayed
@@ -301,7 +310,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// regsister setting
 			register_setting(
 				'ph_child_connection_options',
-				'ph_manual_connection',
+				'ph_child_manual_connection',
 				array(
 					'type'              => 'string',
 					'sanitize_callback' => array( $this, 'manual_import' ),
@@ -322,7 +331,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 						if ( ! $updated ) {
 							add_settings_error(
-								'ph_manual_connection', // whatever you registered in `register_setting
+								'ph_child_manual_connection', // whatever you registered in `register_setting
 								'invalid_json', // doesn't really mater
 								__( 'You must disconnect the current site before importing.', 'ph-child' ),
 								'error' // error or notice works to make things pretty
@@ -337,7 +346,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		public function commenters_checklist() {
-			$disable_roles = (array) get_option( 'ph-enabled-comment-roles', array() );
+			$disable_roles = (array) get_option( 'ph_child_enabled_comment_roles', array() );
 			$roles         = (array) get_editable_roles();
 
 			if ( ! empty( $roles ) ) {
@@ -348,7 +357,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						$checked = in_array( $slug, $disable_roles );
 					}
 					?>
-						<input type="checkbox" name="ph-enabled-comment-roles[<?php echo esc_attr( $slug ); ?>]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( $checked ); ?>> <?php echo esc_html( $role['name'] ); ?><br>
+						<input type="checkbox" name="ph_child_enabled_comment_roles[<?php echo esc_attr( $slug ); ?>]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( $checked ); ?>> <?php echo esc_html( $role['name'] ); ?><br>
 						<?php
 				}
 			}
@@ -356,14 +365,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		public function allow_guests() {
 			?>
-			<input type="checkbox" name="ph-allow-guests" <?php checked( get_option( 'ph-allow-guests', false ), 'on' ); ?>> 
+			<input type="checkbox" name="ph_child_allow_guests" <?php checked( get_option( 'ph_child_allow_guests', false ), 'on' ); ?>> 
 			<?php _e( 'Allow guests to comment', 'ph-child' ); ?><br>
 			<?php
 		}
 
 		public function allow_admin() {
 			?>
-			<input type="checkbox" name="ph-admin-enabled" <?php checked( get_option( 'ph-admin-enabled', false ), 'on' ); ?>> 
+			<input type="checkbox" name="ph_child_admin" <?php checked( get_option( 'ph_child_admin', false ), 'on' ); ?>> 
 			<?php _e( 'Allow commenting in the admin.', 'ph-child' ); ?><br>
 			<?php
 		}
@@ -390,7 +399,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			 }
 			 </style>
 			 <?php
-				if ( $connection = get_option( 'ph-parent-url', false ) ) {
+				if ( $connection = get_option( 'ph_child_parent_url', false ) ) {
 					 echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
 					 echo '<p class="submit">';
 					echo '<a class="button button-secondary" href="' . esc_url(
@@ -401,10 +410,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							),
 							remove_query_arg( 'settings-updated' )
 						)
-					) . '">' . __( 'Disconnect', 'project-huddle' ) . '</a>';
+					) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
-					_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
+					esc_html_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
 					echo '</p>';
 				}
 				?>
@@ -414,16 +423,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function manual_connection() {
 			?>
 			<p><?php _e( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' ); ?></p><br>
-			<textarea name="ph_manual_connection" style="width:500px;height:300px"></textarea>
+			<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
 			<?php
 		}
 
 		public function options_page() {
 			?>
 			<div class="wrap">
-				<h1><?php _e( 'Feedback Options', 'ph-child' ); ?></h1>
+				<h1><?php esc_html_e( 'Feedback Options', 'ph-child' ); ?></h1>
 				
-				<?php $active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general'; ?>
+				<?php $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general'; ?>
 
 				<h2 class="nav-tab-wrapper">
 					<a href="
@@ -436,7 +445,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						)
 					);
 					?>
-					" class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">General</a>
+					" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
+						<?php esc_html_e( 'General', 'ph-child' ); ?>
+					</a>
+
 					<a href="
 					<?php
 					echo esc_url(
@@ -447,7 +459,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						)
 					);
 					?>
-					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">Connection</a>
+					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">
+						<?php esc_html_e( 'Connection', 'ph-child' ); ?>
+					</a>
 				</h2>
 
 
@@ -480,11 +494,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			}
 
 			// settings must be set
-			if ( ! $url = get_option( 'ph-parent-url' ) ) {
+			if ( ! $url = get_option( 'ph_child_parent_url' ) ) {
 				echo '<!-- ProjectHuddle: parent url not set -->';
 				return;
 			}
-			if ( ! $id = get_option( 'ph-project-id' ) ) {
+			if ( ! $id = get_option( 'ph_child_project_id' ) ) {
 				echo '<!-- ProjectHuddle: project id not set -->';
 				return;
 			}
@@ -493,8 +507,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$url = add_query_arg(
 				array(
 					'p'               => (int) $id,
-					'ph_apikey'       => get_option( 'ph-api-key', '' ),
-					'ph_access_token' => get_option( 'ph-access-token', '' ),
+					'ph_apikey'       => get_option( 'ph_child_api_key', '' ),
+					'ph_access_token' => get_option( 'ph_child_access_token', '' ),
 				),
 				$url
 			);
@@ -507,8 +521,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					array(
 						'ph_user_name'  => $user->display_name,
 						'ph_user_email' => sanitize_email( $user->user_email ),
-						'ph_signature'  => hash_hmac( 'sha256', sanitize_email( $user->user_email ), get_option( 'ph-signature', false ) ),
-						'ph_query_vars' => filter_var( get_option( 'ph-admin-enabled', false ), FILTER_VALIDATE_BOOLEAN ),
+						'ph_signature'  => hash_hmac( 'sha256', sanitize_email( $user->user_email ), get_option( 'ph_child_signature', false ) ),
+						'ph_query_vars' => filter_var( get_option( 'ph_child_admin', false ), FILTER_VALIDATE_BOOLEAN ),
+					),
+					$url
+				);
+			else :
+				$url = add_query_arg(
+					array(
+						'ph_signature' => hash_hmac( 'sha256', 'guest', get_option( 'ph_child_signature', false ) ),
 					),
 					$url
 				);
