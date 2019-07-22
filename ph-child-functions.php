@@ -8,7 +8,7 @@
   */
 function ph_child_is_current_user_allowed_to_comment() {
 	// if guests are allowed, yes, they are
-	if ( get_option( 'ph-allow-guests', false ) ) {
+	if ( get_option( 'ph_child_allow_guests', false ) ) {
 		return true;
 	}
 
@@ -18,7 +18,7 @@ function ph_child_is_current_user_allowed_to_comment() {
 	}
 
 	// get enabled roles
-	$enabled_roles = get_option( 'ph-enabled-comment-roles', false );
+	$enabled_roles = get_option( 'ph_child_enabled_comment_roles', false );
 
 	// enable all if it hasn't been saved yet
 	if ( false === $enabled_roles && is_bool( $enabled_roles ) ) {
