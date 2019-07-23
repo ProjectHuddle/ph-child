@@ -1,0 +1,25 @@
+{
+  "name": "projecthuddle-child",
+  "version": "1.0.0",
+  "description": "Connect a website to ProjectHuddle",
+  "main": "index.js",
+  "scripts": {
+    "release": "./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ajgagnon/ph-child.git' --svn-user=2winfactor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajgagnon/ph-child.git"
+  },
+  "keywords": [
+    "project",
+    "huddle",
+    "child",
+    "feedback"
+  ],
+  "author": "ProjectHuddle",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/ajgagnon/ph-child/issues"
+  },
+  "homepage": "https://github.com/ajgagnon/ph-child#readme"
+}

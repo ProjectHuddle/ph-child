@@ -156,8 +156,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( ! isset( $_GET['ph-child-site-disconnect'] ) ) {
 				return;
 			}
+
 			// nonce check
-			if ( ! isset( $_GET['ph-child-site-disconnect-nonce'] ) || ! wp_verify_nonce( $_GET['ph-child-site-disconnect-nonce'], 'ph-site-disconnect-nonce' ) ) {
+			if ( ! isset( $_GET['ph-child-site-disconnect-nonce'] ) || ! wp_verify_nonce( $_GET['ph-child-site-disconnect-nonce'], 'ph-child-site-disconnect-nonce' ) ) {
 				wp_die( 'That\'s not allowed' );
 			}
 
@@ -328,16 +329,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					if ( array_key_exists( $key, $this->whitelist_option_names ) ) {
 						$sanitize = $this->whitelist_option_names[ $key ]['sanitize_callback'];
 						$updated  = update_option( $key, $sanitize( $value ) );
-
-						if ( ! $updated ) {
-							add_settings_error(
-								'ph_child_manual_connection', // whatever you registered in `register_setting
-								'invalid_json', // doesn't really mater
-								__( 'You must disconnect the current site before importing.', 'ph-child' ),
-								'error' // error or notice works to make things pretty
-							);
-							break;
-						}
 					}
 				}
 			}
@@ -366,14 +357,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function allow_guests() {
 			?>
 			<input type="checkbox" name="ph_child_allow_guests" <?php checked( get_option( 'ph_child_allow_guests', false ), 'on' ); ?>> 
-			<?php _e( 'Allow guests to comment', 'ph-child' ); ?><br>
+			<?php esc_html_e( 'Allow guests to comment', 'ph-child' ); ?><br>
 			<?php
 		}
 
 		public function allow_admin() {
 			?>
 			<input type="checkbox" name="ph_child_admin" <?php checked( get_option( 'ph_child_admin', false ), 'on' ); ?>> 
-			<?php _e( 'Allow commenting in the admin.', 'ph-child' ); ?><br>
+			<?php esc_html_e( 'Allow commenting in the admin.', 'ph-child' ); ?><br>
 			<?php
 		}
 
@@ -405,8 +396,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					echo '<a class="button button-secondary" href="' . esc_url(
 						add_query_arg(
 							array(
-								'ph-site-disconnect'       => 1,
-								'ph-site-disconnect-nonce' => wp_create_nonce( 'ph-site-disconnect-nonce' ),
+								'ph-child-site-disconnect' => 1,
+								'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
 							),
 							remove_query_arg( 'settings-updated' )
 						)
@@ -422,7 +413,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		public function manual_connection() {
 			?>
-			<p><?php _e( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' ); ?></p><br>
+			<p><?php esc_html_e( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' ); ?></p><br>
 			<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
 			<?php
 		}
