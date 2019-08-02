@@ -326,9 +326,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// update manual import
 			if ( ! empty( $settings ) ) {
 				foreach ( $settings as $key => $value ) {
-					if ( array_key_exists( $key, $this->whitelist_option_names ) ) {
-						$sanitize = $this->whitelist_option_names[ $key ]['sanitize_callback'];
-						$updated  = update_option( $key, $sanitize( $value ) );
+					if ( array_key_exists( 'ph_child_' . $key, $this->whitelist_option_names ) ) {
+						$sanitize = $this->whitelist_option_names[ 'ph_child_' . $key ]['sanitize_callback'];
+						$updated  = update_option( 'ph_child_' . $key, $sanitize( $value ) );
 					}
 				}
 			}
