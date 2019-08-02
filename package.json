@@ -1,6 +1,6 @@
 {
   "name": "projecthuddle-child",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Connect a website to ProjectHuddle",
   "main": "index.js",
   "scripts": {
