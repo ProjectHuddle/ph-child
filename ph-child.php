@@ -4,7 +4,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  * Requires at least: 5.2
  * Tested up to: 5.2.2
@@ -65,6 +65,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function __construct() {
 			$this->whitelist_option_names = array(
+				'ph_child_id'           => array(
+					'description'       => __( 'Website project ID.', 'project-huddle' ),
+					'sanitize_callback' => 'intval',
+				),
 				'ph_child_api_key'      => array(
 					'description'       => __( 'Public API key for the script loader.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
@@ -72,10 +76,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'ph_child_access_token' => array(
 					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
-				),
-				'ph_child_project_id'   => array(
-					'description'       => __( 'Website project ID.', 'project-huddle' ),
-					'sanitize_callback' => 'intval',
 				),
 				'ph_child_parent_url'   => array(
 					'description'       => __( 'Parent Site URL.', 'project-huddle' ),
@@ -472,6 +472,18 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			<?php
 		}
 
+		public function token_valid() {
+			if ( ! $token = get_option( 'ph_child_access_token', '' ) ) {
+				return false;
+			}
+
+			// get token from url
+			$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
+
+			// does it match
+			return $url_token === $token;
+		}
+
 		/**
 		 * Outputs the saved website script
 		 * Along with and identify method to sync accounts
@@ -480,8 +492,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function script() {
 			// check to see if they are allowed to comment
-			if ( ! ph_child_is_current_user_allowed_to_comment() ) {
-				return;
+			if ( ! $this->token_valid() ) {
+				if ( ! ph_child_is_current_user_allowed_to_comment() ) {
+					return;
+				}
 			}
 
 			// settings must be set
@@ -489,7 +503,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				echo '<!-- ProjectHuddle: parent url not set -->';
 				return;
 			}
-			if ( ! $id = get_option( 'ph_child_project_id' ) ) {
+			if ( ! $id = get_option( 'ph_child_id' ) ) {
 				echo '<!-- ProjectHuddle: project id not set -->';
 				return;
 			}
