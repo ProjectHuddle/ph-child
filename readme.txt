@@ -15,7 +15,7 @@ Provides a secure connection between your ProjectHuddle parent site and your cli
 
 This is the Child plugin for [ProjectHuddle](https://projecthuddle.io)
 
-The ProjectHuddle Child plugin is used to securely sync multiple WordPress client identities with your ProjectHuddle parent site. This plugin is to be installed on every WordPress site you want to let your clients give feedback.
+The ProjectHuddle Client Site plugin is used to securely sync multiple WordPress client identities with your ProjectHuddle parent site. This plugin is to be installed on every WordPress site you want to let your clients give feedback.
 
 [ProjectHuddle](https://projecthuddle.io) is a self-hosted client feedback system that allows you to get feedback on an endless amount of client sites from one central dashboard.
 
@@ -40,6 +40,15 @@ The ProjectHuddle Child plugin is used to securely sync multiple WordPress clien
 It allows the connection between the [ProjectHuddle](https://projecthuddle.io) plugin and your clients sites to sync their identities with the system.
 
 == Changelog ==
+
+= 1.0.3 =
+* Update readme description and plugin title.
+
+= 1.0.2 =
+* Fix manual import.
+
+= 1.0.1 =
+* Add access token override.
 
 = 1.0.0 =
 * Initial release
