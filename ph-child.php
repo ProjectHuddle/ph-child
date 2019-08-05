@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: ProjectHuddle Child Site
+ * Plugin Name: ProjectHuddle Client Site
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
