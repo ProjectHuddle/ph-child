@@ -1,4 +1,4 @@
-=== ProjectHuddle Child ===
+=== ProjectHuddle Client Site ===
 Contributors: 2winfactor
 Donate link: https://projecthuddle.io
 Tags: project, huddle, child, feedback
