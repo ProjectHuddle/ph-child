@@ -6,7 +6,7 @@
  * Author: Andre Gagnon
  * Version: 1.0.5
  *
- * Requires at least: 5.2
+ * Requires at least: 4.7
  * Tested up to: 5.2.2
  *
  * Text Domain: ph-child
@@ -64,6 +64,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Get things going
 		 */
 		public function __construct() {
+			if ( defined( 'PH_VERSION' ) ) {
+				add_action( 'admin_notices', array( $this, 'parent_plugin_activated_error_notice' ) );
+				return;
+			}
+
 			$this->whitelist_option_names = array(
 				'ph_child_id'           => array(
 					'description'       => __( 'Website project ID.', 'project-huddle' ),
@@ -124,6 +129,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_filter( 'gettext', array( $this, 'white_label' ), 20, 3 );
 
 			add_filter( 'plugin_row_meta', array( $this, 'white_label_link' ), 10, 4 );
+		}
+
+		public function parent_plugin_activated_error_notice() {
+			$message = __( 'You have both the client site and ProjectHuddle core plugins activated. You must only activate the client site on a client site, and ProjectHuddle on your main site.', 'project-huddle' );
+			echo '<div class="error"> <p>' . esc_html( $message ) . '</p></div>';
 		}
 
 		public function white_label_link( $plugin_meta, $plugin_file, $plugin_data, $status ) {
