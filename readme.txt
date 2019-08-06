@@ -41,6 +41,12 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.5 =
+* Add white label options.
+
+= 1.0.4 =
+* Update readme description and plugin title.
+
 = 1.0.3 =
 * Update readme description and plugin title.
 

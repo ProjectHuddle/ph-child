@@ -4,7 +4,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Version: 1.0.4
+ * Version: 1.0.5
  *
  * Requires at least: 5.2
  * Tested up to: 5.2.2
@@ -119,6 +119,47 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			// Add settings link to plugins page
 			add_filter( 'plugin_action_links_' . plugin_basename( PH_CHILD_PLUGIN_FILE ), array( $this, 'add_settings_link' ) );
+
+			// white label text
+			add_filter( 'gettext', array( $this, 'white_label' ), 20, 3 );
+
+			add_filter( 'plugin_row_meta', array( $this, 'white_label_link' ), 10, 4 );
+		}
+
+		public function white_label_link( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+			if ( ! isset( $plugin_data['slug'] ) ) {
+				return $plugin_meta;
+			}
+			if ( 'projecthuddle-child-site' === $plugin_data['slug'] ) {
+				if ( $link = get_option( 'ph_child_plugin_link', '' ) ) {
+					$plugin_meta[2] = '<a href="' . esc_url( $link ) . '" target="_blank">' . esc_html__( 'Visit plugin site', 'ph-child' ) . '</a>';
+				}
+			}
+			return $plugin_meta;
+		}
+
+		public function white_label( $translated_text, $untranslated_text, $domain ) {
+			//make the changes to the text
+			switch ( $untranslated_text ) {
+				case 'ProjectHuddle Client Site':
+					if ( $name = get_option( 'ph_child_plugin_name', false ) ) {
+						$translated_text = $name;
+					}
+					break;
+				case 'Connect a website to ProjectHuddle':
+					if ( $description = get_option( 'ph_child_plugin_description', false ) ) {
+						$translated_text = $description;
+					}
+					break;
+				case 'Andre Gagnon':
+					if ( $author = get_option( 'ph_child_plugin_author', false ) ) {
+						$translated_text = $author;
+					}
+					break;
+				//add more items
+			}
+
+			return $translated_text;
 		}
 
 		/**
@@ -318,6 +359,106 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				)
 			);
 
+			add_settings_section(
+				'ph_child_white_label_section', // ID
+				__( 'White Label', 'ph-child' ), // title
+				'__return_false', // description
+				'ph_child_white_label_options' // Page on which to add this section of options
+			);
+
+			add_settings_field(
+				'ph_child_plugin_name',
+				__( 'Plugin Name', 'ph-child' ),
+				array( $this, 'plugin_name' ),   // The name of the function responsible for rendering the option interface
+				'ph_child_white_label_options',    // The page on which this option will be displayed
+				'ph_child_white_label_section',         // The name of the section to which this field belongs
+				false
+			);
+
+			add_settings_field(
+				'ph_child_plugin_description',
+				__( 'Plugin Description', 'ph-child' ),
+				array( $this, 'plugin_description' ),   // The name of the function responsible for rendering the option interface
+				'ph_child_white_label_options',    // The page on which this option will be displayed
+				'ph_child_white_label_section',         // The name of the section to which this field belongs
+				false
+			);
+
+			add_settings_field(
+				'ph_child_plugin_author',
+				__( 'Plugin Author', 'ph-child' ),
+				array( $this, 'plugin_author' ),   // The name of the function responsible for rendering the option interface
+				'ph_child_white_label_options',    // The page on which this option will be displayed
+				'ph_child_white_label_section',         // The name of the section to which this field belongs
+				false
+			);
+
+			add_settings_field(
+				'ph_child_plugin_link',
+				__( 'Plugin Link', 'ph-child' ),
+				array( $this, 'plugin_link' ),   // The name of the function responsible for rendering the option interface
+				'ph_child_white_label_options',    // The page on which this option will be displayed
+				'ph_child_white_label_section',         // The name of the section to which this field belongs
+				false
+			);
+
+			// regsister setting
+			register_setting(
+				'ph_child_white_label_options',
+				'ph_child_plugin_name',
+				array(
+					'type' => 'string',
+				)
+			);
+			// regsister setting
+			register_setting(
+				'ph_child_white_label_options',
+				'ph_child_plugin_description',
+				array(
+					'type' => 'string',
+				)
+			);
+			// regsister setting
+			register_setting(
+				'ph_child_white_label_options',
+				'ph_child_plugin_author',
+				array(
+					'type' => 'string',
+				)
+			);
+
+			// regsister setting
+			register_setting(
+				'ph_child_white_label_options',
+				'ph_child_plugin_link',
+				array(
+					'type' => 'string',
+				)
+			);
+		}
+
+		public function plugin_name() {
+			?>
+			<input type="text" name="ph_child_plugin_name" class="regular-text" value="<?php echo esc_attr( sanitize_text_field( get_option( 'ph_child_plugin_name', '' ) ) ); ?>" /> 
+			<?php
+		}
+
+		public function plugin_description() {
+			?>
+			<textarea name="ph_child_plugin_description" rows="3" class="regular-text"><?php echo esc_attr( sanitize_text_field( get_option( 'ph_child_plugin_description', '' ) ) ); ?></textarea>
+			<?php
+		}
+
+		public function plugin_author() {
+			?>
+			<input type="text" name="ph_child_plugin_author" class="regular-text" value="<?php echo esc_attr( sanitize_text_field( get_option( 'ph_child_plugin_author', '' ) ) ); ?>" /> 
+			<?php
+		}
+
+		public function plugin_link() {
+			?>
+			<input type="url" name="ph_child_plugin_link" class="regular-text" value="<?php echo esc_attr( esc_url( get_option( 'ph_child_plugin_link', '' ) ) ); ?>" /> 
+			<?php
 		}
 
 		public function manual_import( $val ) {
@@ -453,6 +594,20 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">
 						<?php esc_html_e( 'Connection', 'ph-child' ); ?>
 					</a>
+
+					<a href="
+					<?php
+					echo esc_url(
+						add_query_arg(
+							'tab',
+							'white_label',
+							remove_query_arg( 'settings-updated' )
+						)
+					);
+					?>
+					" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
+						<?php esc_html_e( 'White Label', 'ph-child' ); ?>
+					</a>
 				</h2>
 
 
@@ -464,6 +619,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					} elseif ( 'connection' === $active_tab ) {
 						settings_fields( 'ph_child_connection_options' );
 						do_settings_sections( 'ph_child_connection_options' );
+					} elseif ( 'white_label' === $active_tab ) {
+						settings_fields( 'ph_child_white_label_options' );
+						do_settings_sections( 'ph_child_white_label_options' );
 					}
 					submit_button();
 					?>
