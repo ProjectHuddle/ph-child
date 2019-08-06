@@ -2,8 +2,8 @@
 Contributors: 2winfactor
 Donate link: https://projecthuddle.io
 Tags: project, huddle, child, feedback
-Requires at least: 5.2
-Tested up to: 5.2
+Requires at least: 4.7
+Tested up to: 5.2.2
 Stable tag: 1.0.0
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -40,6 +40,10 @@ The ProjectHuddle Client Site plugin is used to securely sync multiple WordPress
 It allows the connection between the [ProjectHuddle](https://projecthuddle.io) plugin and your clients sites to sync their identities with the system.
 
 == Changelog ==
+
+= 1.0.6 =
+* Update minimum WordPress requirement
+* Make sure it cannot be activated if Parent plugin is activated on same installation.
 
 = 1.0.5 =
 * Add white label options.
