@@ -717,6 +717,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					var ph    = d.createElement(t), s = d.getElementsByTagName(t)[0];
 					ph.type   = 'text/javascript';
 					ph.async   = true;
+					ph.defer   = true;
 					ph.charset = 'UTF-8';
 					ph.src     = g + '&v=' + (new Date()).getTime();
 					s.parentNode.insertBefore(ph, s);
