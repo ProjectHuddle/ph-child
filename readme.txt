@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.7 =
+* Defer script to not interfere with html parser in older browsers
+
 = 1.0.6 =
 * Update minimum WordPress requirement
 * Make sure it cannot be activated if Parent plugin is activated on same installation.
