@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.8 =
+* Allow access links to load comment interface (must use ProjectHuddle 3.6.17+)
+
 = 1.0.7 =
 * Defer script to not interfere with html parser in older browsers
 

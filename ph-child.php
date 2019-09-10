@@ -4,7 +4,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Version: 1.0.7
+ * Version: 1.0.8
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
