@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.9 =
+* Fix cookie expiration date
+
 = 1.0.8 =
 * Allow access links to load comment interface (must use ProjectHuddle 3.6.17+)
 
