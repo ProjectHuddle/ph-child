@@ -129,6 +129,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_filter( 'gettext', array( $this, 'white_label' ), 20, 3 );
 
 			add_filter( 'plugin_row_meta', array( $this, 'white_label_link' ), 10, 4 );
+
+			// maybe set access token cookie
+			add_action( 'plugins_loaded', array( $this, 'maybe_set_cookie'), 0 );
+		}
+
+		public function maybe_set_cookie() {
+			$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
+			setcookie( 'ph_access_token', $url_token, time() + (86400 * 30) );
 		}
 
 		public function parent_plugin_activated_error_notice() {
@@ -648,7 +656,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// get token from url
 			$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
 
-			// does it match
+			if ( ! $url_token ) {
+				if ( isset( $_COOKIE["ph_access_token"] ) ) {
+					$url_token = $_COOKIE["ph_access_token"];
+				}
+			}
+
 			return $url_token === $token;
 		}
 
