@@ -4,7 +4,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Version: 1.0.9
+ * Version: 1.0.10
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -132,6 +132,17 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			// maybe set access token cookie
 			add_action( 'plugins_loaded', array( $this, 'maybe_set_cookie'), 0 );
+
+			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
+		}
+
+		public function compatiblity_blacklist( $load ) {
+			// disable on elementor preview
+			if ( isset( $_GET['elementor-preview'] ) ) {
+				return false;
+			}
+
+			return $load;
 		}
 
 		public function maybe_set_cookie() {
@@ -672,6 +683,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function script() {
+			if ( ! apply_filters( 'ph_script_should_start_loading', true ) ) {
+				return;
+			}
+
 			// check to see if they are allowed to comment
 			if ( ! $this->token_valid() ) {
 				if ( ! ph_child_is_current_user_allowed_to_comment() ) {

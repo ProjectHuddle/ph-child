@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.10 =
+* Disable comment interface on elementor builder.
+
 = 1.0.9 =
 * Fix cookie expiration date
 
