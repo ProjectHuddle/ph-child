@@ -637,21 +637,22 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						<?php esc_html_e( 'Connection', 'ph-child' ); ?>
 					</a>
 
-					<a href="
-					<?php
-					echo esc_url(
-						add_query_arg(
-							'tab',
-							'white_label',
-							remove_query_arg( 'settings-updated' )
-						)
-					);
-					?>
-					" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
-						<?php esc_html_e( 'White Label', 'ph-child' ); ?>
-					</a>
+					<?php if ( ! defined('PH_HIDE_WHITE_LABEL') || true !== PH_HIDE_WHITE_LABEL ) : ?>
+						<a href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								'tab',
+								'white_label',
+								remove_query_arg( 'settings-updated' )
+							)
+						);
+						?>
+						" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
+							<?php esc_html_e( 'White Label', 'ph-child' ); ?>
+						</a>
+					<?php endif; ?>
 				</h2>
-
 
 				<form method="post" action="options.php">
 					<?php
