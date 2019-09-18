@@ -146,8 +146,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		public function maybe_set_cookie() {
-			$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
-			setcookie( 'ph_access_token', $url_token );
+			if ( ! is_admin() ) {
+				$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
+
+				if ( $url_token ) {
+					setcookie( 'ph_access_token', $url_token );
+				}
+			}
 		}
 
 		public function parent_plugin_activated_error_notice() {
@@ -156,6 +161,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		public function white_label_link( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+			global $pagenow;
+			if ( ! is_admin() || 'plugins.php' !== $pagenow ) {
+				return $plugin_meta;
+			}
 			if ( ! isset( $plugin_data['slug'] ) ) {
 				return $plugin_meta;
 			}
@@ -168,6 +177,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		public function white_label( $translated_text, $untranslated_text, $domain ) {
+			global $pagenow;
+			if ( ! is_admin() || 'plugins.php' !== $pagenow ) {
+				return $translated_text;
+			}
 			//make the changes to the text
 			switch ( $untranslated_text ) {
 				case 'ProjectHuddle Client Site':
