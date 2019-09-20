@@ -4,7 +4,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: Andre Gagnon
- * Version: 1.0.11
+ * Version: 1.0.12
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -101,7 +101,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 
 			// show script on front end and maybe admin
-			add_action( 'wp_footer', array( $this, 'script' ) );
+			if ( ! is_admin() ) {
+				add_action( 'wp_footer', array( $this, 'script' ) );
+			}
 			if ( get_option( 'ph_child_admin', false ) ) {
 				add_action( 'admin_footer', array( $this, 'script' ) );
 			}
@@ -140,6 +142,18 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// disable on elementor preview
 			if ( isset( $_GET['elementor-preview'] ) ) {
 				return false;
+			}
+
+			if ( isset( $_GET['ct_builder'] ) ) {
+				return false; // TODO: remove once we can get pageX, pageY inside iframe.
+				// bail if admin commenting is disabled
+				if ( ! get_option( 'ph_child_admin', false ) ) {
+					return false;
+				}
+				// bail if not in the iframe
+				if ( ! isset( $_GET['oxygen_iframe'] ) ) {
+					return false;
+				}
 			}
 
 			return $load;

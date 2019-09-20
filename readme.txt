@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.12 =
+* Hide on Oxygen builder pages.
+
 = 1.0.11 =
 * Scope gettext calls to plugins page only to prevent logging excessive functions.
 * Use PH_HIDE_WHITE_LABEL to hide white label tab from plugin settings.
