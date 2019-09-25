@@ -4,7 +4,7 @@
  * Plugin Name: ProjectHuddle Client Site
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
- * Author: Andre Gagnon
+ * Author: ProjectHuddle
  * Version: 1.0.13
  *
  * Requires at least: 4.7
