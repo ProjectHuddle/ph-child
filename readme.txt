@@ -42,6 +42,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 == Changelog ==
 
 = 1.0.12 =
+* Fix issue for accounts who's emails contain a "+" sign.
+
+= 1.0.12 =
 * Hide on Oxygen builder pages.
 
 = 1.0.11 =
