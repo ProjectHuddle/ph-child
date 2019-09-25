@@ -41,7 +41,7 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
-= 1.0.12 =
+= 1.0.13 =
 * Fix issue for accounts who's emails contain a "+" sign.
 
 = 1.0.12 =
