@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.13
+ * Version: 1.0.14
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -130,10 +130,12 @@ if (!class_exists('PH_Child')) :
 			// Add settings link to plugins page
 			add_filter('plugin_action_links_' . plugin_basename(PH_CHILD_PLUGIN_FILE), array($this, 'add_settings_link'));
 
-			// white label text
-			add_filter('gettext', array($this, 'white_label'), 20, 3);
-
-			add_filter('plugin_row_meta', array($this, 'white_label_link'), 10, 4);
+			// white label text only on plugins page
+			global $pagenow;
+			if (is_admin() && 'plugins.php' === $pagenow) {
+				add_filter('gettext', array($this, 'white_label'), 20, 3);
+				add_filter('plugin_row_meta', array($this, 'white_label_link'), 10, 4);
+			}
 
 			// maybe set access token cookie
 			add_action('plugins_loaded', array($this, 'maybe_set_cookie'), 0);

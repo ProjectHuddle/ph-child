@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.14 =
+* Add admin check to gettext filter to scope to plugin page before running function.
+
 = 1.0.13 =
 * Fix issue for accounts who's emails contain a "+" sign.
 
