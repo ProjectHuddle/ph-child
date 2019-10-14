@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.15 =
+* Make sure widget only loads once per page in case of duplicate wp_footer calls.
+
 = 1.0.14 =
 * Add admin check to gettext filter to scope to plugin page before running function.
 

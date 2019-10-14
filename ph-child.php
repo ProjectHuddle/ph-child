@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.14
+ * Version: 1.0.15
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -745,6 +745,13 @@ if (!class_exists('PH_Child')) :
 					 */
 					public function script()
 					{
+						static $loaded;
+
+						// make sure we only load once
+						if ($loaded) {
+							return;
+						}
+
 						if (!apply_filters('ph_script_should_start_loading', true)) {
 							return;
 						}
@@ -800,6 +807,9 @@ if (!class_exists('PH_Child')) :
 
 						// remove protocol for ssl and non ssl
 						$url = preg_replace('(^https?://)', '', $url);
+
+						// we've loaded
+						$loaded = true;
 						?>
 
 				<script>
