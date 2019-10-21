@@ -217,7 +217,7 @@ if (!class_exists('PH_Child')) :
 						$translated_text = $description;
 					}
 					break;
-				case 'Andre Gagnon':
+				case 'ProjectHuddle':
 					if ($author = get_option('ph_child_plugin_author', false)) {
 						$translated_text = $author;
 					}
