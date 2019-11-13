@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.17
+ * Version: 1.0.18
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -150,8 +150,8 @@ if (!class_exists('PH_Child')) :
 				return false;
 			}
 
-			// disable for 
-			if (isset($_GET['fb-edit'])) {
+			// disable for fusion
+			if (isset($_GET['builder'])) {
 				return false;
 			}
 

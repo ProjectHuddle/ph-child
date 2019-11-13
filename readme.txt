@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.18 =
+* Fix compatibility issue with Fusion Builder.
+
 = 1.0.17 =
 * Fix compatibility issue with Fusion Builder.
 
