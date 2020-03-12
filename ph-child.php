@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.19
+ * Version: 1.0.20
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -147,6 +147,11 @@ if (!class_exists('PH_Child')) :
 		{
 			// disable on elementor preview
 			if (isset($_GET['elementor-preview'])) {
+				return false;
+			}
+
+			// beaver builder
+			if (isset($_GET['fl_builder']) || isset($_GET['fl_builder_preview'])) {
 				return false;
 			}
 
@@ -519,319 +524,319 @@ if (!class_exists('PH_Child')) :
 
 		public function plugin_name()
 		{
+?>
+			<input type="text" name="ph_child_plugin_name" class="regular-text" value="<?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_name', ''))); ?>" />
+		<?php
+		}
+
+		public function plugin_description()
+		{
+		?>
+			<textarea name="ph_child_plugin_description" rows="3" class="regular-text"><?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_description', ''))); ?></textarea>
+		<?php
+		}
+
+		public function plugin_author()
+		{
+		?>
+			<input type="text" name="ph_child_plugin_author" class="regular-text" value="<?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_author', ''))); ?>" />
+		<?php
+		}
+
+		public function plugin_link()
+		{
+		?>
+			<input type="url" name="ph_child_plugin_link" class="regular-text" value="<?php echo esc_attr(esc_url(get_option('ph_child_plugin_link', ''))); ?>" />
+			<?php
+		}
+
+		public function manual_import($val)
+		{
+			$settings = json_decode($val, true);
+
+			// update manual import
+			if (!empty($settings)) {
+				foreach ($settings as $key => $value) {
+					if (array_key_exists('ph_child_' . $key, $this->whitelist_option_names)) {
+						$sanitize = $this->whitelist_option_names['ph_child_' . $key]['sanitize_callback'];
+						$updated  = update_option('ph_child_' . $key, $sanitize($value));
+					}
+				}
+			}
+
+			return $val;
+		}
+
+		public function commenters_checklist()
+		{
+			$disable_roles = (array) get_option('ph_child_enabled_comment_roles', array());
+			$roles         = (array) get_editable_roles();
+
+			if (!empty($roles)) {
+				foreach ($roles as $slug => $role) {
+					if (empty($disable_roles)) {
+						$checked = true;
+					} else {
+						$checked = in_array($slug, $disable_roles);
+					}
 			?>
-				<input type="text" name="ph_child_plugin_name" class="regular-text" value="<?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_name', ''))); ?>" />
+					<input type="checkbox" name="ph_child_enabled_comment_roles[<?php echo esc_attr($slug); ?>]" value="<?php echo esc_attr($slug); ?>" <?php checked($checked); ?>> <?php echo esc_html($role['name']); ?><br>
 			<?php
-					}
-
-					public function plugin_description()
-					{
-						?>
-				<textarea name="ph_child_plugin_description" rows="3" class="regular-text"><?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_description', ''))); ?></textarea>
-			<?php
-					}
-
-					public function plugin_author()
-					{
-						?>
-				<input type="text" name="ph_child_plugin_author" class="regular-text" value="<?php echo esc_attr(sanitize_text_field(get_option('ph_child_plugin_author', ''))); ?>" />
-			<?php
-					}
-
-					public function plugin_link()
-					{
-						?>
-				<input type="url" name="ph_child_plugin_link" class="regular-text" value="<?php echo esc_attr(esc_url(get_option('ph_child_plugin_link', ''))); ?>" />
-				<?php
-						}
-
-						public function manual_import($val)
-						{
-							$settings = json_decode($val, true);
-
-							// update manual import
-							if (!empty($settings)) {
-								foreach ($settings as $key => $value) {
-									if (array_key_exists('ph_child_' . $key, $this->whitelist_option_names)) {
-										$sanitize = $this->whitelist_option_names['ph_child_' . $key]['sanitize_callback'];
-										$updated  = update_option('ph_child_' . $key, $sanitize($value));
-									}
-								}
-							}
-
-							return $val;
-						}
-
-						public function commenters_checklist()
-						{
-							$disable_roles = (array) get_option('ph_child_enabled_comment_roles', array());
-							$roles         = (array) get_editable_roles();
-
-							if (!empty($roles)) {
-								foreach ($roles as $slug => $role) {
-									if (empty($disable_roles)) {
-										$checked = true;
-									} else {
-										$checked = in_array($slug, $disable_roles);
-									}
-									?>
-						<input type="checkbox" name="ph_child_enabled_comment_roles[<?php echo esc_attr($slug); ?>]" value="<?php echo esc_attr($slug); ?>" <?php checked($checked); ?>> <?php echo esc_html($role['name']); ?><br>
-				<?php
-								}
-							}
-						}
-
-						public function allow_guests()
-						{
-							?>
-				<input type="checkbox" name="ph_child_allow_guests" <?php checked(get_option('ph_child_allow_guests', false), 'on'); ?>>
-				<?php esc_html_e('Allow guests to comment', 'ph-child'); ?><br>
-			<?php
-					}
-
-					public function allow_admin()
-					{
-						?>
-				<input type="checkbox" name="ph_child_admin" <?php checked(get_option('ph_child_admin', false), 'on'); ?>>
-				<?php esc_html_e('Allow commenting in the admin.', 'ph-child'); ?><br>
-			<?php
-					}
-
-					public function connection_status()
-					{
-						?>
-
-				<style>
-					.ph-badge {
-						color: #7d7d7d;
-						background: #e4e4e4;
-						display: inline-block;
-						padding: 5px;
-						line-height: 1;
-						border-radius: 3px;
-					}
-
-					.ph-badge.ph-connected {
-						color: #559a55;
-						background: #daecda;
-					}
-
-					.ph-badge.ph-not-connected {
-						color: #9c8a44;
-						background: #f1ebd3;
-					}
-				</style>
-				<?php
-							if ($connection = get_option('ph_child_parent_url', false)) {
-								echo '<p class="ph-badge ph-connected">' . sprintf(__('Connected to %s', 'ph-child'), esc_url($connection)) . '</p>';
-								echo '<p class="submit">';
-								echo '<a class="button button-secondary" href="' . esc_url(
-									add_query_arg(
-										array(
-											'ph-child-site-disconnect' => 1,
-											'ph-child-site-disconnect-nonce' => wp_create_nonce('ph-child-site-disconnect-nonce'),
-										),
-										remove_query_arg('settings-updated')
-									)
-								) . '">' . esc_html__('Disconnect', 'project-huddle') . '</a>';
-							} else {
-								echo '<p class="ph-badge ph-not-connected">';
-								esc_html_e('Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child');
-								echo '</p>';
-							}
-							?>
-			<?php
-					}
-
-					public function manual_connection()
-					{
-						?>
-				<p><?php esc_html_e('If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child'); ?></p><br>
-				<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
-			<?php
-					}
-
-					public function options_page()
-					{
-						?>
-				<div class="wrap">
-					<h1><?php esc_html_e('Feedback Options', 'ph-child'); ?></h1>
-
-					<?php $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general'; ?>
-
-					<h2 class="nav-tab-wrapper">
-						<a href="
-					<?php
-								echo esc_url(
-									add_query_arg(
-										'tab',
-										'general',
-										remove_query_arg('settings-updated')
-									)
-								);
-								?>
-					" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e('General', 'ph-child'); ?>
-						</a>
-
-						<a href="
-					<?php
-								echo esc_url(
-									add_query_arg(
-										'tab',
-										'connection',
-										remove_query_arg('settings-updated')
-									)
-								);
-								?>
-					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e('Connection', 'ph-child'); ?>
-						</a>
-
-						<?php if (!defined('PH_HIDE_WHITE_LABEL') || true !== PH_HIDE_WHITE_LABEL) : ?>
-							<a href="
-						<?php
-										echo esc_url(
-											add_query_arg(
-												'tab',
-												'white_label',
-												remove_query_arg('settings-updated')
-											)
-										);
-										?>
-						" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
-								<?php esc_html_e('White Label', 'ph-child'); ?>
-							</a>
-						<?php endif; ?>
-					</h2>
-
-					<form method="post" action="options.php">
-						<?php
-									if ('general' === $active_tab) {
-										settings_fields('ph_child_general_options');
-										do_settings_sections('ph_child_general_options');
-									} elseif ('connection' === $active_tab) {
-										settings_fields('ph_child_connection_options');
-										do_settings_sections('ph_child_connection_options');
-									} elseif ('white_label' === $active_tab) {
-										settings_fields('ph_child_white_label_options');
-										do_settings_sections('ph_child_white_label_options');
-									}
-									submit_button();
-									?>
-					</form>
-				</div>
-			<?php
-					}
-
-					public function token_valid()
-					{
-						if (!$token = get_option('ph_child_access_token', '')) {
-							return false;
-						}
-
-						// get token from url
-						$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
-
-						if (!$url_token) {
-							if (isset($_COOKIE["ph_access_token"])) {
-								$url_token = $_COOKIE["ph_access_token"];
-							}
-						}
-
-						return $url_token === $token;
-					}
-
-					/**
-					 * Outputs the saved website script
-					 * Along with and identify method to sync accounts
-					 *
-					 * @return void
-					 */
-					public function script()
-					{
-						static $loaded;
-
-						// make sure we only load once
-						if ($loaded) {
-							return;
-						}
-
-						if (!apply_filters('ph_script_should_start_loading', true)) {
-							return;
-						}
-
-						// check to see if they are allowed to comment
-						if (!$this->token_valid()) {
-							if (!ph_child_is_current_user_allowed_to_comment()) {
-								return;
-							}
-						}
-
-						// settings must be set
-						if (!$url = get_option('ph_child_parent_url')) {
-							echo '<!-- ProjectHuddle: parent url not set -->';
-							return;
-						}
-						if (!$id = get_option('ph_child_id')) {
-							echo '<!-- ProjectHuddle: project id not set -->';
-							return;
-						}
-
-						// build url
-						$url = add_query_arg(
-							array(
-								'p'               => (int) $id,
-								'ph_apikey'       => get_option('ph_child_api_key', ''),
-								'ph_access_token' => get_option('ph_child_access_token', ''),
-							),
-							$url
-						);
-
-						// identify user and send signature for verification
-						if (is_user_logged_in()) :
-							$user = wp_get_current_user();
-
-							$url = add_query_arg(
-								array(
-									'ph_user_name'  => $user->display_name,
-									'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
-									'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
-									'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
-								),
-								$url
-							);
-						else :
-							$url = add_query_arg(
-								array(
-									'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
-								),
-								$url
-							);
-						endif;
-
-						// remove protocol for ssl and non ssl
-						$url = preg_replace('(^https?://)', '', $url);
-
-						// we've loaded
-						$loaded = true;
-						?>
-
-				<script>
-					(function(d, t, g) {
-						var ph = d.createElement(t),
-							s = d.getElementsByTagName(t)[0];
-						ph.type = 'text/javascript';
-						ph.async = true;
-						ph.defer = true;
-						ph.charset = 'UTF-8';
-						ph.src = g + '&v=' + (new Date()).getTime();
-						s.parentNode.insertBefore(ph, s);
-					})(document, 'script', '//<?php echo $url; ?>');
-				</script>
-	<?php
+				}
 			}
 		}
 
-		$plugin = new PH_Child();
-	endif;
+		public function allow_guests()
+		{
+			?>
+			<input type="checkbox" name="ph_child_allow_guests" <?php checked(get_option('ph_child_allow_guests', false), 'on'); ?>>
+			<?php esc_html_e('Allow guests to comment', 'ph-child'); ?><br>
+		<?php
+		}
+
+		public function allow_admin()
+		{
+		?>
+			<input type="checkbox" name="ph_child_admin" <?php checked(get_option('ph_child_admin', false), 'on'); ?>>
+			<?php esc_html_e('Allow commenting in the admin.', 'ph-child'); ?><br>
+		<?php
+		}
+
+		public function connection_status()
+		{
+		?>
+
+			<style>
+				.ph-badge {
+					color: #7d7d7d;
+					background: #e4e4e4;
+					display: inline-block;
+					padding: 5px;
+					line-height: 1;
+					border-radius: 3px;
+				}
+
+				.ph-badge.ph-connected {
+					color: #559a55;
+					background: #daecda;
+				}
+
+				.ph-badge.ph-not-connected {
+					color: #9c8a44;
+					background: #f1ebd3;
+				}
+			</style>
+			<?php
+			if ($connection = get_option('ph_child_parent_url', false)) {
+				echo '<p class="ph-badge ph-connected">' . sprintf(__('Connected to %s', 'ph-child'), esc_url($connection)) . '</p>';
+				echo '<p class="submit">';
+				echo '<a class="button button-secondary" href="' . esc_url(
+					add_query_arg(
+						array(
+							'ph-child-site-disconnect' => 1,
+							'ph-child-site-disconnect-nonce' => wp_create_nonce('ph-child-site-disconnect-nonce'),
+						),
+						remove_query_arg('settings-updated')
+					)
+				) . '">' . esc_html__('Disconnect', 'project-huddle') . '</a>';
+			} else {
+				echo '<p class="ph-badge ph-not-connected">';
+				esc_html_e('Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child');
+				echo '</p>';
+			}
+			?>
+		<?php
+		}
+
+		public function manual_connection()
+		{
+		?>
+			<p><?php esc_html_e('If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child'); ?></p><br>
+			<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
+		<?php
+		}
+
+		public function options_page()
+		{
+		?>
+			<div class="wrap">
+				<h1><?php esc_html_e('Feedback Options', 'ph-child'); ?></h1>
+
+				<?php $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general'; ?>
+
+				<h2 class="nav-tab-wrapper">
+					<a href="
+					<?php
+					echo esc_url(
+						add_query_arg(
+							'tab',
+							'general',
+							remove_query_arg('settings-updated')
+						)
+					);
+					?>
+					" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
+						<?php esc_html_e('General', 'ph-child'); ?>
+					</a>
+
+					<a href="
+					<?php
+					echo esc_url(
+						add_query_arg(
+							'tab',
+							'connection',
+							remove_query_arg('settings-updated')
+						)
+					);
+					?>
+					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">
+						<?php esc_html_e('Connection', 'ph-child'); ?>
+					</a>
+
+					<?php if (!defined('PH_HIDE_WHITE_LABEL') || true !== PH_HIDE_WHITE_LABEL) : ?>
+						<a href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								'tab',
+								'white_label',
+								remove_query_arg('settings-updated')
+							)
+						);
+						?>
+						" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
+							<?php esc_html_e('White Label', 'ph-child'); ?>
+						</a>
+					<?php endif; ?>
+				</h2>
+
+				<form method="post" action="options.php">
+					<?php
+					if ('general' === $active_tab) {
+						settings_fields('ph_child_general_options');
+						do_settings_sections('ph_child_general_options');
+					} elseif ('connection' === $active_tab) {
+						settings_fields('ph_child_connection_options');
+						do_settings_sections('ph_child_connection_options');
+					} elseif ('white_label' === $active_tab) {
+						settings_fields('ph_child_white_label_options');
+						do_settings_sections('ph_child_white_label_options');
+					}
+					submit_button();
+					?>
+				</form>
+			</div>
+		<?php
+		}
+
+		public function token_valid()
+		{
+			if (!$token = get_option('ph_child_access_token', '')) {
+				return false;
+			}
+
+			// get token from url
+			$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
+
+			if (!$url_token) {
+				if (isset($_COOKIE["ph_access_token"])) {
+					$url_token = $_COOKIE["ph_access_token"];
+				}
+			}
+
+			return $url_token === $token;
+		}
+
+		/**
+		 * Outputs the saved website script
+		 * Along with and identify method to sync accounts
+		 *
+		 * @return void
+		 */
+		public function script()
+		{
+			static $loaded;
+
+			// make sure we only load once
+			if ($loaded) {
+				return;
+			}
+
+			if (!apply_filters('ph_script_should_start_loading', true)) {
+				return;
+			}
+
+			// check to see if they are allowed to comment
+			if (!$this->token_valid()) {
+				if (!ph_child_is_current_user_allowed_to_comment()) {
+					return;
+				}
+			}
+
+			// settings must be set
+			if (!$url = get_option('ph_child_parent_url')) {
+				echo '<!-- ProjectHuddle: parent url not set -->';
+				return;
+			}
+			if (!$id = get_option('ph_child_id')) {
+				echo '<!-- ProjectHuddle: project id not set -->';
+				return;
+			}
+
+			// build url
+			$url = add_query_arg(
+				array(
+					'p'               => (int) $id,
+					'ph_apikey'       => get_option('ph_child_api_key', ''),
+					'ph_access_token' => get_option('ph_child_access_token', ''),
+				),
+				$url
+			);
+
+			// identify user and send signature for verification
+			if (is_user_logged_in()) :
+				$user = wp_get_current_user();
+
+				$url = add_query_arg(
+					array(
+						'ph_user_name'  => $user->display_name,
+						'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
+						'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
+						'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
+					),
+					$url
+				);
+			else :
+				$url = add_query_arg(
+					array(
+						'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
+					),
+					$url
+				);
+			endif;
+
+			// remove protocol for ssl and non ssl
+			$url = preg_replace('(^https?://)', '', $url);
+
+			// we've loaded
+			$loaded = true;
+		?>
+
+			<script>
+				(function(d, t, g) {
+					var ph = d.createElement(t),
+						s = d.getElementsByTagName(t)[0];
+					ph.type = 'text/javascript';
+					ph.async = true;
+					ph.defer = true;
+					ph.charset = 'UTF-8';
+					ph.src = g + '&v=' + (new Date()).getTime();
+					s.parentNode.insertBefore(ph, s);
+				})(document, 'script', '//<?php echo $url; ?>');
+			</script>
+<?php
+		}
+	}
+
+	$plugin = new PH_Child();
+endif;
