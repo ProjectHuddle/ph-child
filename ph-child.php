@@ -145,21 +145,29 @@ if (!class_exists('PH_Child')) :
 
 		public function compatiblity_blacklist($load)
 		{
-			// disable on elementor preview
-			if (isset($_GET['elementor-preview'])) {
-				return false;
+			$disabled = apply_filters('ph_disable_for_query_vars', array(
+				// divi
+				'et_fb',
+				// elementor
+				'elementor-preview',
+				// beaver builder
+				'fl_builder',
+				'fl_builder_preview',
+				// fusion
+				'builder',
+				'fb-edit',
+			));
+
+			// disable these
+			if (!empty($_GET) && is_array($_GET)) {
+				foreach ($disabled as $arg => $value) {
+					if (in_array($arg, $_GET)) {
+						return false;
+					}
+				}
 			}
 
-			// beaver builder
-			if (isset($_GET['fl_builder']) || isset($_GET['fl_builder_preview'])) {
-				return false;
-			}
-
-			// disable for fusion
-			if (isset($_GET['builder']) || isset($_GET['fb-edit'])) {
-				return false;
-			}
-
+			// oxygen is... "special"
 			if (isset($_GET['ct_builder'])) {
 				return false; // TODO: remove once we can get pageX, pageY inside iframe.
 				// bail if admin commenting is disabled

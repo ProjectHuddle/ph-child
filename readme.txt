@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.21 =
+* Fix compatibility issue with Divi.
+
 = 1.0.20 =
 * Fix compatibility issue with Beaver Builder.
 
