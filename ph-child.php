@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.21
+ * Version: 1.0.22
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -160,8 +160,8 @@ if (!class_exists('PH_Child')) :
 
 			// disable these
 			if (!empty($_GET) && is_array($_GET)) {
-				foreach ($disabled as $arg => $value) {
-					if (in_array($arg, $_GET)) {
+				foreach ($_GET as $arg => $_) {
+					if (in_array($arg, $disabled)) {
 						return false;
 					}
 				}
