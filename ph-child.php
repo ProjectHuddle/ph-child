@@ -189,7 +189,7 @@ if (!class_exists('PH_Child')) :
 				$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
 
 				if ($url_token) {
-					setcookie('ph_access_token', $url_token);
+					setcookie('ph_access_token', $url_token, time() + 60 * 60 * 24, COOKIEPATH);
 				}
 			}
 		}
