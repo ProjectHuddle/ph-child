@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.23 =
+* Fix issue with visiting access links to subpages not storing cookie correctly on other pages.
+
 = 1.0.22 =
 * Fix compatibility issue with Elementor.
 
