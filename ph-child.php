@@ -784,40 +784,30 @@ if (!class_exists('PH_Child')) :
 				return;
 			}
 
-			// build url
-			$url = add_query_arg(
-				array(
-					'ph_project'               => (int) $id,
-					'ph_apikey'       => get_option('ph_child_api_key', ''),
-				),
-				$url
+			$allowed = ph_child_is_current_user_allowed_to_comment();
+
+			// always have project and public api key
+			$args = array(
+				'ph_project' => (int) $id,
+				'ph_apikey' => get_option('ph_child_api_key', ''),
 			);
 
-			// auto-add access token if current user is allowed to comment
-			if (ph_child_is_current_user_allowed_to_comment()) {
-				$url = add_query_arg(
-					array(
-						'ph_access_token' => get_option('ph_child_access_token', ''),
-						'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
-					),
-					$url
+			// auto-add access token and signature if current user is allowed to comment
+			if ($allowed) {
+				$args = array(
+					'ph_access_token' => get_option('ph_child_access_token', ''),
+					'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false));
 				);
+				// if user is logged in, add name and email data
+				if ($user = wp_get_current_user()) {
+					$args['ph_user_name']  = $user->display_name;
+					$args['ph_user_email'] = sanitize_email(str_replace('+', '%2B', $user->user_email));
+					$args['ph_signature']  = hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false));
+					$args['ph_query_vars'] = filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN);
+				}
 			}
 
-			// identify user and send signature for verification
-			if (is_user_logged_in() && ph_child_is_current_user_allowed_to_comment()) :
-				$user = wp_get_current_user();
-
-				$url = add_query_arg(
-					array(
-						'ph_user_name'  => $user->display_name,
-						'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
-						'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
-						'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
-					),
-					$url
-				);
-			endif;
+			$url = add_query_arg($args, $url);
 
 			// remove protocol for ssl and non ssl
 			$url = preg_replace('(^https?://)', '', $url);
