@@ -774,13 +774,6 @@ if (!class_exists('PH_Child')) :
 				return;
 			}
 
-			// check to see if they are allowed to comment
-			if (!$this->token_valid()) {
-				if (!ph_child_is_current_user_allowed_to_comment()) {
-					return;
-				}
-			}
-
 			// settings must be set
 			if (!$url = get_option('ph_child_parent_url')) {
 				echo '<!-- ProjectHuddle: parent url not set -->';
@@ -794,15 +787,25 @@ if (!class_exists('PH_Child')) :
 			// build url
 			$url = add_query_arg(
 				array(
-					'p'               => (int) $id,
+					'ph_project'               => (int) $id,
 					'ph_apikey'       => get_option('ph_child_api_key', ''),
-					'ph_access_token' => get_option('ph_child_access_token', ''),
 				),
 				$url
 			);
 
+			// auto-add access token if current user is allowed to comment
+			if (ph_child_is_current_user_allowed_to_comment()) {
+				$url = add_query_arg(
+					array(
+						'ph_access_token' => get_option('ph_child_access_token', ''),
+						'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
+					),
+					$url
+				);
+			}
+
 			// identify user and send signature for verification
-			if (is_user_logged_in()) :
+			if (is_user_logged_in() && ph_child_is_current_user_allowed_to_comment()) :
 				$user = wp_get_current_user();
 
 				$url = add_query_arg(
@@ -811,13 +814,6 @@ if (!class_exists('PH_Child')) :
 						'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
 						'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
 						'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
-					),
-					$url
-				);
-			else :
-				$url = add_query_arg(
-					array(
-						'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
 					),
 					$url
 				);
@@ -831,16 +827,19 @@ if (!class_exists('PH_Child')) :
 		?>
 
 			<script>
-				(function(d, t, g) {
+				(function(d, t, g, k) {
 					var ph = d.createElement(t),
-						s = d.getElementsByTagName(t)[0];
+						s = d.getElementsByTagName(t)[0],
+						t = (new URLSearchParams(window.location.search)).get(k);
+					t ? localStorage.setItem(k, t) : '';
+					t = localStorage.getItem(k);
 					ph.type = 'text/javascript';
 					ph.async = true;
 					ph.defer = true;
 					ph.charset = 'UTF-8';
-					ph.src = g + '&v=' + (new Date()).getTime();
+					ph.src = g + '&v=' + (new Date()).getTime() + '&' + k + '=' + t + '&loader=v2';
 					s.parentNode.insertBefore(ph, s);
-				})(document, 'script', '//<?php echo $url; ?>');
+				})(document, 'script', '//<?php echo $url; ?>', 'ph_access_token');
 			</script>
 <?php
 		}
