@@ -789,8 +789,8 @@ if (!class_exists('PH_Child')) :
 						l = <?php echo $allowed ? 'true' : 'false'; ?>,
 						t = (new URLSearchParams(window.location.search)).get(k);
 					t && localStorage.setItem(k, t);
-					if (!l) t = l = localStorage.getItem(k);
-					if (!l) return;
+					t = localStorage.getItem(k)
+					if (!l && !t) return;
 					ph.type = 'text/javascript';
 					ph.async = true;
 					ph.defer = true;
