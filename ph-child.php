@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.24
+ * Version: 1.0.25
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -137,9 +137,6 @@ if (!class_exists('PH_Child')) :
 				add_filter('plugin_row_meta', array($this, 'white_label_link'), 10, 4);
 			}
 
-			// maybe set access token cookie
-			add_action('plugins_loaded', array($this, 'maybe_set_cookie'), 0);
-
 			add_filter('ph_script_should_start_loading', array($this, 'compatiblity_blacklist'));
 		}
 
@@ -181,17 +178,6 @@ if (!class_exists('PH_Child')) :
 			}
 
 			return $load;
-		}
-
-		public function maybe_set_cookie()
-		{
-			if (!is_admin()) {
-				$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
-
-				if ($url_token) {
-					setcookie('ph_access_token', $url_token, time() + 60 * 60 * 24, COOKIEPATH);
-				}
-			}
 		}
 
 		public function parent_plugin_activated_error_notice()
@@ -737,24 +723,6 @@ if (!class_exists('PH_Child')) :
 		<?php
 		}
 
-		public function token_valid()
-		{
-			if (!$token = get_option('ph_child_access_token', '')) {
-				return false;
-			}
-
-			// get token from url
-			$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
-
-			if (!$url_token) {
-				if (isset($_COOKIE["ph_access_token"])) {
-					$url_token = $_COOKIE["ph_access_token"];
-				}
-			}
-
-			return $url_token === $token;
-		}
-
 		/**
 		 * Outputs the saved website script
 		 * Along with and identify method to sync accounts
@@ -788,16 +756,14 @@ if (!class_exists('PH_Child')) :
 
 			// always have project and public api key
 			$args = array(
-				'ph_project' => (int) $id,
+				'p' => (int) $id,
 				'ph_apikey' => get_option('ph_child_api_key', ''),
 			);
 
 			// auto-add access token and signature if current user is allowed to comment
 			if ($allowed) {
-				$args = array(
-					'ph_access_token' => get_option('ph_child_access_token', ''),
-					'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false));
-				);
+				$args['ph_access_token'] = get_option('ph_child_access_token', '');
+				$args['ph_signature'] = hash_hmac('sha256', 'guest', get_option('ph_child_signature', false));
 				// if user is logged in, add name and email data
 				if ($user = wp_get_current_user()) {
 					$args['ph_user_name']  = $user->display_name;
@@ -820,14 +786,16 @@ if (!class_exists('PH_Child')) :
 				(function(d, t, g, k) {
 					var ph = d.createElement(t),
 						s = d.getElementsByTagName(t)[0],
+						l = <?php echo $allowed ? 'true' : 'false'; ?>,
 						t = (new URLSearchParams(window.location.search)).get(k);
-					t ? localStorage.setItem(k, t) : '';
-					t = localStorage.getItem(k);
+					t && localStorage.setItem(k, t);
+					if (!l) t = l = localStorage.getItem(k);
+					if (!l) return;
 					ph.type = 'text/javascript';
 					ph.async = true;
 					ph.defer = true;
 					ph.charset = 'UTF-8';
-					ph.src = g + '&v=' + (new Date()).getTime() + '&' + k + '=' + t + '&loader=v2';
+					ph.src = g + '&v=' + (new Date()).getTime() + '&' + k + '=' + t;
 					s.parentNode.insertBefore(ph, s);
 				})(document, 'script', '//<?php echo $url; ?>', 'ph_access_token');
 			</script>
