@@ -757,7 +757,7 @@ if (!class_exists('PH_Child')) :
 			// always have project and public api key
 			$args = array(
 				'p' => (int) $id,
-				'ph_apikey' => get_option('ph_child_api_key', ''),
+				'ph_apikey' => get_option('ph_child_api_key', '')
 			);
 
 			// auto-add access token and signature if current user is allowed to comment
@@ -765,7 +765,8 @@ if (!class_exists('PH_Child')) :
 				$args['ph_access_token'] = get_option('ph_child_access_token', '');
 				$args['ph_signature'] = hash_hmac('sha256', 'guest', get_option('ph_child_signature', false));
 				// if user is logged in, add name and email data
-				if ($user = wp_get_current_user()) {
+				if (is_user_logged_in()) {
+					$user = wp_get_current_user();
 					$args['ph_user_name']  = $user->display_name;
 					$args['ph_user_email'] = sanitize_email(str_replace('+', '%2B', $user->user_email));
 					$args['ph_signature']  = hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false));
