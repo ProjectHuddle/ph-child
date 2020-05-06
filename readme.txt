@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.25 =
+* Fix issue with display names containing apostrophes.
+
 = 1.0.24 =
 * Add notices for WPEngine, Flywheel cache exclusions.
 

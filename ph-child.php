@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.24
+ * Version: 1.0.25
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -807,7 +807,7 @@ if (!class_exists('PH_Child')) :
 
 				$url = add_query_arg(
 					array(
-						'ph_user_name'  => $user->display_name,
+						'ph_user_name'  => urlencode($user->display_name),
 						'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
 						'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
 						'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
@@ -840,7 +840,7 @@ if (!class_exists('PH_Child')) :
 					ph.charset = 'UTF-8';
 					ph.src = g + '&v=' + (new Date()).getTime();
 					s.parentNode.insertBefore(ph, s);
-				})(document, 'script', '//<?php echo $url; ?>');
+				})(document, 'script', '<?php echo esc_url_raw("//$url"); ?>');
 			</script>
 <?php
 		}
