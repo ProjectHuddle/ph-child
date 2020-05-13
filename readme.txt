@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.26 =
+* Use localstorage for access token to eliminate issues with client site caching.
+
 = 1.0.25 =
 * Fix issue with display names containing apostrophes.
 

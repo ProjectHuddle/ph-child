@@ -137,9 +137,6 @@ if (!class_exists('PH_Child')) :
 				add_filter('plugin_row_meta', array($this, 'white_label_link'), 10, 4);
 			}
 
-			// maybe set access token cookie
-			add_action('plugins_loaded', array($this, 'maybe_set_cookie'), 0);
-
 			add_filter('ph_script_should_start_loading', array($this, 'compatiblity_blacklist'));
 		}
 
@@ -181,17 +178,6 @@ if (!class_exists('PH_Child')) :
 			}
 
 			return $load;
-		}
-
-		public function maybe_set_cookie()
-		{
-			if (!is_admin()) {
-				$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
-
-				if ($url_token) {
-					setcookie('ph_access_token', $url_token, time() + 60 * 60 * 24, COOKIEPATH);
-				}
-			}
 		}
 
 		public function parent_plugin_activated_error_notice()
@@ -737,7 +723,7 @@ if (!class_exists('PH_Child')) :
 		<?php
 		}
 
-		public function token_valid()
+		public function has_valid_cookie()
 		{
 			if (!$token = get_option('ph_child_access_token', '')) {
 				return false;
@@ -774,13 +760,6 @@ if (!class_exists('PH_Child')) :
 				return;
 			}
 
-			// check to see if they are allowed to comment
-			if (!$this->token_valid()) {
-				if (!ph_child_is_current_user_allowed_to_comment()) {
-					return;
-				}
-			}
-
 			// settings must be set
 			if (!$url = get_option('ph_child_parent_url')) {
 				echo '<!-- ProjectHuddle: parent url not set -->';
@@ -791,37 +770,30 @@ if (!class_exists('PH_Child')) :
 				return;
 			}
 
-			// build url
-			$url = add_query_arg(
-				array(
-					'p'               => (int) $id,
-					'ph_apikey'       => get_option('ph_child_api_key', ''),
-					'ph_access_token' => get_option('ph_child_access_token', ''),
-				),
-				$url
+			$allowed = false;
+			$allowed = ph_child_is_current_user_allowed_to_comment() || $this->has_valid_cookie();
+
+			// always have project and public api key
+			$args = array(
+				'p' => (int) $id,
+				'ph_apikey' => get_option('ph_child_api_key', '')
 			);
 
-			// identify user and send signature for verification
-			if (is_user_logged_in()) :
-				$user = wp_get_current_user();
+			// auto-add access token and signature if current user is allowed to comment
+			if ($allowed) {
+				$args['ph_access_token'] = get_option('ph_child_access_token', '');
+				$args['ph_signature'] = hash_hmac('sha256', 'guest', get_option('ph_child_signature', false));
+				// if user is logged in, add name and email data
+				if (is_user_logged_in()) {
+					$user = wp_get_current_user();
+					$args['ph_user_name']  = urlencode($user->display_name);
+					$args['ph_user_email'] = sanitize_email(str_replace('+', '%2B', $user->user_email));
+					$args['ph_signature']  = hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false));
+					$args['ph_query_vars'] = filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN);
+				}
+			}
 
-				$url = add_query_arg(
-					array(
-						'ph_user_name'  => urlencode($user->display_name),
-						'ph_user_email' => sanitize_email(str_replace('+', '%2B', $user->user_email)),
-						'ph_signature'  => hash_hmac('sha256', sanitize_email($user->user_email), get_option('ph_child_signature', false)),
-						'ph_query_vars' => filter_var(get_option('ph_child_admin', false), FILTER_VALIDATE_BOOLEAN),
-					),
-					$url
-				);
-			else :
-				$url = add_query_arg(
-					array(
-						'ph_signature' => hash_hmac('sha256', 'guest', get_option('ph_child_signature', false)),
-					),
-					$url
-				);
-			endif;
+			$url = add_query_arg($args, $url);
 
 			// remove protocol for ssl and non ssl
 			$url = preg_replace('(^https?://)', '', $url);
@@ -831,16 +803,21 @@ if (!class_exists('PH_Child')) :
 		?>
 
 			<script>
-				(function(d, t, g) {
+				(function(d, t, g, k) {
 					var ph = d.createElement(t),
-						s = d.getElementsByTagName(t)[0];
+						s = d.getElementsByTagName(t)[0],
+						l = <?php echo $allowed ? 'true' : 'false'; ?>,
+						t = (new URLSearchParams(window.location.search)).get(k);
+					t && localStorage.setItem(k, t);
+					t = localStorage.getItem(k)
+					if (!l && !t) return;
 					ph.type = 'text/javascript';
 					ph.async = true;
 					ph.defer = true;
 					ph.charset = 'UTF-8';
-					ph.src = g + '&v=' + (new Date()).getTime();
+					ph.src = g + '&v=' + (new Date()).getTime() + '&' + k + '=' + t;
 					s.parentNode.insertBefore(ph, s);
-				})(document, 'script', '<?php echo esc_url_raw("//$url"); ?>');
+				})(document, 'script', '<?php echo esc_url_raw("//$url"); ?>', 'ph_access_token');
 			</script>
 <?php
 		}
