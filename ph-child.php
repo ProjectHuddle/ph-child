@@ -723,6 +723,24 @@ if (!class_exists('PH_Child')) :
 		<?php
 		}
 
+		public function has_valid_cookie()
+		{
+			if (!$token = get_option('ph_child_access_token', '')) {
+				return false;
+			}
+
+			// get token from url
+			$url_token = isset($_GET['ph_access_token']) ? sanitize_text_field($_GET['ph_access_token']) : '';
+
+			if (!$url_token) {
+				if (isset($_COOKIE["ph_access_token"])) {
+					$url_token = $_COOKIE["ph_access_token"];
+				}
+			}
+
+			return $url_token === $token;
+		}
+
 		/**
 		 * Outputs the saved website script
 		 * Along with and identify method to sync accounts
@@ -752,7 +770,8 @@ if (!class_exists('PH_Child')) :
 				return;
 			}
 
-			$allowed = ph_child_is_current_user_allowed_to_comment();
+			$allowed = false;
+			$allowed = ph_child_is_current_user_allowed_to_comment() || $this->has_valid_cookie();
 
 			// always have project and public api key
 			$args = array(

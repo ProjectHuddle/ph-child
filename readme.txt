@@ -42,7 +42,7 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 == Changelog ==
 
 = 1.0.25 =
-* Use localstorage for access token to fix issues with client site caching.
+* Use localstorage for access token to eliminate issues with client site caching.
 
 = 1.0.24 =
 * Add notices for WPEngine, Flywheel cache exclusions.
