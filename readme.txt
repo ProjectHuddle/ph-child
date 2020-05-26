@@ -41,6 +41,9 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 
 == Changelog ==
 
+= 1.0.27 =
+* Remove unnecessary admin notices regarding caching for Flywheel and WPEngine.
+
 = 1.0.26 =
 * Use localstorage for access token to eliminate issues with client site caching.
 

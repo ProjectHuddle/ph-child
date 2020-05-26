@@ -96,7 +96,7 @@ function ph_child_flywheel_exclusions_notice()
 		</div>';
 	ph_child_dismiss_js();
 }
-add_action('admin_notices', 'ph_child_flywheel_exclusions_notice');
+// add_action('admin_notices', 'ph_child_flywheel_exclusions_notice');
 
 function ph_child_wpengine_exclusions_notice()
 {
@@ -116,4 +116,4 @@ function ph_child_wpengine_exclusions_notice()
 		</div>';
 	ph_child_dismiss_js();
 }
-add_action('admin_notices', 'ph_child_wpengine_exclusions_notice');
+// add_action('admin_notices', 'ph_child_wpengine_exclusions_notice');
