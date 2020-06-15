@@ -5,7 +5,7 @@
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to ProjectHuddle
  * Author: ProjectHuddle
- * Version: 1.0.27
+ * Version: 1.0.28
  *
  * Requires at least: 4.7
  * Tested up to: 5.2.2
@@ -815,7 +815,8 @@ if (!class_exists('PH_Child')) :
 					ph.async = true;
 					ph.defer = true;
 					ph.charset = 'UTF-8';
-					ph.src = g + '&v=' + (new Date()).getTime() + '&' + k + '=' + t;
+					ph.src = g + '&v=' + (new Date()).getTime();
+					ph.src += t ? '&' + k + '=' + t : '';
 					s.parentNode.insertBefore(ph, s);
 				})(document, 'script', '<?php echo esc_url_raw("//$url"); ?>', 'ph_access_token');
 			</script>
