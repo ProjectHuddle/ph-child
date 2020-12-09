@@ -3,7 +3,7 @@ Contributors: 2winfactor
 Donate link: https://projecthuddle.io
 Tags: project, huddle, child, feedback
 Requires at least: 4.7
-Tested up to: 5.2.2
+Tested up to: 5.6.0
 Stable tag: 1.0.0
 Requires PHP: 5.6
 License: GPLv2 or later
