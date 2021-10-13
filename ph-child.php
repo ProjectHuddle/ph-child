@@ -1,20 +1,21 @@
 <?php
 
 /**
- * Plugin Name: ProjectHuddle Client Site
+ * Plugin Name: Project Huddle Client Site
  * Plugin URI: http://projecthuddle.io
- * Description: Connect a website to ProjectHuddle
- * Author: ProjectHuddle
- * Version: 1.0.28
+ * Description: Connect a website to Project Huddle
+ * Author: Brainstorm Force
+ * Author URI: https://www.brainstormforce.com
+ * Version: 1.0.29
  *
  * Requires at least: 4.7
- * Tested up to: 5.2.2
+ * Tested up to: 5.8
  *
  * Text Domain: ph-child
  * Domain Path: languages
  *
- * @package ProjectHuddle Child
- * @author Andre Gagnon
+ * @package Project Huddle Child
+ * @author Brainstorm Force
  */
 
 // Exit if accessed directly.
