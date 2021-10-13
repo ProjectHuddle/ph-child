@@ -14,7 +14,7 @@
  * Text Domain: ph-child
  * Domain Path: languages
  *
- * @package Project Huddle Child
+ * @package ProjectHuddle Child
  * @author Brainstorm Force
  */
 
