@@ -1,0 +1,13 @@
+{
+	"name": "ajgagnon/ph-child",
+  	"description": "Connect a website to ProjectHuddle.",
+  	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"wp-coding-standards/wpcs": "^2.1.0"
+	},
+	"scripts": {
+		"format": "phpcbf --standard=phpcs.xml.dist --report-summary --report-source",
+		"lint": "phpcs --standard=phpcs.xml.dist --report-summary --report-source"
+	}
+}

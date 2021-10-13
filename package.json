@@ -1,14 +1,14 @@
 {
   "name": "projecthuddle-child",
-  "version": "1.0.22",
+  "version": "1.0.29",
   "description": "Connect a website to ProjectHuddle",
   "main": "index.js",
   "scripts": {
-    "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ajgagnon/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
+    "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ajgagnon/ph-child.git"
+    "url": "git@github.com:ProjectHuddle/ph-child.git"
   },
   "keywords": [
     "project",
@@ -16,10 +16,10 @@
     "child",
     "feedback"
   ],
-  "author": "ProjectHuddle",
+  "author": "Brainstorm Force",
   "license": "GPL-2.0+",
   "bugs": {
-    "url": "https://github.com/ajgagnon/ph-child/issues"
+    "url": "https://github.com/ProjectHuddle/ph-child/issues"
   },
-  "homepage": "https://github.com/ajgagnon/ph-child#readme"
+  "homepage": "https://github.com/ProjectHuddle/ph-child#readme"
 }
