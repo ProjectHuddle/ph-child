@@ -9,7 +9,7 @@
  * Version: 1.0.29
  *
  * Requires at least: 4.7
- * Tested up to: 5.8
+ * Tested up to: 5.8.1
  *
  * Text Domain: ph-child
  * Domain Path: languages
