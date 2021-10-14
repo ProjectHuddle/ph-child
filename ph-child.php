@@ -4,7 +4,7 @@
  * Plugin Name: Project Huddle Client Site
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to Project Huddle
- * Author: Brainstorm Force
+ * Author: Brainstorm Force, Andre Gagnon
  * Author URI: https://www.brainstormforce.com
  * Version: 1.0.29
  *
@@ -15,7 +15,7 @@
  * Domain Path: languages
  *
  * @package Project Huddle Child
- * @author Brainstorm Force
+ * @author Brainstorm Force, Andre Gagnon
  */
 
 // Exit if accessed directly.
