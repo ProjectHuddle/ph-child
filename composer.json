@@ -1,5 +1,5 @@
 {
-	"name": "ajgagnon/ph-child",
+	"name": "projecthuddle/ph-child",
   	"description": "Connect a website to ProjectHuddle.",
   	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
