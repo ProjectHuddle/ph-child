@@ -1,5 +1,5 @@
 === ProjectHuddle Client Site ===
-Contributors: brainstormforce
+Contributors: brainstormforce, 2winfactor
 Donate link: https://projecthuddle.io
 Tags: project, huddle, child, feedback
 Requires at least: 4.7
