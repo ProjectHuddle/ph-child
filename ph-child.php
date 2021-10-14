@@ -308,7 +308,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @param string $plugin Plugin name.
 		 */
 		public function redirect_options_page( $plugin ) {
-			if ( $plugin == plugin_basename( __FILE__ ) ) {
+			if ( plugin_basename( __FILE__ ) == $plugin ) {
 				exit( wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options' ) ) );
 			}
 		}
@@ -730,7 +730,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						)
 					);
 					?>
-					" class="nav-tab <?php echo $active_tab === 'connection' ? 'nav-tab-active' : ''; ?>">
+					" class="nav-tab <?php echo 'connection' === $active_tab ? 'nav-tab-active' : ''; ?>">
 						<?php esc_html_e( 'Connection', 'ph-child' ); ?>
 					</a>
 
@@ -745,7 +745,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							)
 						);
 						?>
-						" class="nav-tab <?php echo $active_tab === 'white_label' ? 'nav-tab-active' : ''; ?>">
+						" class="nav-tab <?php echo 'white_label' === $active_tab ? 'nav-tab-active' : ''; ?>">
 							<?php esc_html_e( 'White Label', 'ph-child' ); ?>
 						</a>
 					<?php endif; ?>
