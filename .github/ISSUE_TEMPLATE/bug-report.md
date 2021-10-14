@@ -34,6 +34,3 @@ assignees: ''
 
 ### WordPress version:
 <!-- What version of WordPress are you using? -->
-
-### Elementor version:
-<!-- if applicable -->
