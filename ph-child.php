@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Project Huddle Client Site
+ * Plugin Name: ProjectHuddle Client Site
  * Plugin URI: http://projecthuddle.io
  * Description: Connect a website to Project Huddle
  * Author: Brainstorm Force, Andre Gagnon
