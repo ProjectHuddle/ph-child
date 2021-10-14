@@ -234,17 +234,20 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// make the changes to the text.
 			switch ( $untranslated_text ) {
 				case 'ProjectHuddle Client Site':
-					if ( $name = get_option( 'ph_child_plugin_name', false ) ) {
+					$name = get_option( 'ph_child_plugin_name', false );
+					if ( $name ) {
 						$translated_text = $name;
 					}
 					break;
 				case 'Connect a website to ProjectHuddle':
-					if ( $description = get_option( 'ph_child_plugin_description', false ) ) {
+					$description = get_option( 'ph_child_plugin_description', false );
+					if ( $description ) {
 						$translated_text = $description;
 					}
 					break;
 				case 'ProjectHuddle':
-					if ( $author = get_option( 'ph_child_plugin_author', false ) ) {
+					$author = get_option( 'ph_child_plugin_author', false );
+					if ( $author ) {
 						$translated_text = $author;
 					}
 					break;
@@ -257,7 +260,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		/**
 		 * Add settings link to plugin list table
 		 *
-		 * @param  array $links Existing links
+		 * @param  array $links Existing links.
 		 *
 		 * @since 1.0.0
 		 * @return array        Modified links
@@ -271,8 +274,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		/**
 		 * Make sure these are automatically removed after save
 		 *
-		 * @param array $args
-		 * @return void
+		 * @param array $args Passes disconnect args.
 		 */
 		public function remove_disconnect_args( $args ) {
 			array_push( $args, 'ph-child-site-disconnect-nonce' );
@@ -326,14 +328,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function deregister_installation() {
-			 delete_option( 'ph_child_installed' );
+			delete_option( 'ph_child_installed' );
 		}
 
 		/**
 		 * Whitelist our option in xmlrpc
 		 *
-		 * @param array $options
-		 * @return void
+		 * @param array $options whitelabel options.
 		 */
 		public function whitelist_option( $options ) {
 			foreach ( $this->whitelist_option_names as $name => $item ) {
@@ -575,10 +576,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		/**
 		 * Provides manual import functionality.
 		 *
-		 * @param string $val
+		 * @param string $val import content.
 		 */
 		public function manual_import( $val ) {
-			 $settings = json_decode( $val, true );
+			$settings = json_decode( $val, true );
 
 			// update manual import.
 			if ( ! empty( $settings ) ) {
@@ -615,7 +616,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * check if guests are allowed to comment.
+		 * Check if guests are allowed to comment.
 		 */
 		public function allow_guests() {
 			?>
@@ -625,7 +626,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * check if admin is allowed to comment.
+		 * Check if admin is allowed to comment.
 		 */
 		public function allow_admin() {
 			?>
@@ -661,7 +662,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				}
 			</style>
 			<?php
-			if ( $connection = get_option( 'ph_child_parent_url', false ) ) {
+			$connection = get_option( 'ph_child_parent_url', false );
+			if ( $connection ) {
+				/* translators: %s: parent site URL */
 				echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
 				echo '<p class="submit">';
 				echo '<a class="button button-secondary" href="' . esc_url(
@@ -768,10 +771,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * check if valid cookie is available.
+		 * Check if valid cookie is available.
 		 */
 		public function has_valid_cookie() {
-			if ( ! $token = get_option( 'ph_child_access_token', '' ) ) {
+			$token = get_option( 'ph_child_access_token', '' );
+			if ( ! $token ) {
 				return false;
 			}
 
@@ -806,11 +810,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			}
 
 			// settings must be set.
-			if ( ! $url = get_option( 'ph_child_parent_url' ) ) {
+			$url = get_option( 'ph_child_parent_url' );
+			if ( ! $url ) {
 				echo '<!-- ProjectHuddle: parent url not set -->';
 				return;
 			}
-			if ( ! $id = get_option( 'ph_child_id' ) ) {
+			$id = get_option( 'ph_child_id' );
+			if ( ! $id ) {
 				echo '<!-- ProjectHuddle: project id not set -->';
 				return;
 			}
