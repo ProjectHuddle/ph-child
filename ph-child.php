@@ -696,7 +696,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * Feedack custom settings page content.
+		 * Feedback page - custom settings page content.
 		 */
 		public function options_page() {
 			?>
