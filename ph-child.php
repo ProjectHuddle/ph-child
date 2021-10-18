@@ -61,89 +61,89 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 *
 		 * @var array
 		 */
-		protected $whitelist_option_names = [];
+		protected $whitelist_option_names = array();
 
 		/**
 		 * Get things going
 		 */
 		public function __construct() {
 			if ( defined( 'PH_VERSION' ) ) {
-				add_action( 'admin_notices', [ $this, 'parent_plugin_activated_error_notice' ] );
+				add_action( 'admin_notices', array( $this, 'parent_plugin_activated_error_notice' ) );
 				return;
 			}
 
-			$this->whitelist_option_names = [
-				'ph_child_id'           => [
+			$this->whitelist_option_names = array(
+				'ph_child_id'           => array(
 					'description'       => __( 'Website project ID.', 'project-huddle' ),
 					'sanitize_callback' => 'intval',
-				],
-				'ph_child_api_key'      => [
+				),
+				'ph_child_api_key'      => array(
 					'description'       => __( 'Public API key for the script loader.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
-				],
-				'ph_child_access_token' => [
+				),
+				'ph_child_access_token' => array(
 					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
-				],
-				'ph_child_parent_url'   => [
+				),
+				'ph_child_parent_url'   => array(
 					'description'       => __( 'Parent Site URL.', 'project-huddle' ),
 					'sanitize_callback' => 'esc_url',
-				],
-				'ph_child_signature'    => [
+				),
+				'ph_child_signature'    => array(
 					'description'       => __( 'Secret signature to verify identity.', 'project-huddle' ),
 					'sanitize_callback' => 'sanitize_text_field',
-				],
-				'ph_child_installed'    => [
+				),
+				'ph_child_installed'    => array(
 					'description'       => __( 'Is the plugin installed?', 'project-huddle' ),
 					'sanitize_callback' => 'boolval',
-				],
-			];
+				),
+			);
 
 			// options and menu
-			add_action( 'admin_init', [ $this, 'options' ] );
-			add_action( 'admin_menu', [ $this, 'create_menu' ] );
+			add_action( 'admin_init', array( $this, 'options' ) );
+			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 
 			// show script on front end and maybe admin
 			if ( ! is_admin() ) {
-				add_action( 'wp_footer', [ $this, 'script' ] );
+				add_action( 'wp_footer', array( $this, 'script' ) );
 			}
 			if ( get_option( 'ph_child_admin', false ) ) {
-				add_action( 'admin_footer', [ $this, 'script' ] );
+				add_action( 'admin_footer', array( $this, 'script' ) );
 			}
 
 			// whitelist our blog options
-			add_filter( 'xmlrpc_blog_options', [ $this, 'whitelist_option' ] );
+			add_filter( 'xmlrpc_blog_options', array( $this, 'whitelist_option' ) );
 
 			// maybe disconnect from parent site
-			add_action( 'admin_init', [ $this, 'maybe_disconnect' ] );
+			add_action( 'admin_init', array( $this, 'maybe_disconnect' ) );
 
 			// remove disconnect args after successful disconnect
-			add_filter( 'removable_query_args', [ $this, 'remove_disconnect_args' ] );
+			add_filter( 'removable_query_args', array( $this, 'remove_disconnect_args' ) );
 
 			// update registration option in database for parent site reference
-			register_activation_hook( PH_CHILD_PLUGIN_FILE, [ $this, 'register_installation' ] );
-			register_deactivation_hook( PH_CHILD_PLUGIN_FILE, [ $this, 'deregister_installation' ] );
+			register_activation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'register_installation' ) );
+			register_deactivation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'deregister_installation' ) );
 
 			// redirect to the options page after activating
-			add_action( 'activated_plugin', [ $this, 'redirect_options_page' ] );
+			add_action( 'activated_plugin', array( $this, 'redirect_options_page' ) );
 
 			// Add settings link to plugins page
-			add_filter( 'plugin_action_links_' . plugin_basename( PH_CHILD_PLUGIN_FILE ), [ $this, 'add_settings_link' ] );
+			add_filter( 'plugin_action_links_' . plugin_basename( PH_CHILD_PLUGIN_FILE ), array( $this, 'add_settings_link' ) );
 
 			// white label text only on plugins page
 			global $pagenow;
 			if ( is_admin() && 'plugins.php' === $pagenow ) {
-				add_filter( 'gettext', [ $this, 'white_label' ], 20, 3 );
-				add_filter( 'plugin_row_meta', [ $this, 'white_label_link' ], 10, 4 );
+				add_filter( 'gettext', array( $this, 'white_label' ), 20, 3 );
+				add_filter( 'plugin_row_meta', array( $this, 'white_label_link' ), 10, 4 );
 			}
 
-			add_filter( 'ph_script_should_start_loading', [ $this, 'compatiblity_blacklist' ] );
+			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
 		}
 
 		public function compatiblity_blacklist( $load ) {
 			$disabled = apply_filters(
 				'ph_disable_for_query_vars',
-				[
+				array(
 					// divi
 					'et_fb',
 					// elementor
@@ -154,7 +154,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					// fusion
 					'builder',
 					'fb-edit',
-				]
+				)
 			);
 
 			// disable these
@@ -309,11 +309,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function whitelist_option( $options ) {
 			foreach ( $this->whitelist_option_names as $name => $item ) {
-				$options[ $name ] = [
+				$options[ $name ] = array(
 					'desc'     => esc_html( $item['description'] ),
 					'readonly' => false,
 					'option'   => $name,
-				];
+				);
 			}
 
 			return $options;
@@ -330,7 +330,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				__( 'Feedback', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
-				[ $this, 'options_page' ]
+				array( $this, 'options_page' )
 			);
 		}
 
@@ -345,7 +345,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_enabled_comment_roles',
 				__( 'Who should comment?', 'ph-child' ),
-				[ $this, 'commenters_checklist' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'commenters_checklist' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
 				'ph_general_section',         // The name of the section to which this field belongs
 				false
@@ -360,7 +360,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_allow_guests',
 				__( 'Allow Guests', 'ph-child' ),
-				[ $this, 'allow_guests' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'allow_guests' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
 				'ph_general_section',         // The name of the section to which this field belongs
 				false
@@ -370,15 +370,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_allow_guests',
-				[
+				array(
 					'type' => 'boolean',
-				]
+				)
 			);
 
 			add_settings_field(
 				'ph_child_admin',
 				__( 'Admin Commenting', 'ph-child' ),
-				[ $this, 'allow_admin' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'allow_admin' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_general_options',    // The page on which this option will be displayed
 				'ph_general_section',         // The name of the section to which this field belongs
 				false
@@ -388,9 +388,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_admin',
-				[
+				array(
 					'type' => 'boolean',
-				]
+				)
 			);
 
 			add_settings_section(
@@ -403,7 +403,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_connection_status',
 				__( 'Connection Status', 'ph-child' ),
-				[ $this, 'connection_status' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'connection_status' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_connection_options',    // The page on which this option will be displayed
 				'ph_connection_status_section',         // The name of the section to which this field belongs
 				false
@@ -412,7 +412,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_manual_connection',
 				__( 'Manual Connection Details', 'ph-child' ),
-				[ $this, 'manual_connection' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'manual_connection' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_connection_options',    // The page on which this option will be displayed
 				'ph_connection_status_section',         // The name of the section to which this field belongs
 				false
@@ -422,10 +422,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			register_setting(
 				'ph_child_connection_options',
 				'ph_child_manual_connection',
-				[
+				array(
 					'type'              => 'string',
-					'sanitize_callback' => [ $this, 'manual_import' ],
-				]
+					'sanitize_callback' => array( $this, 'manual_import' ),
+				)
 			);
 
 			add_settings_section(
@@ -438,7 +438,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_plugin_name',
 				__( 'Plugin Name', 'ph-child' ),
-				[ $this, 'plugin_name' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'plugin_name' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_white_label_options',    // The page on which this option will be displayed
 				'ph_child_white_label_section',         // The name of the section to which this field belongs
 				false
@@ -447,7 +447,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_plugin_description',
 				__( 'Plugin Description', 'ph-child' ),
-				[ $this, 'plugin_description' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'plugin_description' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_white_label_options',    // The page on which this option will be displayed
 				'ph_child_white_label_section',         // The name of the section to which this field belongs
 				false
@@ -456,7 +456,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_plugin_author',
 				__( 'Plugin Author', 'ph-child' ),
-				[ $this, 'plugin_author' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'plugin_author' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_white_label_options',    // The page on which this option will be displayed
 				'ph_child_white_label_section',         // The name of the section to which this field belongs
 				false
@@ -465,7 +465,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_plugin_link',
 				__( 'Plugin Link', 'ph-child' ),
-				[ $this, 'plugin_link' ],   // The name of the function responsible for rendering the option interface
+				array( $this, 'plugin_link' ),   // The name of the function responsible for rendering the option interface
 				'ph_child_white_label_options',    // The page on which this option will be displayed
 				'ph_child_white_label_section',         // The name of the section to which this field belongs
 				false
@@ -475,34 +475,34 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_name',
-				[
+				array(
 					'type' => 'string',
-				]
+				)
 			);
 			// regsister setting
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_description',
-				[
+				array(
 					'type' => 'string',
-				]
+				)
 			);
 			// regsister setting
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_author',
-				[
+				array(
 					'type' => 'string',
-				]
+				)
 			);
 
 			// regsister setting
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_link',
-				[
+				array(
 					'type' => 'string',
-				]
+				)
 			);
 		}
 
@@ -546,7 +546,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		public function commenters_checklist() {
-			$disable_roles = (array) get_option( 'ph_child_enabled_comment_roles', [] );
+			$disable_roles = (array) get_option( 'ph_child_enabled_comment_roles', array() );
 			$roles         = (array) get_editable_roles();
 
 			if ( ! empty( $roles ) ) {
@@ -606,10 +606,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				echo '<p class="submit">';
 				echo '<a class="button button-secondary" href="' . esc_url(
 					add_query_arg(
-						[
+						array(
 							'ph-child-site-disconnect' => 1,
 							'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-						],
+						),
 						remove_query_arg( 'settings-updated' )
 					)
 				) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
@@ -750,10 +750,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$allowed = ph_child_is_current_user_allowed_to_comment() || $this->has_valid_cookie();
 
 			// always have project and public api key
-			$args = [
+			$args = array(
 				'p'         => (int) $id,
 				'ph_apikey' => get_option( 'ph_child_api_key', '' ),
-			];
+			);
 
 			// auto-add access token and signature if current user is allowed to comment
 			if ( $allowed ) {
