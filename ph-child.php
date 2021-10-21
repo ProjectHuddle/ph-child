@@ -398,7 +398,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				false
 			);
 
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_allow_guests',
@@ -416,7 +416,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				false
 			);
 
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_admin',
@@ -450,7 +450,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				false
 			);
 
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_connection_options',
 				'ph_child_manual_connection',
@@ -503,7 +503,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				false
 			);
 
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_name',
@@ -511,7 +511,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					'type' => 'string',
 				]
 			);
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_description',
@@ -519,7 +519,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					'type' => 'string',
 				]
 			);
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_author',
@@ -528,7 +528,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				]
 			);
 
-			// regsister setting.
+			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_link',
