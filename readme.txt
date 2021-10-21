@@ -1,5 +1,5 @@
 === ProjectHuddle Client Site ===
-Contributors: brainstormforce
+Contributors: brainstormforce, 2winfactor
 Donate link: https://projecthuddle.io
 Tags: project, huddle, child, feedback
 Requires at least: 4.7
@@ -42,7 +42,7 @@ It allows the connection between the [ProjectHuddle](https://projecthuddle.io) p
 == Changelog ==
 
 = 1.0.29 =
-* Improvement: Compatibility to WordPress 5.8.
+* Improvement: Compatibility to WordPress 5.8.1.
 
 = 1.0.28 =
 * Fix issue with guest commenting sometimes not working.
