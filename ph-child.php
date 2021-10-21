@@ -187,7 +187,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * Soow parent plugin activation notice.
+		 * Show parent plugin activation notice.
 		 */
 		public function parent_plugin_activated_error_notice() {
 			$message = __( 'You have both the client site and ProjectHuddle core plugins activated. You must only activate the client site on a client site, and ProjectHuddle on your main site.', 'project-huddle' );

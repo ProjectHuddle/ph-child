@@ -80,7 +80,7 @@ function ph_child_ajax_notice_handler() {
 add_action( 'wp_ajax_ph_child_dismissed_notice_handler', 'ph_child_ajax_notice_handler' );
 
 /**
- * Flywheen exclusions notice
+ * Flywheel exclusions notice
  */
 function ph_child_flywheel_exclusions_notice() {
 	// on wp flywheel.
