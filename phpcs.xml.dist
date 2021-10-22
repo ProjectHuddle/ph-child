@@ -9,6 +9,7 @@
 		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="Generic.Arrays.DisallowLongArraySyntax.Found" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
 	</rule>
 	<rule ref="WordPress-Docs" />
 
@@ -21,5 +22,4 @@
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
-	<exclude-pattern>*/inc/lib/**</exclude-pattern>
 </ruleset>
