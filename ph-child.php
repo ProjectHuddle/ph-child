@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: ProjectHuddle Client Site
- * Plugin URI: http://projecthuddle.io
+ * Plugin URI: http://projecthuddle.com
  * Description: Connect a website to Project Huddle
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
