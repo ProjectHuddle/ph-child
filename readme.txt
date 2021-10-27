@@ -44,8 +44,6 @@ All you need to do is install the plugin on the site you want feedback on and it
 
 = What is the purpose of this plugin? =
 
-It allows the connection between the [ProjectHuddle](https://projecthuddle.io) plugin and your clients sites to sync their identities with the system.
-
 The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [ProjectHuddle](https://projecthuddle.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
