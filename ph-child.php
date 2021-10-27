@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ProjectHuddle Client Site
  * Plugin URI: http://projecthuddle.com
- * Description: Connect a website to Project Huddle
+ * Description: Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
  * Version: 1.0.29
