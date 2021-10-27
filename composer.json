@@ -1,6 +1,6 @@
 {
 	"name": "projecthuddle/ph-child",
-  	"description": "Connect a website to ProjectHuddle.",
+  	"description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects.",
   	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
 		"phpcompatibility/phpcompatibility-wp": "*",

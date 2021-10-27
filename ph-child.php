@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ProjectHuddle Client Site
  * Plugin URI: http://projecthuddle.com
- * Description: Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects
+ * Description: Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
  * Version: 1.0.29
@@ -239,13 +239,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						$translated_text = $name;
 					}
 					break;
-				case 'Connect a website to ProjectHuddle':
+				case 'Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects.':
 					$description = get_option( 'ph_child_plugin_description', false );
 					if ( $description ) {
 						$translated_text = $description;
 					}
 					break;
-				case 'ProjectHuddle':
+				case 'Brainstorm Force':
 					$author = get_option( 'ph_child_plugin_author', false );
 					if ( $author ) {
 						$translated_text = $author;

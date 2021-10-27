@@ -32,12 +32,13 @@ All you need to do is install the plugin on the site you want feedback on and it
 * Choose which roles you want to allow for commenting.
 * Allow non-users (guests) to leave comments.
 * Optionally enable commenting on the WordPress admin.
+* White label support
 
 == Installation ==
 
-1. Upload the ProjectHuddle Child folder to the /wp-content/plugins/ directory
-2. Activate the ProjectHuddle Child plugin through the 'Plugins' menu in WordPress
-3. Use the Settings->Feedback screen to configure plugin options.
+1. Go to `Plugins -> Add New` and search for ProjectHuddle Client Site
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Go to `Settings -> Feedback` to configure the plugin options.
 
 == Frequently Asked Questions ==
 
