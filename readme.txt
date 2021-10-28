@@ -1,6 +1,6 @@
 === ProjectHuddle Client Site ===
 Contributors: brainstormforce, 2winfactor
-Donate link: https://projecthuddle.io
+Donate link: https://projecthuddle.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
 Tested up to: 5.8
