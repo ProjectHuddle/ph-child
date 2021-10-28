@@ -16,7 +16,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// delete our options
+// delete our options.
 delete_option( 'ph_child_api_key' );
 delete_option( 'ph_child_access_token' );
 delete_option( 'ph_child_project_id' );
