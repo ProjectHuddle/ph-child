@@ -1,7 +1,7 @@
 {
   "name": "projecthuddle-child",
   "version": "1.0.29",
-  "description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent projects",
+  "description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project",
   "main": "index.js",
   "scripts": {
     "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
