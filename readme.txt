@@ -1,7 +1,7 @@
 === ProjectHuddle Client Site ===
 Contributors: brainstormforce, 2winfactor
-Donate link: https://projecthuddle.io
-Tags: project, huddle, child, feedback
+Donate link: https://projecthuddle.com
+Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
 Tested up to: 5.8
 Stable tag: 1.0.29
@@ -13,31 +13,38 @@ Provides a secure connection between your ProjectHuddle parent site and your cli
 
 == Description ==
 
-This is the Child plugin for [ProjectHuddle](https://projecthuddle.io)
+This is the Child plugin for [ProjectHuddle](https://projecthuddle.com)
 
-The ProjectHuddle Client Site plugin is used to securely sync multiple WordPress client identities with your ProjectHuddle parent site. This plugin is to be installed on every WordPress site you want to let your clients give feedback.
+The ProjectHuddle plugin lets you collect sticky note-style feedback on page designs and web projects. It’s so easy to use. Clients can select specific areas of your design, point, click, and type constructive comments on top of your mockups and site designs.
 
-[ProjectHuddle](https://projecthuddle.io) is a self-hosted client feedback system that allows you to get feedback on an endless amount of client sites from one central dashboard.
+Using ProjectHuddle, the client can show as well as tell, providing targeted feedback for a more efficient workflow. 
+
+ProjectHuddle is a self-hosted client feedback system that allows you to get feedback on an endless amount of client sites from one central dashboard.
+
+The [ProjectHuddle](https://projecthuddle.com) Client Site plugin is used to securely sync multiple WordPress client identities with your ProjectHuddle parent site.
+
+All you need to do is install the plugin on the site you want feedback on and it's ready to go.
 
 **Features include:**
 
-* Connect and sync your client's identities with your ProjectHuddle projects.
+* Connect and sync your client’s identities with your ProjectHuddle projects.
 * No login or registration is required if your client is logged into their own site.
 * Choose which roles you want to allow for commenting.
 * Allow non-users (guests) to leave comments.
 * Optionally enable commenting on the WordPress admin.
+* White label support
 
 == Installation ==
 
-1. Upload the ProjectHuddle Child folder to the /wp-content/plugins/ directory
-2. Activate the ProjectHuddle Child plugin through the 'Plugins' menu in WordPress
-3. Use the Settings->Feedback screen to configure plugin options.
+1. Go to `Plugins -> Add New` and search for ProjectHuddle Client Site
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Go to `Settings -> Feedback` to configure the plugin options.
 
 == Frequently Asked Questions ==
 
 = What is the purpose of this plugin? =
 
-It allows the connection between the [ProjectHuddle](https://projecthuddle.io) plugin and your clients sites to sync their identities with the system.
+The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [ProjectHuddle](https://projecthuddle.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
 
