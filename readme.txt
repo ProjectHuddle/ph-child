@@ -3,7 +3,7 @@ Contributors: brainstormforce, 2winfactor
 Donate link: https://projecthuddle.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: 1.0.29
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -47,6 +47,9 @@ All you need to do is install the plugin on the site you want feedback on and it
 The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [ProjectHuddle](https://projecthuddle.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
+
+= 1.0.30 =
+* Improvement: Compatibility to WordPress 5.9.
 
 = 1.0.29 =
 * Improvement: Compatibility to WordPress 5.8.1.
