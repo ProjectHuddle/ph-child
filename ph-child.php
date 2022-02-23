@@ -357,7 +357,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function create_menu() {
 			add_options_page(
 				__( 'Feedback Connection', 'ph-child' ),
-				__( 'Feedback', 'ph-child' ),
+				__( 'Project Huddle - Client', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
