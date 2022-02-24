@@ -363,9 +363,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function create_menu() {
+			$plugin_name = get_option( 'ph_child_plugin_name', false );
 			add_options_page(
 				__( 'Feedback Connection', 'ph-child' ),
-				__( 'ProjectHuddle', 'ph-child' ),
+				$plugin_name ? esc_html( $plugin_name ) : __( 'ProjectHuddle', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
