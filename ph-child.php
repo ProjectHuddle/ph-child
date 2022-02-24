@@ -593,7 +593,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * Return Plugin author.
+		 * Return Plugin author url.
 		 */
 		public function plugin_author_url() {
 			?>
