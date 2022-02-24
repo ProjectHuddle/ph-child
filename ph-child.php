@@ -239,26 +239,28 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return $translated_text;
 			}
 			// make the changes to the text.
-			switch ( $untranslated_text ) {
-				case 'ProjectHuddle Client Site':
-					$name = get_option( 'ph_child_plugin_name', false );
-					if ( $name ) {
-						$translated_text = $name;
-					}
-					break;
-				case 'Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.':
-					$description = get_option( 'ph_child_plugin_description', false );
-					if ( $description ) {
-						$translated_text = $description;
-					}
-					break;
-				case 'Brainstorm Force':
-					$author = get_option( 'ph_child_plugin_author', false );
-					if ( $author ) {
-						$translated_text = $author;
-					}
-					break;
+			if ( 'ph-child' === $domain ) { // added this check to avoid conflicting other plugins.
+				switch ( $untranslated_text ) {
+					case 'ProjectHuddle Client Site':
+						$name = get_option( 'ph_child_plugin_name', false );
+						if ( $name ) {
+							$translated_text = $name;
+						}
+						break;
+					case 'Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.':
+						$description = get_option( 'ph_child_plugin_description', false );
+						if ( $description ) {
+							$translated_text = $description;
+						}
+						break;
+					case 'Brainstorm Force':
+						$author = get_option( 'ph_child_plugin_author', false );
+						if ( $author ) {
+							$translated_text = $author;
+						}
+						break;
 					// add more items.
+				}
 			}
 
 			return $translated_text;
