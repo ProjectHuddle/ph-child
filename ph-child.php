@@ -738,7 +738,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function options_page() {
 			?>
 				<div class="wrap">
-					<h1><?php esc_html_e( 'Feedback Options', 'ph-child' ); ?></h1>
+					<h1>
+					<?php
+						$plugin_name = get_option( 'ph_child_plugin_name', false );
+						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'ProjectHuddle Options', 'ph-child' );
+					?>
+						</h1>
 
 					<?php $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general'; ?>
 
