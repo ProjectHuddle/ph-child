@@ -212,9 +212,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return $plugin_meta;
 			}
 			if ( 'projecthuddle-child-site' === $plugin_data['slug'] ) {
-				$link = get_option( 'ph_child_plugin_link', '' );
+				$link       = get_option( 'ph_child_plugin_link', '' );
+				$author     = get_option( 'ph_child_plugin_author', '' );
+				$author_url = get_option( 'ph_child_plugin_author_url', '' );
 				if ( $link ) {
 					$plugin_meta[2] = '<a href="' . esc_url( $link ) . '" target="_blank">' . esc_html__( 'Visit plugin site', 'ph-child' ) . '</a>';
+				}
+
+				if ( $author && $author_url ) {
+					$plugin_meta[1] = '<a href="' . esc_url( $author_url ) . '" target="_blank">' . esc_html( $author ) . '</a>';
 				}
 			}
 			return $plugin_meta;
@@ -233,26 +239,28 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return $translated_text;
 			}
 			// make the changes to the text.
-			switch ( $untranslated_text ) {
-				case 'ProjectHuddle Client Site':
-					$name = get_option( 'ph_child_plugin_name', false );
-					if ( $name ) {
-						$translated_text = $name;
-					}
-					break;
-				case 'Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.':
-					$description = get_option( 'ph_child_plugin_description', false );
-					if ( $description ) {
-						$translated_text = $description;
-					}
-					break;
-				case 'Brainstorm Force':
-					$author = get_option( 'ph_child_plugin_author', false );
-					if ( $author ) {
-						$translated_text = $author;
-					}
-					break;
+			if ( 'ph-child' === $domain ) { // added this check to avoid conflicting other plugins.
+				switch ( $untranslated_text ) {
+					case 'ProjectHuddle Client Site':
+						$name = get_option( 'ph_child_plugin_name', false );
+						if ( $name ) {
+							$translated_text = $name;
+						}
+						break;
+					case 'Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.':
+						$description = get_option( 'ph_child_plugin_description', false );
+						if ( $description ) {
+							$translated_text = $description;
+						}
+						break;
+					case 'Brainstorm Force':
+						$author = get_option( 'ph_child_plugin_author', false );
+						if ( $author ) {
+							$translated_text = $author;
+						}
+						break;
 					// add more items.
+				}
 			}
 
 			return $translated_text;
@@ -355,9 +363,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function create_menu() {
+			$plugin_name = get_option( 'ph_child_plugin_name', false );
 			add_options_page(
 				__( 'Feedback Connection', 'ph-child' ),
-				__( 'Feedback', 'ph-child' ),
+				$plugin_name ? esc_html( $plugin_name ) : __( 'ProjectHuddle', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
@@ -496,6 +505,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			);
 
 			add_settings_field(
+				'ph_child_plugin_author_url',
+				__( 'Plugin Author URL', 'ph-child' ),
+				array( $this, 'plugin_author_url' ), // The name of the function responsible for rendering the option interface.
+				'ph_child_white_label_options', // The page on which this option will be displayed.
+				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				false
+			);
+
+			add_settings_field(
 				'ph_child_plugin_link',
 				__( 'Plugin Link', 'ph-child' ),
 				array( $this, 'plugin_link' ), // The name of the function responsible for rendering the option interface.
@@ -524,6 +542,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_author',
+				array(
+					'type' => 'string',
+				)
+			);
+
+			register_setting(
+				'ph_child_white_label_options',
+				'ph_child_plugin_author_url',
 				array(
 					'type' => 'string',
 				)
@@ -563,6 +589,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function plugin_author() {
 			?>
 				<input type="text" name="ph_child_plugin_author" class="regular-text" value="<?php echo esc_attr( sanitize_text_field( get_option( 'ph_child_plugin_author', '' ) ) ); ?>" />
+				<?php
+		}
+
+		/**
+		 * Return Plugin author url.
+		 */
+		public function plugin_author_url() {
+			?>
+				<input type="text" name="ph_child_plugin_author_url" class="regular-text" value="<?php echo esc_attr( sanitize_text_field( get_option( 'ph_child_plugin_author_url', '' ) ) ); ?>" />
 				<?php
 		}
 
@@ -703,7 +738,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function options_page() {
 			?>
 				<div class="wrap">
-					<h1><?php esc_html_e( 'Feedback Options', 'ph-child' ); ?></h1>
+					<h1>
+					<?php
+						$plugin_name = get_option( 'ph_child_plugin_name', false );
+						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'ProjectHuddle Options', 'ph-child' );
+					?>
+						</h1>
 
 					<?php $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general'; ?>
 
