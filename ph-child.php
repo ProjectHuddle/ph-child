@@ -453,7 +453,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_manual_connection',
-				__( 'Manual Connection Details', 'ph-child' ),
+				__( 'Manual Connection', 'ph-child' ),
 				array( $this, 'manual_connection' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_connection_options', // The page on which this option will be displayed.
 				'ph_connection_status_section', // The name of the section to which this field belongs.
@@ -703,16 +703,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
-					echo '<p class="submit">';
-					echo '<a class="button button-secondary" href="' . esc_url(
-						add_query_arg(
-							array(
-								'ph-child-site-disconnect' => 1,
-								'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-							),
-							remove_query_arg( 'settings-updated' )
-						)
-					) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+					echo '<p class="submit">'; 
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
 					esc_html_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
@@ -722,14 +713,25 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				<?php
 		}
 
-		/**
+		/**   
 		 * Manual connection content.
 		 */
 		public function manual_connection() {
-			?>
-				<p><?php esc_html_e( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' ); ?></p><br>
-				<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
-				<?php
+			$connection = get_option( 'ph_child_parent_url', false );
+			if ( !$connection ) {
+				echo '<p style="padding-bottom: 10px;">' . sprintf( __( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' )) . '</p>';
+				echo '<textarea name="ph_child_manual_connection" style="width:500px;height:300px">' . '</textarea>';
+			} else {
+				echo '<a class="button button-secondary" href="' . esc_url(
+					add_query_arg(
+						array(
+							'ph-child-site-disconnect' => 1,
+							'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+						),
+						remove_query_arg( 'settings-updated' )
+					)
+				) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+			}
 		}
 
 		/**
