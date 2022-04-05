@@ -703,6 +703,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				</style>
 				<?php
 				$connection = get_option( 'ph_child_parent_url', false );
+				$dashboard_url = $connection . '/wp-admin';
+				$whitelabeld_plugin_name = get_option( 'ph_child_plugin_name', false );
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
@@ -717,9 +719,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 								remove_query_arg( 'settings-updated' )
 							)
 						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
-
-						echo '<a class="button button-secondary ph-admin-link" href="">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
-
+						if( ! $whitelabeld_plugin_name ) {
+							echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+						}
 					echo '</p>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
