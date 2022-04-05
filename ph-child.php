@@ -698,7 +698,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						background: #f1ebd3;
 					}
 					a.ph-admin-link {
-						margin-left: 15px !important;
+						margin-left: 10px !important;
 					}
 				</style>
 				<?php
