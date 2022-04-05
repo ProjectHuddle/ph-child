@@ -703,7 +703,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				</style>
 				<?php
 				$connection = get_option( 'ph_child_parent_url', false );
-				$dashboard_url = $connection . '/wp-admin';
+				$site_id = (int) get_option( 'ph_child_id' );
+				$dashboard_url = $connection . '/wp-admin/post.php?post='. $site_id . '&action=edit';
 				$whitelabeld_plugin_name = get_option( 'ph_child_plugin_name', false );
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
