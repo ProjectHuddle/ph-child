@@ -697,6 +697,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						color: #9c8a44;
 						background: #f1ebd3;
 					}
+					a.ph-admin-link {
+						margin-left: 15px !important;
+					}
 				</style>
 				<?php
 				$connection = get_option( 'ph_child_parent_url', false );
@@ -704,15 +707,20 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
 					echo '<p class="submit">';
-					echo '<a class="button button-secondary" href="' . esc_url(
-						add_query_arg(
-							array(
-								'ph-child-site-disconnect' => 1,
-								'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-							),
-							remove_query_arg( 'settings-updated' )
-						)
-					) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+
+						echo '<a class="button button-secondary" href="' . esc_url(
+							add_query_arg(
+								array(
+									'ph-child-site-disconnect' => 1,
+									'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+								),
+								remove_query_arg( 'settings-updated' )
+							)
+						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+
+						echo '<a class="button button-secondary ph-admin-link" href="">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+
+					echo '</p>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
 					esc_html_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
