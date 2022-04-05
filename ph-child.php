@@ -103,6 +103,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_action( 'admin_init', array( $this, 'options' ) );
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 
+			// custom inline script and styles
+			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
+
 			// show script on front end and maybe admin.
 			if ( ! is_admin() ) {
 				add_action( 'wp_footer', array( $this, 'script' ) );
@@ -453,7 +456,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_manual_connection',
-				__( 'Manual Connection', 'ph-child' ),
+				__( 'Manual Connection Details', 'ph-child' ),
 				array( $this, 'manual_connection' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_connection_options', // The page on which this option will be displayed.
 				'ph_connection_status_section', // The name of the section to which this field belongs.
@@ -697,42 +700,62 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						color: #9c8a44;
 						background: #f1ebd3;
 					}
+					.ph-child-disable-row {
+						display: none;
+					}
 				</style>
 				<?php
 				$connection = get_option( 'ph_child_parent_url', false );
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
-					echo '<p class="submit">'; 
+					echo '<p class="submit">';
+					echo '<a class="button button-secondary ph-child-reload" href="' . esc_url(
+						add_query_arg(
+							array(
+								'ph-child-site-disconnect' => 1,
+								'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+							),
+							remove_query_arg( 'settings-updated' )
+						)
+					) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
 					esc_html_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
 					echo '</p>';
+					?>
+					<style>
+					.ph-child-disable-row {
+						display: contents !important;
+					}
+					</style>
+					<?php
 				}
 				?>
-				<?php
+				<?php 
 		}
 
 		/**   
 		 * Manual connection content.
 		 */
 		public function manual_connection() {
-			$connection = get_option( 'ph_child_parent_url', false );
-			if ( !$connection ) {
-				echo '<p style="padding-bottom: 10px;">' . sprintf( __( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' )) . '</p>';
-				echo '<textarea name="ph_child_manual_connection" style="width:500px;height:300px">' . '</textarea>';
-			} else {
-				echo '<a class="button button-secondary" href="' . esc_url(
-					add_query_arg(
-						array(
-							'ph-child-site-disconnect' => 1,
-							'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-						),
-						remove_query_arg( 'settings-updated' )
-					)
-				) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
-			}
+			?>
+				<p class="ph-child-manual-connection"><?php esc_html_e( 'If you are having trouble connecting, you can manually connect by pasting the connection details below', 'ph-child' ); ?></p><br>
+				<textarea name="ph_child_manual_connection" style="width:500px;height:300px"></textarea>
+				<?php
 		}
+
+		// Add custom js
+		public function ph_custom_inline_script() { 
+			$script_code = '
+			jQuery(document).ready(function($) {
+				$(".ph-child-manual-connection").closest("tr").addClass("ph-child-disable-row"); 
+			});
+				 ';  
+			wp_register_script( 'ph-custom-footer-script', '', [], '', true );
+			wp_enqueue_script( 'ph-custom-footer-script'  );
+			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
+		 }
 
 		/**
 		 * Feedback page - custom settings page content.
