@@ -658,7 +658,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function allow_guests() {
 			?>
 				<input type="checkbox" name="ph_child_allow_guests" <?php checked( get_option( 'ph_child_allow_guests', false ), 'on' ); ?>>
-				<?php esc_html_e( 'Allow site visitors to comment on your site.', 'ph-child' ); ?><br>
+				<?php esc_html_e( 'Allow the site visitors to view and add comments on your site.', 'ph-child' ); ?><br>
 				<?php
 		}
 

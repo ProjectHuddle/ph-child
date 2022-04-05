@@ -48,11 +48,9 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 
-= 1.0.32 =
-* Improvement: Allow guests (allow guest to comment) checkbox field changes.
-
 = 1.0.31 =
 * Improvement: Renamed settings menu title from "Feedback" to "ProjectHuddle" and added white label support.
+* Improvement: Allow guests (allow guest to comment) checkbox field changes.
 
 = 1.0.30 =
 * Improvement: Compatibility to WordPress 5.9.
