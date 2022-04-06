@@ -50,6 +50,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 = 1.0.31 =
 * Improvement: Renamed settings menu title from "Feedback" to "ProjectHuddle" and added white label support.
+* Improvement: Connection details input box disabled after connection is established.
 
 = 1.0.30 =
 * Improvement: Compatibility to WordPress 5.9.
