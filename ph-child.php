@@ -318,7 +318,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function redirect_options_page( $plugin ) {
 			if ( plugin_basename( __FILE__ ) == $plugin ) {
-				exit( wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options' ) ) );
+				exit( wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options&tab=connection' ) ) );
 			}
 		}
 
