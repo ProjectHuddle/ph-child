@@ -716,7 +716,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
 					echo '<p class="submit">';
-						echo '<a class="button button-secondary" href="' . esc_url(
+						echo '<a class="button button-secondary ph-child-reload" href="' . esc_url(
 							add_query_arg(
 								array(
 									'ph-child-site-disconnect' => 1,
