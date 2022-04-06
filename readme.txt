@@ -49,6 +49,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 == Changelog ==
 
 = 1.0.31 =
+* Improvement: Added "Visit Dashboard Site" button on the connection page.
 * Improvement: Renamed settings menu title from "Feedback" to "ProjectHuddle" and added white label support.
 * Improvement: Connection details input box disabled after connection is established.
 

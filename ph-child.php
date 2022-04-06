@@ -700,25 +700,35 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						color: #9c8a44;
 						background: #f1ebd3;
 					}
+					a.ph-admin-link {
+						margin-left: 10px !important;
+					}
 					.ph-child-disable-row {
 						display: none;
 					}
 				</style>
 				<?php
 				$connection = get_option( 'ph_child_parent_url', false );
+				$site_id = (int) get_option( 'ph_child_id' );
+				$dashboard_url = $connection . '/wp-admin/post.php?post='. $site_id . '&action=edit';
+				$whitelabeld_plugin_name = get_option( 'ph_child_plugin_name', false );
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
 					echo '<p class="ph-badge ph-connected">' . sprintf( __( 'Connected to %s', 'ph-child' ), esc_url( $connection ) ) . '</p>';
 					echo '<p class="submit">';
-					echo '<a class="button button-secondary ph-child-reload" href="' . esc_url(
-						add_query_arg(
-							array(
-								'ph-child-site-disconnect' => 1,
-								'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-							),
-							remove_query_arg( 'settings-updated' )
-						)
-					) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+						echo '<a class="button button-secondary ph-child-reload" href="' . esc_url(
+							add_query_arg(
+								array(
+									'ph-child-site-disconnect' => 1,
+									'ph-child-site-disconnect-nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+								),
+								remove_query_arg( 'settings-updated' )
+							)
+						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+						if( ! $whitelabeld_plugin_name ) {
+							echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+						}
+					echo '</p>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
 					esc_html_e( 'Not Connected. Please connect this plugin to your Feedback installation.', 'ph-child' );
