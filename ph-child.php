@@ -404,7 +404,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_allow_guests',
-				__( 'Allow Guests', 'ph-child' ),
+				__( 'Allow Site Visitors', 'ph-child' ),
 				array( $this, 'allow_guests' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_general_options', // The page on which this option will be displayed.
 				'ph_general_section', // The name of the section to which this field belongs.
@@ -661,7 +661,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function allow_guests() {
 			?>
 				<input type="checkbox" name="ph_child_allow_guests" <?php checked( get_option( 'ph_child_allow_guests', false ), 'on' ); ?>>
-				<?php esc_html_e( 'Allow guests to comment', 'ph-child' ); ?><br>
+				<?php esc_html_e( 'Allow the site visitors to view and add comments on your site.', 'ph-child' ); ?><br>
 				<?php
 		}
 
