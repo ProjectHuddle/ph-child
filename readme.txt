@@ -49,8 +49,10 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 == Changelog ==
 
 = 1.0.31 =
+* Improvement: Added "Visit Dashboard Site" button on the connection page.
+* Improvement: Allow Guests to Comment setting text changed as Allow Site Visitors.
 * Improvement: Renamed settings menu title from "Feedback" to "ProjectHuddle" and added white label support.
-* Improvement: Allow guests (allow guest to comment) checkbox field changes.
+* Improvement: Connection details input box disabled after connection is established.
 
 = 1.0.30 =
 * Improvement: Compatibility to WordPress 5.9.
