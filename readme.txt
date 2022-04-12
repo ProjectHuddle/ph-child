@@ -38,7 +38,7 @@ All you need to do is install the plugin on the site you want feedback on and it
 
 1. Go to `Plugins -> Add New` and search for ProjectHuddle Client Site
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to `Settings -> Feedback` to configure the plugin options.
+3. Go to `Settings -> ProjectHuddle` to configure the plugin options.
 
 == Frequently Asked Questions ==
 
