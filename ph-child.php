@@ -389,7 +389,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_enabled_comment_roles',
-				__( 'Who should comment?', 'ph-child' ),
+				__( 'Comments Access', 'ph-child' ),
 				array( $this, 'commenters_checklist' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_general_options', // The page on which this option will be displayed.
 				'ph_general_section', // The name of the section to which this field belongs.
@@ -422,7 +422,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_admin',
-				__( 'Admin Commenting', 'ph-child' ),
+				__( 'Dashboard Commenting', 'ph-child' ),
 				array( $this, 'allow_admin' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_general_options', // The page on which this option will be displayed.
 				'ph_general_section', // The name of the section to which this field belongs.
@@ -652,6 +652,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						<input type="checkbox" name="ph_child_enabled_comment_roles[<?php echo esc_attr( $slug ); ?>]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( $checked ); ?>> <?php echo esc_html( $role['name'] ); ?><br>
 						<?php
 				}
+				?><br><span class="description"><?php
+				esc_html_e( 'Allow access to members with above user roles to view and add comments.', 'ph-child' ); ?> </span> <?php
 			}
 		}
 
@@ -661,7 +663,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function allow_guests() {
 			?>
 				<input type="checkbox" name="ph_child_allow_guests" <?php checked( get_option( 'ph_child_allow_guests', false ), 'on' ); ?>>
-				<?php esc_html_e( 'Allow the site visitors to view and add comments on your site.', 'ph-child' ); ?><br>
+				<?php esc_html_e( 'Allow the site visitors to view and add comments on your site without access token.', 'ph-child' ); ?><br>
 				<?php
 		}
 
@@ -671,7 +673,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function allow_admin() {
 			?>
 				<input type="checkbox" name="ph_child_admin" <?php checked( get_option( 'ph_child_admin', false ), 'on' ); ?>>
-				<?php esc_html_e( 'Allow commenting in the admin.', 'ph-child' ); ?><br>
+				<?php esc_html_e( 'Allow commenting in your site\'s WordPress dashboard area.', 'ph-child' ); ?><br>
 				<?php
 		}
 
