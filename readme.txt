@@ -3,7 +3,7 @@ Contributors: brainstormforce, 2winfactor
 Donate link: https://projecthuddle.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
-Tested up to: 5.9.2
+Tested up to: 5.9.3
 Stable tag: 1.0.31
 Requires PHP: 5.6
 License: GPLv2 or later
