@@ -141,6 +141,49 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			}
 
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
+
+			if( get_option('ph_child_responsive') && (isset($_GET['ph_responsive']) && $_GET['ph_responsive'] == true) ){
+				add_filter( 'body_class', array($this, 'ph_responsive_mode_classes') );
+				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+				add_action( 'wp_head', array( $this, 'body_top' ) );
+			}
+
+		}
+
+		public function ph_responsive_mode_classes( $classes ) {
+			$classes[] = 'ph-responsive-mode';
+			return $classes;
+		}
+
+		public function enqueue_assets() {
+
+			// CSS.
+			wp_register_style( 'ph-responsive-preview', plugin_dir_url(__FILE__) . 'assets/css/responsive.css', null, '1.0', 'all' );
+
+			// JS.
+			wp_register_script( 'ph-responsive-preview', plugin_dir_url(__FILE__) . 'assets/js/responsive.js', array( 'wp-util', 'imagesloaded', 'jquery', 'jquery-masonry' ), '1.0', true );
+
+		}
+
+		public function body_top() {
+
+			// Add thickbox.
+			add_thickbox();
+
+			wp_enqueue_script( 'ph-responsive-preview' );
+			wp_enqueue_style( 'ph-responsive-preview' );
+
+			?>
+			<script type="text/template" id="tmpl-cartflows-responsive-view">
+				<span class="responsive-view">
+					<span class="actions">
+						<a class="desktop" href="#"><span data-view="desktop " class="active dashicons dashicons-desktop"></span></a>
+						<a class="tablet" href="#"><span data-view="tablet" class="dashicons dashicons-tablet"></span></a>
+						<a class="mobile" href="#"><span data-view="mobile" class="dashicons dashicons-smartphone"></span></a>
+					</span>
+				</span>
+			</script>
+			<?php
 		}
 
 		/**
@@ -438,6 +481,24 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				)
 			);
 
+			add_settings_field(
+				'ph_child_responsive',
+				__( 'Dashboard Commenting', 'ph-child' ),
+				array( $this, 'responsive_mode' ), // The name of the function responsible for rendering the option interface.
+				'ph_child_general_options', // The page on which this option will be displayed.
+				'ph_general_section', // The name of the section to which this field belongs.
+				false
+			);
+
+			// register setting.
+			register_setting(
+				'ph_child_general_options',
+				'ph_child_responsive',
+				array(
+					'type' => 'boolean',
+				)
+			);
+
 			add_settings_section(
 				'ph_connection_status_section', // ID.
 				__( 'Connection', 'ph-child' ), // title.
@@ -674,6 +735,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			?>
 				<input type="checkbox" name="ph_child_admin" <?php checked( get_option( 'ph_child_admin', false ), 'on' ); ?>>
 				<?php esc_html_e( 'Allow commenting in your site\'s WordPress dashboard area.', 'ph-child' ); ?><br>
+				<?php
+		}
+
+		public function responsive_mode() {
+			?>
+				<input type="checkbox" name="ph_child_responsive" <?php checked( get_option( 'ph_child_responsive', false ), 'on' ); ?>>
+				<?php esc_html_e( 'Responsive mode support', 'ph-child' ); ?><br>
 				<?php
 		}
 

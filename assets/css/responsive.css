@@ -1,0 +1,169 @@
+.gr__templates_cartflows_com {
+    overflow: hidden;
+}
+
+/**
+ * Full Width
+ */
+#TB_window {
+    width: 100% !important;
+    margin: 0em auto !important;
+    text-align: center !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+#TB_iframeContent {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* For general iPad layouts */
+@media only screen and (min-device-width : 320px) and (max-device-width : 1024px) {
+    #TB_iframeContent-wrapper {
+        position: fixed;
+        right: 0;
+        bottom: 50px;
+        left: 0;
+        top: 0;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+#TB_window #TB_ajaxWindowTitle {
+    font-size: 1.2rem;
+    display: inline-block;
+    width: auto;
+    padding: 0;
+}
+
+#TB_window #TB_closeWindowButton {
+    position: relative;
+}
+
+.tb-close-icon:before {
+    vertical-align: middle;
+}
+
+/**
+ * Popup
+ */
+#TB_window {
+    text-align: center;
+}
+#TB_iframeContent.tablet {
+    width: 768px !important;
+    height: 1024px !important;
+    background: #111;
+    padding: 40px 10px 70px;
+    border-radius: 30px;
+}
+#TB_iframeContent.tablet.landscape {
+    width: 1024px !important;
+}
+#TB_iframeContent.mobile {
+    width: 360px !important;
+    height: 640px !important;
+    background: #111;
+    padding: 40px 10px 70px;
+    border-radius: 30px;
+}
+#TB_iframeContent.mobile.landscape {
+    width: 360px !important;
+}
+#TB_closeAjaxWindow {
+    float: right;
+}
+
+/**
+ * Dark Theme
+ */
+#TB_window.thickbox-loading {
+    margin: 0 !important;
+}
+div#TB_window {
+    background-color: #fff;
+    margin-bottom: 60px !important;
+}
+#TB_window #TB_title {
+    background: #f16334;
+    color: #ffffff;
+    text-align: left;
+    bottom: 0;
+    box-shadow: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 1em 1em 1.5em;
+    height: 60px;
+    border-bottom: 1px solid #fbc4b2;
+}
+@media all and (min-width: 769px) {
+    #TB_window #TB_title {
+        display: flex;
+    }
+}
+#TB_window.tablet,
+#TB_window.mobile {
+    overflow-y: scroll;
+}
+.top #TB_iframeContent-wrapper {
+    bottom: 0;
+    top: 80px;
+}
+
+#TB_window.top  #TB_title {
+    top: 0;
+}
+
+#TB_window #TB_closeWindowButton:focus .tb-close-icon {
+    box-shadow: none;
+    color: #fff;
+}
+
+@media all and (max-width: 768px) {
+    #TB_closeAjaxWindow {
+        padding-right: 0;
+    }
+    #TB_window .tb-close-icon,
+    #TB_window #TB_closeWindowButton {
+        width: 80px;
+    }
+}
+
+/**
+ * Loading
+ */
+.responsive-view .dashicons {
+    color: #fbc4b2;
+}
+.responsive-view .dashicons:hover,
+.responsive-view .dashicons.active {
+    color: #ffffff;
+}
+.responsive-view a:focus {
+    outline: none;
+    box-shadow: none;
+}
+#TB_window.tablet #TB_iframeContent,
+#TB_window.mobile #TB_iframeContent {
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+.responsive-view a {
+    cursor: pointer;
+    display: inline-block;
+    padding: 1em;
+    vertical-align: sub;
+    text-decoration: none;
+}
+
+#TB_closeAjaxWindow .tb-close-icon:hover,
+#TB_closeAjaxWindow .tb-close-icon {
+    position: relative;
+    color: #ffffff;
+    transition: none;
+}
