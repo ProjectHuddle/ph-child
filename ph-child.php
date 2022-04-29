@@ -312,6 +312,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			foreach ( $this->whitelist_option_names as $name => $items ) {
 				delete_option( $name );
 			}
+
+			wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options&tab=connection' ) );
 		}
 
 		/**
