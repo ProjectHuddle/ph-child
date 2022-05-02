@@ -764,11 +764,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 
 		 public function help_link() {
-			?> 
-					<a class="ph-child-help-link" style="font-weight: 500;text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
+			$whitelabel_name = get_option( 'ph_child_plugin_name', false );
+			if( ! $whitelabel_name ) {
+				?>
+				<p class="submit">
+					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
 						<?php esc_html_e( 'Need Help?', 'ph-child' ); ?>
 					</a> 
+				</p>
 				<?php
+			}
 		 }
 
 		/**   
