@@ -391,7 +391,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_settings_field(
 				'ph_child_enabled_comment_roles',
-				__( 'Comments Access', 'ph-child' ),
+				__( 'Comments Visibility Access', 'ph-child' ),
 				array( $this, 'commenters_checklist' ), // The name of the function responsible for rendering the option interface.
 				'ph_child_general_options', // The page on which this option will be displayed.
 				'ph_general_section', // The name of the section to which this field belongs.
@@ -655,7 +655,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						<?php
 				}
 				?><br><span class="description"><?php
-				esc_html_e( 'Allow access to members with above user roles to view and add comments.', 'ph-child' ); ?> </span> <?php
+				esc_html_e( 'Allow access to members with above user roles to view comments.', 'ph-child' ); ?> </span> <?php
 			}
 		}
 
