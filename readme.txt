@@ -47,7 +47,7 @@ All you need to do is install the plugin on the site you want feedback on and it
 The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [ProjectHuddle](https://projecthuddle.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
-= 1.0.31 =
+= 1.0.32 =
 * Improvement: Comment access settings description and label changes.
 
 = 1.0.31 =
