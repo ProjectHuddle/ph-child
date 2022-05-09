@@ -148,6 +148,58 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				add_action( 'wp_head', array( $this, 'body_top' ) );
 			}
 
+			add_action('admin_post_ph-responsive', array($this, 'load_child_site'));
+			add_action('admin_post_noprive_ph-responsive', array($this, 'load_child_site'));
+
+		}
+
+		public function load_child_site(){
+			$url = get_option('ph_child_parent_url');
+			$url = add_query_arg(array('ph_responsive' => true), $url);
+			
+			// Send MIME Type header like WP admin-header.
+			@header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option( 'blog_charset' ) );
+
+			// Remove all WordPress actions
+			remove_all_actions( 'wp_head' );
+			remove_all_actions( 'wp_print_styles' );
+			remove_all_actions( 'wp_print_head_scripts' );
+
+			// Handle `wp_head`
+			add_action( 'wp_head', 'wp_enqueue_scripts', 1 );
+			add_action( 'wp_head', 'wp_print_styles', 8 );
+			add_action( 'wp_head', 'wp_print_head_scripts', 9 );
+			add_action( 'wp_head', 'wp_site_icon' );
+
+			// Handle `wp_enqueue_scripts`
+			remove_all_actions( 'wp_enqueue_scripts' );
+
+			add_filter( 'show_admin_bar', '__return_false' );
+
+			$post = get_post( $_GET['post'] );
+
+			/**
+				* Scripts
+				*/
+			wp_enqueue_media(
+				array(
+					'post' => $post->ID,
+				)
+			);
+			wp_tinymce_inline_scripts();
+			wp_enqueue_editor();
+
+			/**
+				* Styles
+				*/
+			wp_enqueue_style( 'wp-edit-post' );
+
+			do_action( 'enqueue_block_editor_assets' );
+
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], 999999 );
+
+			include SPECTRA_DIR . 'inc/editor-template.php';
+			die();
 		}
 
 		public function ph_responsive_mode_classes( $classes ) {
@@ -161,7 +213,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			wp_register_style( 'ph-responsive-preview', plugin_dir_url(__FILE__) . 'assets/css/responsive.css', null, '1.0', 'all' );
 
 			// JS.
-			wp_register_script( 'ph-responsive-preview', plugin_dir_url(__FILE__) . 'assets/js/responsive.js', array( 'wp-util', 'imagesloaded', 'jquery', 'jquery-masonry' ), '1.0', true );
+			wp_register_script( 'ph-responsive-preview', plugin_dir_url(__FILE__) . 'assets/js/responsive.js', array( 'jquery' ), '1.0', true );
 
 		}
 
