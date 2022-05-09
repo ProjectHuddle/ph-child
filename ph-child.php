@@ -198,7 +198,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], 999999 );
 
-			include SPECTRA_DIR . 'inc/editor-template.php';
+			include PH_CHILD_PLUGIN_DIR . 'inc/editor-template.php';
 			die();
 		}
 

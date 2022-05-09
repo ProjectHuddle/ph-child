@@ -19,17 +19,16 @@ if ( is_rtl() ) {
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title><?php echo esc_html__( 'PH Responsive Site', 'Spectra' ) . ' | ' . esc_html( get_the_title() ); ?></title>
+	<title><?php echo esc_html__( 'PH Responsive Site', 'PH' ) . ' | ' . esc_html( get_the_title() ); ?></title>
 	<?php wp_head(); ?>
 	<script>
 		var ajaxurl = '<?php admin_url( 'admin-post.php', 'relative' ); ?>';
 	</script>
 </head>
 <body class="<?php echo esc_attr( implode( ' ', $body_classes ) ); ?>">
-<div id="spectra-editor-wrapper" style="height:100vh">
+<div id="ph-editor-wrapper" style="height:100vh">
 	<div id="app-root"></div>
-    <?php $iframe_url = get_permalink( $_GET['post'] ) . '?action=spectra-edit'; ?>
-    <iframe id="sepctra-frame" style="overflow:hidden;height:100%;width:100%" height="100vh" width="100%" src="<?php echo esc_url( $iframe_url ); ?>"></iframe>    
+        
 </div>
 <?php
 	wp_footer();
