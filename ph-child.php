@@ -401,7 +401,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// Finally, we register the fields with WordPress.
 			register_setting(
 				'ph_child_general_options',
-				'ph_child_enabled_comment_roles'
+				'ph_child_enabled_comment_roles',
+				'ph_child_help_link'
 			);
 
 			add_settings_field(
@@ -456,6 +457,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				false
 			);
 
+			add_settings_field(
+				'ph_child_help_link',
+				'',
+				array( $this, 'help_link' ), // The name of the function responsible for rendering the option interface.
+				'ph_child_connection_options', // The page on which this option will be displayed.
+				'ph_connection_status_section', // The name of the section to which this field belongs.
+				false
+			);
+			
 			add_settings_field(
 				'ph_child_manual_connection',
 				__( 'Manual Connection Details', 'ph-child' ),
@@ -740,7 +750,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					?>
 					<style>
 					.ph-child-disable-row {
-						display: contents !important;
+						display: revert !important;
 					}
 					</style>
 					<?php
@@ -748,6 +758,23 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				?>
 				<?php 
 		}
+
+		/**
+		 * Display help link for manual connection.
+		 */
+
+		 public function help_link() {
+			$whitelabel_name = get_option( 'ph_child_plugin_name', false );
+			if( ! $whitelabel_name ) {
+				?>
+				<p class="submit">
+					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
+						<?php esc_html_e( 'Need Help?', 'ph-child' ); ?>
+					</a> 
+				</p>
+				<?php
+			}
+		 }
 
 		/**   
 		 * Manual connection content.
@@ -764,6 +791,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$script_code = '
 			jQuery(document).ready(function($) {
 				$(".ph-child-manual-connection").closest("tr").addClass("ph-child-disable-row"); 
+				$(".ph-child-help-link").closest("tr").addClass("ph-child-disable-row"); 
 			});
 				 ';  
 			wp_register_script( 'ph-custom-footer-script', '', [], '', true );

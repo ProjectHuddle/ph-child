@@ -48,6 +48,9 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 
+= 1.0.32 =
+* Improvement: Help link added for Detailed instruction on How to connect the site manually?.
+
 = 1.0.31 =
 * Improvement: Added "Visit Dashboard Site" button on the connection page.
 * Improvement: Allow Guests to Comment setting text changed as Allow Site Visitors to view and add comments.
