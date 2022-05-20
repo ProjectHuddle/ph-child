@@ -665,7 +665,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						<?php
 				}
 				?><br><span class="description"><?php
-				esc_html_e( 'Allow this user roles to view comments on your site without access token.', 'ph-child' ); ?> </span> <?php
+				esc_html_e( 'Allow above user roles to view comments on your site without access token.', 'ph-child' ); ?> </span> <?php
 			}
 		}
 
