@@ -3,8 +3,8 @@ Contributors: brainstormforce, 2winfactor
 Donate link: https://projecthuddle.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
-Tested up to: 5.9.3
-Stable tag: 1.0.31
+Tested up to: 6.0
+Stable tag: 1.0.32
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -48,10 +48,9 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 = 1.0.32 =
+* Improvement: Compatibility to WordPress 6.0.
+* Improvement: Help link added for detailed instructions of site connection.
 * Improvement: Comment access settings description and label changes.
-
-= 1.0.32 =
-* Improvement: Help link added for Detailed instruction on How to connect the site manually?.
 
 = 1.0.31 =
 * Improvement: Added "Visit Dashboard Site" button on the connection page.
