@@ -804,7 +804,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
          public function ph_user_data(){
             ?>
              <script>
-                 window.PH_Child = <?php json_encode( wp_get_current_user() ); ?>
+                 window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
              </script>
             <?php
          }
