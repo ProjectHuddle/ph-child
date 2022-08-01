@@ -8,7 +8,7 @@
  * Version: 1.0.32
  *
  * Requires at least: 4.7
- * Tested up to: 6.0
+ * Tested up to: 6.0.1
  *
  * Text Domain: ph-child
  * Domain Path: languages
