@@ -48,7 +48,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 = 1.0.33 =
-* Update WordPress version tags.
+* Added compatibility to WordPress version 6.0.1
 
 = 1.0.32 =
 * Improvement: Compatibility to WordPress 6.0.
