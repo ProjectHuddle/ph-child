@@ -45,6 +45,7 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 
 // include child functions.
 require_once 'ph-child-functions.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-ph-child-background-process.php';
 
 if ( ! class_exists( 'PH_Child' ) ) :
 	/**
@@ -62,6 +63,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @var array
 		 */
 		protected $whitelist_option_names = array();
+
+		/**
+		 * Holds the state for the add sites background process.
+		 *
+		 * @since    1.0.0
+		 * @access   private
+		 * @var      PH_Child_Background_Process    $add_sub_sites_process    State of the background process.
+		 */
+		private $add_sub_sites_process;
 
 		/**
 		 * Get things going
@@ -141,6 +151,22 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			}
 
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
+
+			if( is_multisite() && is_main_site() ) {
+				// Makes sure the plugin is defined before trying to use it
+				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+					require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+				}
+
+				if ( is_plugin_active_for_network(plugin_basename( __FILE__ )) ) {
+					add_filter( 'ph_settings_advanced', array( $this, 'ph_add_multisite_setting' ) );
+				}
+
+				add_action( 'wp_ajax_ph_network_sub_sites', array( $this, 'ph_network_sub_sites' ) );
+				$this->add_sub_sites_process = new \PH_Child_Background_Process();
+			}
+
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		}
 
 		/**
@@ -465,7 +491,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'ph_connection_status_section', // The name of the section to which this field belongs.
 				false
 			);
-			
+
 			add_settings_field(
 				'ph_child_manual_connection',
 				__( 'Manual Connection Details', 'ph-child' ),
@@ -756,7 +782,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					<?php
 				}
 				?>
-				<?php 
+				<?php
 		}
 
 		/**
@@ -770,13 +796,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				<p class="submit">
 					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
 						<?php esc_html_e( 'Need Help?', 'ph-child' ); ?>
-					</a> 
+					</a>
 				</p>
 				<?php
 			}
 		 }
 
-		/**   
+		/**
 		 * Manual connection content.
 		 */
 		public function manual_connection() {
@@ -787,13 +813,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		// Add custom js
-		public function ph_custom_inline_script() { 
+		public function ph_custom_inline_script() {
 			$script_code = '
 			jQuery(document).ready(function($) {
 				$(".ph-child-manual-connection").closest("tr").addClass("ph-child-disable-row"); 
 				$(".ph-child-help-link").closest("tr").addClass("ph-child-disable-row"); 
 			});
-				 ';  
+				 ';
 			wp_register_script( 'ph-custom-footer-script', '', [], '', true );
 			wp_enqueue_script( 'ph-custom-footer-script'  );
 			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
@@ -981,6 +1007,108 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				})(document, 'script', '<?php echo esc_url_raw( "//$url" ); ?>', 'ph_access_token');
 			</script>
 			<?php
+		}
+
+		/**
+		 * This adds the setting for the multisite.
+		 *
+		 * @param $settings
+		 * @since 1.0.0
+		 * @return array
+		 */
+		public function ph_add_multisite_setting( $settings ) {
+
+			$settings['fields']['multisite_network'] = array(
+				'type'        => 'custom',
+				'id'          => 'ph_multisite_network_button',
+				'label'       => __( 'Add all sub-sites of the network to ProjectHuddle', 'project-huddle' ),
+				'description' => '',
+				'default'     => '',
+				'html'        => '<button class="button button-primary" id="add_all_subsites_to_projecthuddle2">' . __( 'Add Sites', 'project-huddle' ) . '</button><span id="ph_network_add_sites_status"></span>',
+			);
+
+			$settings['fields']['multisite_network_remove'] = array(
+				'type'        => 'custom',
+				'id'          => 'ph_multisite_network_button_remove',
+				'label'       => __( 'Remove all sub-sites of the network from ProjectHuddle', 'project-huddle' ),
+				'description' => '',
+				'default'     => '',
+				'html'        => '<button class="button button-primary" id="remove_all_subsites_to_projecthuddle2">' . __( 'Remove Sites', 'project-huddle' ) . '</button><span id="ph_network_remove_sites_status"></span>',
+			);
+
+			return $settings;
+		}
+
+        public function enqueue_admin_scripts() {
+	        if( is_multisite() && is_main_site() ) {
+		        wp_enqueue_script( 'ph-child-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/ph-child-admin.js', array( 'jquery' ), '1.0.0', true );
+		        wp_localize_script( 'ph-child-admin-js', 'ph_network_vars', array(
+			        'ajaxurl' => get_admin_url( get_main_site_id(), 'admin-ajax.php' ),
+			        'nonce'   => wp_create_nonce( 'ph-network-vars-nonce' ),
+		        ) );
+
+		        wp_enqueue_style( 'ph-child-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/ph-child-admin.css', array(), '1.0.0', 'all' );
+	        }
+        }
+
+		/**
+		 * Handles the AJAX request for adding all sub-sites to ProjectHuddle.
+		 *
+		 * @since 1.0.0
+		 * @return void
+		 */
+		public function ph_network_sub_sites() {
+			check_ajax_referer( 'ph-network-vars-nonce', 'nonce' );
+
+			$job = $_POST['job'];
+
+			if( is_multisite() ) {
+				$sites = get_sites(array('number' => 10000));
+				$ph_posts_ids = get_posts([
+					'post_type' => 'ph-website',
+					'numberposts' => -1,
+					'fields' => 'ids'
+				]);
+
+				if( $job === 'add' ) {
+					foreach ( $sites as $site ) {
+						if( post_exists( get_blog_option($site->blog_id, 'blogname' ),'','','ph-website' ) ) {
+							continue;
+						}
+
+						$this->add_sub_sites_process->push_to_queue( array(
+							'job' => $job,
+							'data' => $site,
+						) );
+					}
+
+					$this->add_sub_sites_process->save()->dispatch();
+
+					wp_send_json_success( array(
+						'success' => true,
+						'message' => $sites,
+					), 200 );
+				} elseif ( $job === 'remove' ) {
+					foreach ( $ph_posts_ids as $ph_post_id ) {
+						$this->add_sub_sites_process->push_to_queue( array(
+							'job' => $job,
+							'data' => $ph_post_id,
+						) );
+					}
+
+					$this->add_sub_sites_process->save()->dispatch();
+
+					wp_send_json_success( array(
+						'success' => true,
+						'message' => $ph_posts_ids,
+					), 200 );
+				}
+			} else {
+				wp_send_json_error( array(
+					'success' => false,
+					'message' => 'You are not on a multisite network.'
+				), 403 );
+			}
 		}
 	}
 

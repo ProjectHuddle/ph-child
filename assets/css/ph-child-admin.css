@@ -1,0 +1,26 @@
+span#ph_network_add_sites_status,
+span#ph_network_remove_sites_status {
+    display: none;
+    width: 16px;
+    height: 16px;
+}
+span#ph_network_add_sites_status:after,
+span#ph_network_remove_sites_status:after {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-color: #135e96 transparent #135e96 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
