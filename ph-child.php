@@ -1099,7 +1099,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					wp_send_json_success(
 						array(
 							'success' => true,
-							'message' => $sites,
+							'message' => __( 'All sub-sites have been added to ProjectHuddle.', 'ph-child' ),
 						),
 						200
 					);
@@ -1122,7 +1122,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					wp_send_json_success(
 						array(
 							'success' => true,
-							'message' => $ph_posts_ids,
+							'message' => __( 'All sub-sites have been removed from ProjectHuddle.', 'ph-child' ),
 						),
 						200
 					);
@@ -1131,7 +1131,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				wp_send_json_error(
 					array(
 						'success' => false,
-						'message' => 'You are not on a multisite network.',
+						'message' => __( 'This is not a multisite network.', 'ph-child' ),
 					),
 					403
 				);

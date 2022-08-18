@@ -13,7 +13,6 @@
 
     add_sites.on('click', function(e) {
         e.preventDefault();
-        console.log('add_sites');
         // do ajax request
         $.ajax({
             url: ph_network_vars.ajaxurl,
@@ -31,7 +30,6 @@
             .done(function(data) {
                 add_sites_loader.hide();
                 add_sites.removeAttr('disabled');
-                console.log('data: ', data);
             })
             .fail(function(error) {
                 console.log('error: ', error.responseJSON);
@@ -40,7 +38,6 @@
 
     remove_sites.on('click', function(e) {
         e.preventDefault();
-        console.log('remove_sites');
         // do ajax request
         $.ajax({
             url: ph_network_vars.ajaxurl,
@@ -58,9 +55,9 @@
             .done(function(data) {
                 remove_sites_loader.hide();
                 remove_sites.removeAttr('disabled');
-                console.log('data: ', data);
-            }).fail(function(error) {
-            console.log('error: ', error.responseJSON);
+            })
+            .fail(function(error) {
+                console.log('error: ', error.responseJSON);
         });
     });
 
