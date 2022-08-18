@@ -152,13 +152,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
 
-			if( is_multisite() && is_main_site() ) {
+			if ( is_multisite() && is_main_site() ) {
 				// Makes sure the plugin is defined before trying to use it
 				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
 					require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 				}
 
-				if ( is_plugin_active_for_network(plugin_basename( __FILE__ )) ) {
+				if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
 					add_filter( 'ph_settings_advanced', array( $this, 'ph_add_multisite_setting' ) );
 				}
 
@@ -748,9 +748,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					}
 				</style>
 				<?php
-				$connection = get_option( 'ph_child_parent_url', false );
-				$site_id = (int) get_option( 'ph_child_id' );
-				$dashboard_url = $connection . '/wp-admin/post.php?post='. $site_id . '&action=edit';
+				$connection              = get_option( 'ph_child_parent_url', false );
+				$site_id                 = (int) get_option( 'ph_child_id' );
+				$dashboard_url           = $connection . '/wp-admin/post.php?post=' . $site_id . '&action=edit';
 				$whitelabeld_plugin_name = get_option( 'ph_child_plugin_name', false );
 				if ( $connection ) {
 					/* translators: %s: parent site URL */
@@ -766,8 +766,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							)
 						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
 						if( ! $whitelabeld_plugin_name ) {
-							echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
-						}
+						echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+					}
 					echo '</p>';
 				} else {
 					echo '<p class="ph-badge ph-not-connected">';
@@ -789,9 +789,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Display help link for manual connection.
 		 */
 
-		 public function help_link() {
+		public function help_link() {
 			$whitelabel_name = get_option( 'ph_child_plugin_name', false );
-			if( ! $whitelabel_name ) {
+			if ( ! $whitelabel_name ) {
 				?>
 				<p class="submit">
 					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
@@ -800,7 +800,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				</p>
 				<?php
 			}
-		 }
+		}
 
 		/**
 		 * Manual connection content.
@@ -823,7 +823,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			wp_register_script( 'ph-custom-footer-script', '', [], '', true );
 			wp_enqueue_script( 'ph-custom-footer-script'  );
 			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
-		 }
+		}
 
 		/**
 		 * Feedback page - custom settings page content.
@@ -1039,17 +1039,21 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			return $settings;
 		}
 
-        public function enqueue_admin_scripts() {
-	        if( is_multisite() && is_main_site() ) {
-		        wp_enqueue_script( 'ph-child-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/ph-child-admin.js', array( 'jquery' ), '1.0.0', true );
-		        wp_localize_script( 'ph-child-admin-js', 'ph_network_vars', array(
-			        'ajaxurl' => get_admin_url( get_main_site_id(), 'admin-ajax.php' ),
-			        'nonce'   => wp_create_nonce( 'ph-network-vars-nonce' ),
-		        ) );
+		public function enqueue_admin_scripts() {
+			if ( is_multisite() && is_main_site() ) {
+				wp_enqueue_script( 'ph-child-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/ph-child-admin.js', array( 'jquery' ), '1.0.0', true );
+				wp_localize_script(
+					'ph-child-admin-js',
+					'ph_network_vars',
+					array(
+						'ajaxurl' => get_admin_url( get_main_site_id(), 'admin-ajax.php' ),
+						'nonce'   => wp_create_nonce( 'ph-network-vars-nonce' ),
+					)
+				);
 
-		        wp_enqueue_style( 'ph-child-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/ph-child-admin.css', array(), '1.0.0', 'all' );
-	        }
-        }
+				wp_enqueue_style( 'ph-child-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/ph-child-admin.css', array(), '1.0.0', 'all' );
+			}
+		}
 
 		/**
 		 * Handles the AJAX request for adding all sub-sites to ProjectHuddle.
@@ -1062,52 +1066,75 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			$job = $_POST['job'];
 
-			if( is_multisite() ) {
-				$sites = get_sites(array('number' => 10000));
-				$ph_posts_ids = get_posts([
-					'post_type' => 'ph-website',
-					'numberposts' => -1,
-					'fields' => 'ids'
-				]);
+			if ( is_multisite() ) {
+				$sites        = get_sites( array( 'number' => 10000 ) );
+				$ph_posts_ids = get_posts(
+					array(
+						'post_type'   => 'ph-website',
+						'numberposts' => -1,
+						'fields'      => 'ids',
+					)
+				);
 
-				if( $job === 'add' ) {
+				if ( $job === 'add' ) {
 					foreach ( $sites as $site ) {
-						if( post_exists( get_blog_option($site->blog_id, 'blogname' ),'','','ph-website' ) ) {
+						if ( post_exists( get_blog_option( $site->blog_id, 'blogname' ), '', '', 'ph-website' ) ) {
 							continue;
 						}
 
-						$this->add_sub_sites_process->push_to_queue( array(
-							'job' => $job,
-							'data' => $site,
-						) );
+						$this->add_sub_sites_process->push_to_queue(
+							array(
+								'job'  => $job,
+								'data' => $site,
+							)
+						);
 					}
 
 					$this->add_sub_sites_process->save()->dispatch();
 
-					wp_send_json_success( array(
-						'success' => true,
-						'message' => $sites,
-					), 200 );
+					if ( $this->add_sub_sites_process->is_queue_empty() ) {
+						$this->add_sub_sites_process->complete();
+					}
+
+					wp_send_json_success(
+						array(
+							'success' => true,
+							'message' => $sites,
+						),
+						200
+					);
 				} elseif ( $job === 'remove' ) {
 					foreach ( $ph_posts_ids as $ph_post_id ) {
-						$this->add_sub_sites_process->push_to_queue( array(
-							'job' => $job,
-							'data' => $ph_post_id,
-						) );
+						$this->add_sub_sites_process->push_to_queue(
+							array(
+								'job'  => $job,
+								'data' => $ph_post_id,
+							)
+						);
 					}
 
 					$this->add_sub_sites_process->save()->dispatch();
 
-					wp_send_json_success( array(
-						'success' => true,
-						'message' => $ph_posts_ids,
-					), 200 );
+					if ( $this->add_sub_sites_process->is_queue_empty() ) {
+						$this->add_sub_sites_process->complete();
+					}
+
+					wp_send_json_success(
+						array(
+							'success' => true,
+							'message' => $ph_posts_ids,
+						),
+						200
+					);
 				}
 			} else {
-				wp_send_json_error( array(
-					'success' => false,
-					'message' => 'You are not on a multisite network.'
-				), 403 );
+				wp_send_json_error(
+					array(
+						'success' => false,
+						'message' => 'You are not on a multisite network.',
+					),
+					403
+				);
 			}
 		}
 	}
