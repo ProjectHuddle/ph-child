@@ -36,6 +36,11 @@
             });
     });
 
+    /**
+     * Ajax call to remove all sub-sites from the project huddle
+     *
+     * @type {*|jQuery|HTMLElement}
+     */
     remove_sites.on('click', function(e) {
         e.preventDefault();
         // do ajax request

@@ -1013,7 +1013,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * This adds the setting for the multisite.
 		 *
 		 * @param $settings
-		 * @since 1.0.0
 		 * @return array
 		 */
 		public function ph_add_multisite_setting( $settings ) {
@@ -1039,6 +1038,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			return $settings;
 		}
 
+		/**
+		 * This adds the script to handle ajax for the multisite.
+		 *
+		 * @return void
+		 */
 		public function enqueue_admin_scripts() {
 			if ( is_multisite() && is_main_site() ) {
 				wp_enqueue_script( 'ph-child-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/ph-child-admin.js', array( 'jquery' ), '1.0.0', true );
@@ -1058,7 +1062,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		/**
 		 * Handles the AJAX request for adding all sub-sites to ProjectHuddle.
 		 *
-		 * @since 1.0.0
 		 * @return void
 		 */
 		public function ph_network_sub_sites() {

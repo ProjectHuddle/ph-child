@@ -89,7 +89,7 @@ class PH_Child_Background_Process extends \PH_WP_Background_Process {
 	 * @param $post_id
 	 * @param $post
 	 * @param $url
-	 * @since 1.0.0
+	 *
 	 * @return false|string
 	 */
 	public function ph_generate_api_key( $post_id, $post = false, $url = false ) {
