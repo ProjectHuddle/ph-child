@@ -1,3 +1,7 @@
+#ph_multisite_network_button_remove span.description,
+#ph_multisite_network_button span.description {
+    margin-left: 20px;
+}
 span#ph_network_add_sites_status,
 span#ph_network_remove_sites_status {
     display: none;

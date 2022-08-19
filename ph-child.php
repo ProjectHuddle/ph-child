@@ -1020,8 +1020,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$settings['fields']['multisite_network'] = array(
 				'type'        => 'custom',
 				'id'          => 'ph_multisite_network_button',
-				'label'       => __( 'Add all sub-sites of the network to ProjectHuddle', 'project-huddle' ),
-				'description' => '',
+				'label'       => __( 'Add All Sub-sites', 'project-huddle' ),
+				'description' => __( 'This will setup ProjectHuddle for all sub-sites in this network.', 'project-huddle' ),
 				'default'     => '',
 				'html'        => '<button class="button button-primary" id="add_all_subsites_to_projecthuddle2">' . __( 'Add Sites', 'project-huddle' ) . '</button><span id="ph_network_add_sites_status"></span>',
 			);
@@ -1029,8 +1029,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$settings['fields']['multisite_network_remove'] = array(
 				'type'        => 'custom',
 				'id'          => 'ph_multisite_network_button_remove',
-				'label'       => __( 'Remove all sub-sites of the network from ProjectHuddle', 'project-huddle' ),
-				'description' => '',
+				'label'       => __( 'Remove All Sub-sites', 'project-huddle' ),
+				'description' => __( 'This will remove ProjectHuddle for all sub-sites in this network.', 'project-huddle' ),
 				'default'     => '',
 				'html'        => '<button class="button button-primary" id="remove_all_subsites_to_projecthuddle2">' . __( 'Remove Sites', 'project-huddle' ) . '</button><span id="ph_network_remove_sites_status"></span>',
 			);
