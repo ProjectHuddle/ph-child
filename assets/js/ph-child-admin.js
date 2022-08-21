@@ -28,7 +28,7 @@
             }
         })
             .done(function(data) {
-                add_sites_loader.hide();
+                add_sites_loader.removeClass('running').addClass('complete');
                 add_sites.removeAttr('disabled');
             })
             .fail(function(error) {
@@ -58,7 +58,7 @@
             }
         })
             .done(function(data) {
-                remove_sites_loader.hide();
+                remove_sites_loader.removeClass('running').addClass('complete');
                 remove_sites.removeAttr('disabled');
             })
             .fail(function(error) {

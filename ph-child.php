@@ -153,9 +153,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
 
 			if ( is_multisite() && is_main_site() ) {
-				// Makes sure the plugin is defined before trying to use it
+				// Makes sure the plugin is defined before trying to use it.
 				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-					require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+					require_once ABSPATH . '/wp-admin/includes/plugin.php';
 				}
 
 				if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
@@ -1017,22 +1017,29 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function ph_add_multisite_setting( $settings ) {
 
+			$settings['fields']['multisite_settings_divider'] = array(
+				'id'          => 'multisite_settings_divider',
+				'label'       => __( 'Multisite Options', 'ph-child' ),
+				'description' => '',
+				'type'        => 'divider',
+			);
+
 			$settings['fields']['multisite_network'] = array(
 				'type'        => 'custom',
 				'id'          => 'ph_multisite_network_button',
-				'label'       => __( 'Add All Sub-sites', 'project-huddle' ),
-				'description' => __( 'This will setup ProjectHuddle for all sub-sites in this network.', 'project-huddle' ),
+				'label'       => __( 'Add All Sub-sites', 'ph-child' ),
+				'description' => __( 'This will setup ProjectHuddle for all sub-sites in this network.', 'ph-child' ),
 				'default'     => '',
-				'html'        => '<button class="button button-primary" id="add_all_subsites_to_projecthuddle2">' . __( 'Add Sites', 'project-huddle' ) . '</button><span id="ph_network_add_sites_status"></span>',
+				'html'        => '<button class="button button-primary" id="add_all_subsites_to_projecthuddle2">' . __( 'Add Sites', 'ph-child' ) . '</button><span id="ph_network_add_sites_status" class="running"></span>',
 			);
 
 			$settings['fields']['multisite_network_remove'] = array(
 				'type'        => 'custom',
 				'id'          => 'ph_multisite_network_button_remove',
-				'label'       => __( 'Remove All Sub-sites', 'project-huddle' ),
-				'description' => __( 'This will remove ProjectHuddle for all sub-sites in this network.', 'project-huddle' ),
+				'label'       => __( 'Remove All Sub-sites', 'ph-child' ),
+				'description' => __( 'This will remove ProjectHuddle for all sub-sites in this network.', 'ph-child' ),
 				'default'     => '',
-				'html'        => '<button class="button button-primary" id="remove_all_subsites_to_projecthuddle2">' . __( 'Remove Sites', 'project-huddle' ) . '</button><span id="ph_network_remove_sites_status"></span>',
+				'html'        => '<button class="button button-primary" id="remove_all_subsites_to_projecthuddle2">' . __( 'Remove Sites', 'ph-child' ) . '</button><span id="ph_network_remove_sites_status" class="running"></span>',
 			);
 
 			return $settings;
