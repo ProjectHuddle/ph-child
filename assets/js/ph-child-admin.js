@@ -23,7 +23,8 @@
                 job: 'add'
             },
             beforeSend: function() {
-                add_sites_loader.css('display', 'inline-block');
+                remove_sites_loader.removeClass('complete');
+                add_sites_loader.css('display', 'inline-block').addClass('running');
                 add_sites.attr('disabled', 'disabled');
             }
         })
@@ -53,7 +54,8 @@
                 job: 'remove'
             },
             beforeSend: function() {
-                remove_sites_loader.css('display', 'inline-block');
+                add_sites_loader.removeClass('complete');
+                remove_sites_loader.css('display', 'inline-block').addClass('running');
                 remove_sites.attr('disabled', 'disabled');
             }
         })
