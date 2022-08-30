@@ -164,6 +164,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 				add_action( 'wp_ajax_ph_network_sub_sites', array( $this, 'ph_network_sub_sites' ) );
 				$this->add_sub_sites_process = new \PH_Child_Background_Process();
+			} elseif ( is_multisite() && ! is_main_site() ) {
+				// Makes sure the plugin is defined before trying to use it.
+				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+					require_once ABSPATH . '/wp-admin/includes/plugin.php';
+				}
+				if( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
+					add_filter( 'ph_settings_advanced', array( $this, 'ph_add_multisite_message' ) );
+				}
 			}
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
@@ -1040,6 +1048,38 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'description' => __( 'This will remove ProjectHuddle for all sub-sites in this network.', 'ph-child' ),
 				'default'     => '',
 				'html'        => '<button class="button button-primary" id="remove_all_subsites_to_projecthuddle2">' . __( 'Remove Sites', 'ph-child' ) . '</button><span id="ph_network_remove_sites_status" class="running"></span>',
+			);
+
+			return $settings;
+		}
+
+		/**
+		 * This adds the setting for the multisite.
+		 *
+		 * @param $settings
+		 * @return array
+		 */
+		public function ph_add_multisite_message( $settings ) {
+
+			$settings['fields']['multisite_settings_divider'] = array(
+				'id'          => 'multisite_settings_divider',
+				'label'       => __( 'Multisite Options', 'ph-child' ),
+				'description' => '',
+				'type'        => 'divider',
+			);
+
+			$settings['fields']['multisite_network_message'] = array(
+				'type'        => 'custom',
+				'id'          => 'ph_multisite_network_message',
+				'label'       => '<div>
+									<span class="ph-msn-msg-label dashicons dashicons-info"></span>' . 
+									__( 'Note:', 'ph-child' ) 
+								  . '</div>',
+				'description' => '',
+				'default'     => '',
+				'html'		  => '<div class="ph-msn-msg-alert alert-warning" role="alert">' . 
+									sprintf('It looks like you have already configured the sub-sites to ProjectHuddle dashboard on the <a href="%s">main site.</a>', get_site_url(get_main_site_id(), 'wp-admin/admin.php?page=project_huddle_settings&tab=advanced')) 
+								 . '</div>'
 			);
 
 			return $settings;
