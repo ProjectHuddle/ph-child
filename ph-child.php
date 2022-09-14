@@ -106,6 +106,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// custom inline script and styles
 			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
 
+			add_action( 'wp_footer', array( $this, 'ph_user_data' ) );
+
 			// show script on front end and maybe admin.
 			if ( ! is_admin() ) {
 				add_action( 'wp_footer', array( $this, 'script' ) );
@@ -798,6 +800,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			wp_enqueue_script( 'ph-custom-footer-script'  );
 			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
 		 }
+
+         public function ph_user_data(){
+            ?>
+             <script>
+                 window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
+             </script>
+            <?php
+         }
 
 		/**
 		 * Feedback page - custom settings page content.
