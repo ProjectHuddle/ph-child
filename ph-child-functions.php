@@ -75,7 +75,7 @@ function ph_child_dismiss_js() {
 function ph_child_ajax_notice_handler() {
 	$type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : false;
 
-	if ( $type && check_ajax_referer( 'ph_child_dismiss_nonce', 'nonce' ) ) {
+	if ( current_user_can( 'manage_options' ) && check_ajax_referer('ph_child_dismiss_nonce', 'nonce') && $type) {
 		update_option( "dismissed-$type", true );
 		update_site_option( "dismissed-$type", true );
 	}
