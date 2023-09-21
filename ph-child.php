@@ -5,10 +5,10 @@
  * Description: Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
- * Version: 1.0.34
+ * Version: 1.0.35
  *
  * Requires at least: 4.7
- * Tested up to: 6.3
+ * Tested up to: 6.3.1
  *
  * Text Domain: ph-child
  * Domain Path: languages
