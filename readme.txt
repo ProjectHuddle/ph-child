@@ -3,7 +3,7 @@ Contributors: brainstormforce, 2winfactor
 Donate link: https://surefeedback.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
-Tested up to: 6.3
+Tested up to: 6.3.1
 Stable tag: 1.1
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -49,6 +49,9 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 == Changelog ==
 = 1.1 =
 * Rebranding ProjectHuddle as SureFeedback.
+
+= 1.0.35 = 
+* Improvement: Implemented nonce verification and data sanitization to enhance security.
 
 = 1.0.34 =
 * Improvement: Compatibility to WordPress 6.3

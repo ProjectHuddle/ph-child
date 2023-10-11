@@ -45,22 +45,26 @@ function ph_child_is_current_user_allowed_to_comment() {
  * Dismiss notice action handler
  */
 function ph_child_dismiss_js() {
+	$nonce = wp_create_nonce('ph_child_dismiss_nonce');
 	?>
 	<script>
 		jQuery(function($) {
 			$(document).on('click', '.ph-notice .notice-dismiss', function() {
 				// Read the "data-notice" information to track which notice.
 				var type = $(this).closest('.ph-notice').data('notice');
-				// Since WP 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php.
+				var nonce = '<?php echo esc_js($nonce); ?>'; // Include the nonce from PHP.
+				// Since WP 2.8 ajax url is always defined in the admin header and points to admin-ajax.php.
 				$.ajax(ajaxurl, {
 					type: 'POST',
 					data: {
 						action: 'ph_child_dismissed_notice_handler',
-						type: type
+						type: type,
+						nonce: nonce // Include the nonce in the request.
 					}
 				});
 			});
 		});
+
 	</script>
 	<?php
 }
@@ -69,15 +73,18 @@ function ph_child_dismiss_js() {
  * Stores notice dismissing in options table
  */
 function ph_child_ajax_notice_handler() {
-	$type = isset( $_POST['type'] ) ? $_POST['type'] : false;
-	// Store it in the options table.
-	if ( $type ) {
+	$type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : false;
+
+	if ( current_user_can( 'manage_options' ) && check_ajax_referer('ph_child_dismiss_nonce', 'nonce') && $type) {
 		update_option( "dismissed-$type", true );
 		update_site_option( "dismissed-$type", true );
 	}
+
+	wp_die(); // Always terminate AJAX requests with wp_die().
 }
 
 add_action( 'wp_ajax_ph_child_dismissed_notice_handler', 'ph_child_ajax_notice_handler' );
+
 
 /**
  * Flywheel exclusions notice
