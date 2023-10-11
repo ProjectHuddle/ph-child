@@ -1,6 +1,6 @@
 {
 	"name": "projecthuddle/ph-child",
-  	"description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.",
+  	"description": "Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.",
   	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
 		"phpcompatibility/phpcompatibility-wp": "*",

@@ -101,7 +101,7 @@ function ph_child_flywheel_exclusions_notice() {
 	}
 
 	echo '<div class="notice notice-info is-dismissible ph-notice" data-notice="ph-flywheel-child">
-			<p><strong>ProjectHuddle:</strong> ' . esc_html( sprintf( __( 'Flywheel hosting detected!  You\'ll need to request a cache exclusion in order for project access links to work correctly.', 'ph-child' ) ) ) . '</p>
+			<p><strong>SureFeedback:</strong> ' . esc_html( sprintf( __( 'Flywheel hosting detected!  You\'ll need to request a cache exclusion in order for project access links to work correctly.', 'ph-child' ) ) ) . '</p>
 			<p><a href="https://help.projecthuddle.com/article/229-flywheel-client-site-cache-exclusions" target="_blank">Learn More</a></p>
 		</div>';
 	ph_child_dismiss_js();
@@ -125,7 +125,7 @@ function ph_child_wpengine_exclusions_notice() {
 	}
 
 	echo '<div class="notice notice-info is-dismissible ph-notice" data-notice="ph-wp-engine-child">
-			<p><strong>ProjectHuddle:</strong> ' . esc_html( sprintf( __( 'WPEngine hosting detected!  You\'ll need to request a cache exclusion in order for ProjectHuddle access links to work properly.', 'ph-child' ) ) ) . '</p>
+			<p><strong>SureFeedback:</strong> ' . esc_html( sprintf( __( 'WPEngine hosting detected!  You\'ll need to request a cache exclusion in order for SureFeedback access links to work properly.', 'ph-child' ) ) ) . '</p>
 			<p><a href="https://help.projecthuddle.com/article/228-wpengine-client-site-plugin-exclusions" target="_blank">Learn More</a></p>
 		</div>';
 	ph_child_dismiss_js();
