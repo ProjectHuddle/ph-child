@@ -1,10 +1,10 @@
 <?php
 /**
- * Uninstall ProjectHuddle Child Pkugin
+ * Uninstall Sure Feedback Child Plugin
  *
  * Deletes all the plugin data
  *
- * @package     ProjectHuddle Child
+ * @package     Sure Feedback Child
  * @subpackage  Uninstall
  * @copyright   Copyright (c) 2016, Andre Gagnon
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
