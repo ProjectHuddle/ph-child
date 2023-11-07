@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: SureFeedback Client Site
+ * Plugin Name: Sure Feedback Client Site
  * Plugin URI: http://surefeedback.com
- * Description: Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.
+ * Description: Collect note-style feedback from your client’s websites and sync them with your Sure Feedback parent project.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
  * Version: 1.1
@@ -13,7 +13,7 @@
  * Text Domain: ph-child
  * Domain Path: languages
  *
- * @package SureFeedback Child
+ * @package Sure Feedback Child
  * @author Brainstorm Force, Andre Gagnon
  */
 
@@ -196,7 +196,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Show parent plugin activation notice.
 		 */
 		public function parent_plugin_activated_error_notice() {
-			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'project-huddle' );
+			$message = __( 'You have both the client site and Sure Feedback core plugins activated. You must only activate the client site on a client site, and Sure Feedback on your main site.', 'project-huddle' );
 			echo '<div class="error"> <p>' . esc_html( $message ) . '</p></div>';
 		}
 
@@ -246,13 +246,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// make the changes to the text.
 			if ( 'ph-child' === $domain ) { // added this check to avoid conflicting other plugins.
 				switch ( $untranslated_text ) {
-					case 'SureFeedback Client Site':
+					case 'Sure Feedback Client Site':
 						$name = get_option( 'ph_child_plugin_name', false );
 						if ( $name ) {
 							$translated_text = $name;
 						}
 						break;
-					case 'Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.':
+					case 'Collect note-style feedback from your client’s websites and sync them with your Sure Feedback parent project.':
 						$description = get_option( 'ph_child_plugin_description', false );
 						if ( $description ) {
 							$translated_text = $description;
@@ -373,7 +373,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$plugin_name = get_option( 'ph_child_plugin_name', false );
 			add_options_page(
 				__( 'Feedback Connection', 'ph-child' ),
-				$plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' ),
+				$plugin_name ? esc_html( $plugin_name ) : __( 'Sure Feedback', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
@@ -818,7 +818,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					<h1>
 					<?php
 						$plugin_name = get_option( 'ph_child_plugin_name', false );
-						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'SureFeedback Options', 'ph-child' );
+						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'Sure Feedback Options', 'ph-child' );
 					?>
 						</h1>
 
@@ -931,12 +931,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// settings must be set.
 			$url = get_option( 'ph_child_parent_url' );
 			if ( ! $url ) {
-				echo '<!-- SureFeedback: parent url not set -->';
+				echo '<!-- Sure Feedback: parent url not set -->';
 				return;
 			}
 			$id = get_option( 'ph_child_id' );
 			if ( ! $id ) {
-				echo '<!-- SureFeedback: project id not set -->';
+				echo '<!-- Sure Feedback: project id not set -->';
 				return;
 			}
 
