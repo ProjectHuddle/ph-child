@@ -1,33 +1,33 @@
-=== Sure Feedback Client Site ===
+=== SureFeedback Client Site ===
 Contributors: brainstormforce, 2winfactor
 Donate link: https://surefeedback.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
-Tested up to: 6.3.1
-Stable tag: 1.2
+Tested up to: 6.4.1
+Stable tag: 1.2.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Provides a secure connection between your Sure Feedback parent site and your client sites, syncing identities so clients can use their WordPress identities for commenting.
+Provides a secure connection between your SureFeedback parent site and your client sites, syncing identities so clients can use their WordPress identities for commenting.
 
 == Description ==
 
-This is the Child plugin for [Sure Feedback](https://surefeedback.com)
+This is the Child plugin for [SureFeedback](https://surefeedback.com)
 
-The Sure Feedback plugin lets you collect sticky note-style feedback on page designs and web projects. It’s so easy to use. Clients can select specific areas of your design, point, click, and type constructive comments on top of your mockups and site designs.
+The SureFeedback plugin lets you collect sticky note-style feedback on page designs and web projects. It’s so easy to use. Clients can select specific areas of your design, point, click, and type constructive comments on top of your mockups and site designs.
 
-Using Sure Feedback, the client can show as well as tell, providing targeted feedback for a more efficient workflow. 
+Using SureFeedback, the client can show as well as tell, providing targeted feedback for a more efficient workflow. 
 
-Sure Feedback is a self-hosted client feedback system that allows you to get feedback on an endless amount of client sites from one central dashboard.
+SureFeedback is a self-hosted client feedback system that allows you to get feedback on an endless amount of client sites from one central dashboard.
 
-The [Sure Feedback](https://surefeedback.com) Client Site plugin is used to securely sync multiple WordPress client identities with your Sure Feedback parent site.
+The [SureFeedback](https://surefeedback.com) Client Site plugin is used to securely sync multiple WordPress client identities with your SureFeedback parent site.
 
 All you need to do is install the plugin on the site you want feedback on and it's ready to go.
 
 **Features include:**
 
-* Connect and sync your client’s identities with your Sure Feedback projects.
+* Connect and sync your client’s identities with your SureFeedback projects.
 * No login or registration is required if your client is logged into their own site.
 * Choose which roles you want to allow for commenting.
 * Allow non-users (guests) to leave comments.
@@ -36,22 +36,25 @@ All you need to do is install the plugin on the site you want feedback on and it
 
 == Installation ==
 
-1. Go to `Plugins -> Add New` and search for Sure Feedback Client Site
+1. Go to `Plugins -> Add New` and search for SureFeedback Client Site
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to `Settings -> Sure Feedback` to configure the plugin options.
+3. Go to `Settings -> SureFeedback` to configure the plugin options.
 
 == Frequently Asked Questions ==
 
 = What is the purpose of this plugin? =
 
-The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [Sure Feedback](https://surefeedback.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
+The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [SureFeedback](https://surefeedback.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
+= 1.2.1 =
+* Improvement: Compatibility to WordPress 6.4.1
+
 = 1.2 =
 * Updated banner images.
 
 = 1.1 =
-* Rebranding ProjectHuddle as Sure Feedback.
+* Rebranding ProjectHuddle as SureFeedback.
 
 = 1.0.35 = 
 * Improvement: Implemented nonce verification and data sanitization to enhance security.
@@ -70,7 +73,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 = 1.0.31 =
 * Improvement: Added "Visit Dashboard Site" button on the connection page.
 * Improvement: Allow Guests to Comment setting text changed as Allow Site Visitors to view and add comments.
-* Improvement: Renamed settings menu title from "Feedback" to "Sure Feedback" and added white label support.
+* Improvement: Renamed settings menu title from "Feedback" to "SureFeedback" and added white label support.
 * Improvement: Connection details input box disabled after connection is established.
 
 = 1.0.30 =
@@ -135,7 +138,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 * Fix cookie expiration date
 
 = 1.0.8 =
-* Allow access links to load comment interface (must use Sure Feedback 3.6.17+)
+* Allow access links to load comment interface (must use SureFeedback 3.6.17+)
 
 = 1.0.7 =
 * Defer script to not interfere with html parser in older browsers
