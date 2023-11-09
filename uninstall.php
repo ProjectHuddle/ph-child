@@ -1,10 +1,10 @@
 <?php
 /**
- * Uninstall Sure Feedback Child Plugin
+ * Uninstall SureFeedback Child Plugin
  *
  * Deletes all the plugin data
  *
- * @package     Sure Feedback Child
+ * @package     SureFeedback Child
  * @subpackage  Uninstall
  * @copyright   Copyright (c) 2016, Andre Gagnon
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
