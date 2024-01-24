@@ -1030,7 +1030,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					ph.src = g + '&v=' + (new Date()).getTime();
 					ph.src += t ? '&' + k + '=' + t : '';
 					// Adding ph_wpml_vars
-    				ph.src += '&translation_link=' + encodeURIComponent( <?php echo $translation_link_url; ?> );
+    				ph.src += '&translation_link=' + encodeURIComponent('<?php echo esc_url_raw($translation_link_url); ?>');
 					s.parentNode.insertBefore(ph, s);
 				})(document, 'script', '<?php echo esc_url_raw( "//$url" ); ?>', 'ph_access_token');
 			</script>
