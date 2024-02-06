@@ -971,7 +971,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					$args['ph_user_email'] = sanitize_email( str_replace( '+', '%2B', $user->user_email ) );
 					$args['ph_signature']  = hash_hmac( 'sha256', sanitize_email( $user->user_email ), get_option( 'ph_child_signature', false ) );
 					$args['ph_query_vars'] = filter_var( get_option( 'ph_child_admin', false ), FILTER_VALIDATE_BOOLEAN );
-					// $args['ph_wpml_link'] = $translation_link_url;
 				}
 			}
 
