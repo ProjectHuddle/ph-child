@@ -144,36 +144,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
 
-			if (defined('ICL_SITEPRESS_VERSION')) {
-				// WPML is active, enqueue scripts when WPML is fully loaded.
-				add_action('wp_enqueue_scripts', array( $this, 'wpml_ph_loaded_script' ), 99 );
-			}
+			add_action ( 'wpml_loaded', array( $this, 'load_wpml_script' ), 999999999999 );
+			
 		}
 
-		/**
-		 * Load WPML script on front end.
-		 */
-		public function wpml_ph_loaded_script() {
-			if ( ! defined( 'WPML_TM_VERSION' ) ) {
-				return;
+		public function load_wpml_script() {
+			// WPML is active, enqueue scripts when WPML is fully loaded.
+			if (defined('ICL_SITEPRESS_VERSION')) {
+				// WPML is active, enqueue scripts when WPML is fully loaded.
+				add_action('wp_enqueue_scripts', array( $this, 'wpml_ph_loaded_script' ), 999999999999999999 );
 			}
-
-			// Set WPML ATE link for current page translation in localized variable.
-			$default_lang = apply_filters( 'wpml_default_language', '' );
-			$current_lang = apply_filters( 'wpml_current_language', NULL );
-			$post_id = get_the_ID();
-			$post_type = get_post_type( $post_id );
-			$type = apply_filters( 'wpml_element_type', $post_type );
-			$trid = apply_filters( 'wpml_element_trid', false, $post_id, $type );
-			$translated_id = apply_filters( 'wpml_object_id', $post_id, $post_type, true, $default_lang );
-			
-			$translateLink = apply_filters( 'wpml_link_to_translation', '', $translated_id, $current_lang, $trid );
-
-			$localized_data = array(
-				'translation_link' => admin_url() . $translateLink,
-			);
-			// Localize the script directly in the HTML document.
-			wp_add_inline_script('jquery-core', 'var ph_wpml_vars = ' . json_encode( $localized_data ) . ';', 'after');
 		}
 
 
@@ -960,18 +940,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
-			// Set WPML ATE link for current page translation in localized variable.
-			// $default_lang = apply_filters( 'wpml_default_language', '' );
-			// $current_lang = apply_filters( 'wpml_current_language', NULL );
-			// $post_id = get_the_ID();
-			// $post_type = get_post_type( $post_id );
-			// $type = apply_filters( 'wpml_element_type', $post_type );
-			// $trid = apply_filters( 'wpml_element_trid', false, $post_id, $type );
-			// $translated_id = apply_filters( 'wpml_object_id', $post_id, $post_type, true, $default_lang );
-			
-			// $translateLink = apply_filters( 'wpml_link_to_translation', '', $translated_id, $current_lang, $trid );
-
-			// $translation_link_url = admin_url() . $translateLink;
+			// WPML Data.
+			// $this->wpml_ph_loaded_script();
 
 			// settings must be set.
 			$url = get_option( 'ph_child_parent_url' );
@@ -984,7 +954,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				echo '<!-- SureFeedback: project id not set -->';
 				return;
 			}
-
 			$allowed = false;
 			$allowed = ph_child_is_current_user_allowed_to_comment() || $this->has_valid_cookie();
 
@@ -1038,6 +1007,81 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			</script>
 			<?php
 		}
+
+		/**
+		 * Load WPML script on front end.
+		 */
+		public function wpml_ph_loaded_script() {
+
+			if ( ! defined('ICL_SITEPRESS_VERSION') ) {
+				return;
+			}
+
+			global $wp_the_query, $sitepress;
+			$queriedObject = null;
+
+			$wpml_data = array(
+				'isTranslated' => false,
+			);
+
+			if ( isset( $wp_the_query ) && method_exists( $wp_the_query, 'get_queried_object' ) ) {
+				$queriedObject = $wp_the_query->get_queried_object();
+			}
+
+			if ( !empty( $queriedObject ) && ! empty( $queriedObject->post_type ) ) {
+				// Load WPML status display filter if required.
+				if ( function_exists( 'wpml_tm_load_status_display_filter' ) ) {
+					wpml_tm_load_status_display_filter();
+				}
+			}
+
+			// Get current page ID if $queriedObject is not empty.
+			$current_page_id = ! empty( $queriedObject ) ? get_queried_object_id() : null;
+
+			// Get the current post ID.
+			$default_lang = apply_filters( 'wpml_default_language', '' );
+			$current_lang = apply_filters( 'wpml_current_language', '' );
+
+			$post_type = get_post_type( $current_page_id );
+			$type = apply_filters( 'wpml_element_type', $post_type );
+
+			if( 'ph-website' === $post_type ) {
+				return;
+			}
+	
+			$trid = apply_filters( 'wpml_element_trid', false, $current_page_id, $type );
+			$translated_id = apply_filters( 'wpml_object_id', $current_page_id, $post_type, true, $default_lang );
+			error_log( $trid );
+			error_log( $translated_id );
+	
+	
+			$translateLink = apply_filters( 'wpml_link_to_translation', '', $translated_id, $current_lang, $trid );
+	
+			if( empty( $translateLink ) ) {
+				return;
+			}
+			$translation_link_url = admin_url() . $translateLink;
+	
+			$wpml_data['isTranslated'] = true;
+			$wpml_data['translationLink'] = apply_filters( 'update_translation_URL', $translation_link_url );
+
+			?>
+			<script>
+				var iframe = document.getElementById( '_PH_frame' );
+				var phWpmlData = <?php echo json_encode( $wpml_data ); ?>;
+				if (iframe) {
+					iframe.onload = function() {
+						// Now that the iframe is loaded, you can access its contentWindow safely.
+						iframe.contentWindow.postMessage({
+							type: 'phWpmlData',
+							data: phWpmlData
+						}, '*');
+					};
+				}
+			</script>
+			<?php
+		}
+		
 	}
 
 	$plugin = new PH_Child();
