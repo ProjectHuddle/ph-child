@@ -1009,10 +1009,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function wpml_ph_loaded_script() {
 
-			if ( ! defined('ICL_SITEPRESS_VERSION') ) {
-				return;
-			}
-
 			global $wp_the_query, $sitepress;
 			$queriedObject = null;
 
