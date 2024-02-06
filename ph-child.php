@@ -144,15 +144,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			add_filter( 'ph_script_should_start_loading', array( $this, 'compatiblity_blacklist' ) );
 
-			add_action ( 'wpml_loaded', array( $this, 'load_wpml_script' ), 999999999999 );
+			add_action ( 'wpml_loaded', array( $this, 'load_wpml_script' ), 10 );
 			
 		}
 
 		public function load_wpml_script() {
 			// WPML is active, enqueue scripts when WPML is fully loaded.
-			if (defined('ICL_SITEPRESS_VERSION')) {
+			if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
 				// WPML is active, enqueue scripts when WPML is fully loaded.
-				add_action('wp_enqueue_scripts', array( $this, 'wpml_ph_loaded_script' ), 999999999999999999 );
+				add_action( 'wp_enqueue_scripts', array( $this, 'wpml_ph_loaded_script' ), 10 );
 			}
 		}
 
@@ -939,9 +939,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( ! apply_filters( 'ph_script_should_start_loading', true ) ) {
 				return;
 			}
-
-			// WPML Data.
-			// $this->wpml_ph_loaded_script();
 
 			// settings must be set.
 			$url = get_option( 'ph_child_parent_url' );
