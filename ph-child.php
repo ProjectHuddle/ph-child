@@ -1014,6 +1014,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			$wpml_data = array(
 				'isTranslated' => false,
+				'languageFormat' => false,
 			);
 
 			if ( isset( $wp_the_query ) && method_exists( $wp_the_query, 'get_queried_object' ) ) {
@@ -1040,23 +1041,39 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if( 'ph-website' === $post_type ) {
 				return;
 			}
-	
+
+			$current_page_link = get_page_link( $current_page_id );
+
 			$trid = apply_filters( 'wpml_element_trid', false, $current_page_id, $type );
 			$translated_id = apply_filters( 'wpml_object_id', $current_page_id, $post_type, true, $default_lang );
-			error_log( $trid );
-			error_log( $translated_id );
-	
-	
-			$translateLink = apply_filters( 'wpml_link_to_translation', '', $translated_id, $current_lang, $trid );
-	
+			$translateLink = apply_filters( 'wpml_link_to_translation', '', $translated_id, $current_lang, $trid, $current_page_link );
+
+			$language_url_format = icl_get_setting( 'language_negotiation_type' );
+			
+			if ( '1' === $language_url_format || ( ( strpos( $translateLink, 'return_url' ) !== false && strpos( $translateLink, 'return_url=' ) === false ) ) ) {
+
+				$parsedUrl = parse_url( $translateLink );
+
+				parse_str( $parsedUrl['query'], $queryParams );
+
+				$queryParams['return_url'] = $current_page_link;
+				$parsedUrl['query'] = http_build_query( $queryParams );
+
+				$path = isset( $parsedUrl['path'] ) ? $parsedUrl['path'] : '';
+				$query = isset( $parsedUrl['query'] ) ? $parsedUrl['query'] : '';
+
+				$translateLink = $path . '?' . $query;
+
+				$wpml_data['languageFormat'] = true;
+			}
+
 			if( empty( $translateLink ) ) {
 				return;
 			}
 			$translation_link_url = admin_url() . $translateLink;
-	
+
 			$wpml_data['isTranslated'] = true;
 			$wpml_data['translationLink'] = apply_filters( 'update_translation_URL', $translation_link_url );
-
 			?>
 			<script>
 				var iframe = document.getElementById( '_PH_frame' );
