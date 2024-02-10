@@ -1064,6 +1064,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 				$translateLink = $path . '?' . $query;
 
+			}
+
+			if ( '1' === $language_url_format ) {
 				$wpml_data['languageFormat'] = true;
 			}
 
