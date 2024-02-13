@@ -1073,7 +1073,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if( empty( $translateLink ) ) {
 				return;
 			}
-			$translation_link_url = esc_url( admin_url() . $translateLink );
+			$translation_link_url = admin_url() . $translateLink;
 
 			$wpml_data['isTranslated'] = true;
 			$wpml_data['translationLink'] = apply_filters( 'update_translation_URL', $translation_link_url );
