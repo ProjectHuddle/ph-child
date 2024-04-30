@@ -770,7 +770,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if( ! $whitelabel_name ) {
 				?>
 				<p class="submit">
-					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://surefeedback.com/docs/adding-a-clients-wordpress-site/#manual">
+					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://surefeedback.com/docs/adding-a-clients-wordpress-site#manual">
 						<?php esc_html_e( 'Need Help?', 'ph-child' ); ?>
 					</a> 
 				</p>
