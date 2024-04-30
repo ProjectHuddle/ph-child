@@ -5,7 +5,7 @@
  * Description: Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
- * Version: 1.2.2
+ * Version: 1.2.3
  *
  * Requires at least: 4.7
  * Tested up to: 6.5
@@ -770,7 +770,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if( ! $whitelabel_name ) {
 				?>
 				<p class="submit">
-					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://help.projecthuddle.com/article/86-adding-a-clients-wordpress-site#manual">
+					<a class="ph-child-help-link" style="text-decoration: none;" target="_blank" href="https://surefeedback.com/docs/adding-a-clients-wordpress-site#manual">
 						<?php esc_html_e( 'Need Help?', 'ph-child' ); ?>
 					</a> 
 				</p>
