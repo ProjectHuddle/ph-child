@@ -148,9 +148,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		/**
 		 * Checks compatibility blacklist.
 		 *
-		 * @param string $load Specifies if script should start loading.
+		 * @param string $load Specifies if script should start loading.	
 		 * 
-		 * @return string
+		 * @return bool|string
 		 */
 		public function compatiblity_blacklist( $load ) {
 			$disabled = apply_filters(
@@ -297,6 +297,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Make sure these are automatically removed after save
 		 *
 		 * @param array $args Passes disconnect args.
+		 * 
+		 * @return array
 		 */
 		public function remove_disconnect_args( $args ) {
 			array_push( $args, 'ph-child-site-disconnect-nonce' );
@@ -330,6 +332,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Redirect to options page.
 		 *
 		 * @param string $plugin Plugin name.
+		 * 
+		 * @return void
 		 */
 		public function redirect_options_page( $plugin ) {
 			if ( plugin_basename( __FILE__ ) == $plugin ) {
@@ -359,6 +363,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Whitelist our option in xmlrpc
 		 *
 		 * @param array $options whitelabel options.
+		 * 
+		 * @return array
 		 */
 		public function whitelist_option( $options ) {
 			foreach ( $this->whitelist_option_names as $name => $item ) {
@@ -390,6 +396,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Add settings section from dashboard.
+		 * 
+		 * @return void
 		 */
 		public function options() {
 			add_settings_section(
@@ -592,6 +600,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Return Plugin Name.
+		 * 
+		 * @return void
 		 */
 		public function plugin_name() {
 			?>
@@ -601,6 +611,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Return Plugin description.
+		 * 
+		 * @return void
 		 */
 		public function plugin_description() {
 			?>
@@ -610,6 +622,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Return Plugin author.
+		 * 
+		 * @return void
 		 */
 		public function plugin_author() {
 			?>
@@ -619,6 +633,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Return Plugin author url.
+		 * 
+		 * @return void
 		 */
 		public function plugin_author_url() {
 			?>
@@ -628,6 +644,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Return Plugin link.
+		 * 
+		 * @return void
 		 */
 		public function plugin_link() {
 			?>
@@ -639,6 +657,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Provides manual import functionality.
 		 *
 		 * @param string $val import content.
+		 * @return string
 		 */
 		public function manual_import( $val ) {
 			$settings = json_decode( $val, true );
@@ -658,6 +677,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Check commenters checklist.
+		 * 
+		 * @return void
 		 */
 		public function commenters_checklist() {
 			$disable_roles = (array) get_option( 'ph_child_enabled_comment_roles', array() );
@@ -681,6 +702,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Check if guests are allowed to comment.
+		 * 
+		 * @return void
 		 */
 		public function allow_guests() {
 			?>
@@ -691,6 +714,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Check if admin is allowed to comment.
+		 * 
+		 * @return void
 		 */
 		public function allow_admin() {
 			?>
@@ -701,6 +726,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Fetch connection status.
+		 * 
+		 * @return void
 		 */
 		public function connection_status() {
 			?>
@@ -771,8 +798,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Display help link for manual connection.
+		 * 
+		 * @return void
 		 */
-
 		 public function help_link() {
 			$whitelabel_name = get_option( 'ph_child_plugin_name', false );
 			if( ! $whitelabel_name ) {
@@ -788,6 +816,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**   
 		 * Manual connection content.
+		 * 
+		 * @return void
 		 */
 		public function manual_connection() {
 			?>
@@ -797,6 +827,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		// Add custom js
+		/**
+		 * Add custom inline script.
+		 * 
+		 * @return void
+		 */
 		public function ph_custom_inline_script() { 
 			$script_code = '
 			jQuery(document).ready(function($) {
@@ -809,6 +844,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
 		 }
 
+         /**
+		 * Add user data to the script.
+		 * 
+		 * @return void
+		 */
          public function ph_user_data(){
             ?>
              <script>
@@ -819,6 +859,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Feedback page - custom settings page content.
+		 * 
+		 * @return void
 		 */
 		public function options_page() {
 			?>
@@ -899,6 +941,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Check if valid cookie is available.
+		 * 
+		 * @return bool
 		 */
 		public function has_valid_cookie() {
 			$token = get_option( 'ph_child_access_token', '' );
