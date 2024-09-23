@@ -149,6 +149,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Checks compatibility blacklist.
 		 *
 		 * @param string $load Specifies if script should start loading.
+		 * 
+		 * @return string
 		 */
 		public function compatiblity_blacklist( $load ) {
 			$disabled = apply_filters(
@@ -194,6 +196,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Show parent plugin activation notice.
+		 * 
+		 * @return void
 		 */
 		public function parent_plugin_activated_error_notice() {
 			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'project-huddle' );
@@ -207,6 +211,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @param string $plugin_file Specifies Plugin file.
 		 * @param string $plugin_data Specifies Plugin data.
 		 * @param string $status Specifies Plugin status.
+		 * 
+		 * @return string
 		 */
 		public function white_label_link( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 			global $pagenow;
@@ -237,6 +243,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @param string $translated_text White label translated text.
 		 * @param string $untranslated_text White label untranslated text.
 		 * @param string $domain Plugin domain name.
+		 * 
+		 * @return mixed
 		 */
 		public function white_label( $translated_text, $untranslated_text, $domain ) {
 			global $pagenow;

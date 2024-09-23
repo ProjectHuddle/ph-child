@@ -7,6 +7,8 @@
 
 /**
  * Is the current user allowed to comment?
+ * 
+ * @return bool
  */
 function ph_child_is_current_user_allowed_to_comment() {
 	// if guests are allowed, yes, they are.
@@ -43,6 +45,8 @@ function ph_child_is_current_user_allowed_to_comment() {
 
 /**
  * Dismiss notice action handler
+ * 
+ * @return void
  */
 function ph_child_dismiss_js() {
 	$nonce = wp_create_nonce('ph_child_dismiss_nonce');
@@ -71,6 +75,8 @@ function ph_child_dismiss_js() {
 
 /**
  * Stores notice dismissing in options table
+ * 
+ * @return void
  */
 function ph_child_ajax_notice_handler() {
 	$type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : false;
@@ -88,6 +94,8 @@ add_action( 'wp_ajax_ph_child_dismissed_notice_handler', 'ph_child_ajax_notice_h
 
 /**
  * Flywheel exclusions notice
+ * 
+ * @return void
  */
 function ph_child_flywheel_exclusions_notice() {
 	// on wp flywheel.
@@ -112,6 +120,8 @@ function ph_child_flywheel_exclusions_notice() {
 
 /**
  * WPEngine exclusion notice
+ * 
+ * @return void
  */
 function ph_child_wpengine_exclusions_notice() {
 	// on wp engine.
