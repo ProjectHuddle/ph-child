@@ -47,6 +47,9 @@ All you need to do is install the plugin on the site you want feedback on and it
 The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [SureFeedback](https://surefeedback.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
+= 1.2.4.1 - Development Version =
+Improvement: Improved code quality syntax and security checks for better coding standards and practices.
+
 = 1.2.4 =
 * Improvement: Compatibility to WordPress 6.6
 

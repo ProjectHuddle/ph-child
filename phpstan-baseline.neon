@@ -11,3 +11,6 @@ parameters:
 		- '#type has no value type specified in iterable type array\.$#'
 		- '#with no value type specified in iterable type array\.$#'
 		- "#^While loop condition is always true\\.$#"
+		- '#Unreachable statement - code above always terminates\.#'
+		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported\.#'
+		- '#Cannot cast mixed to int\.#'
