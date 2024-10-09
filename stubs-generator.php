@@ -1,4 +1,9 @@
 <?php
+/**
+ * This file returns an array of package configurations.
+ *
+ * @package ProjectHuddle Child
+ */
 
 return array(
 	'packages' => array(

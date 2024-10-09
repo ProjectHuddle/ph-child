@@ -103,7 +103,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_action( 'admin_init', array( $this, 'options' ) );
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 
-			// custom inline script and styles
+			// custom inline script and styles.
 			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
 
 			add_action( 'wp_footer', array( $this, 'ph_user_data' ) );
@@ -831,7 +831,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				<?php
 		}
 
-		// Add custom js
+		// Add custom js.
 		/**
 		 * Add custom inline script.
 		 *
@@ -849,16 +849,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			wp_add_inline_script( 'ph-custom-footer-script', $script_code );
 		}
 
-		 /**
-		  * Add user data to the script.
-		  *
-		  * @return void
-		  */
+		/**
+		 * Add user data to the script.
+		 *
+		 * @return void
+		 */
 		public function ph_user_data() {
 			?>
-			 <script>
-				 window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
-			 </script>
+			<script>
+				window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
+			</script>
 			<?php
 		}
 
