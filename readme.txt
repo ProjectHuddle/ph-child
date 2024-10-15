@@ -4,7 +4,7 @@ Donate link: https://surefeedback.com
 Tags: project, huddle, child, feedback, design, approval
 Requires at least: 4.7
 Tested up to: 6.6
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -47,7 +47,7 @@ All you need to do is install the plugin on the site you want feedback on and it
 The purpose of this plugin is to make it simple to get targeted feedback from clients on web designs. All you have to do is install the [SureFeedback](https://surefeedback.com) plugin and let your clients select areas of your design to add their own comments. Everything is tracked within the plugin. It's so easy to use!
 
 == Changelog ==
-= 1.2.4.1 - Development Version =
+= 1.2.5 =
 Improvement: Improved code quality syntax and security checks for better coding standards and practices.
 
 = 1.2.4 =
