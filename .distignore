@@ -12,7 +12,7 @@ bin
 circle.yml
 composer.json
 composer.lock
-Gruntfile.js
+GruntFile.js
 package.json
 phpunit.xml
 phpunit.xml.dist
@@ -32,5 +32,3 @@ node_modules
 *.zip
 sync.sh
 package-lock.json
-.github
-.wordpress-org
