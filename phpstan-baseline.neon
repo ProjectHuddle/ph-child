@@ -1,0 +1,16 @@
+parameters:
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		-
+			message: "#^Call to static method get_setting() on an unknown class FLTheme\\.$#"
+			count: 1
+			path: test
+
+		#common errors
+
+		- '#type has no value type specified in iterable type array\.$#'
+		- '#with no value type specified in iterable type array\.$#'
+		- "#^While loop condition is always true\\.$#"
+		- '#Unreachable statement - code above always terminates\.#'
+		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported\.#'
+		- '#Cannot cast mixed to int\.#'
