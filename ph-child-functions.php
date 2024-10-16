@@ -7,6 +7,8 @@
 
 /**
  * Is the current user allowed to comment?
+ *
+ * @return bool
  */
 function ph_child_is_current_user_allowed_to_comment() {
 	// if guests are allowed, yes, they are.
@@ -43,16 +45,18 @@ function ph_child_is_current_user_allowed_to_comment() {
 
 /**
  * Dismiss notice action handler
+ *
+ * @return void
  */
 function ph_child_dismiss_js() {
-	$nonce = wp_create_nonce('ph_child_dismiss_nonce');
+	$nonce = wp_create_nonce( 'ph_child_dismiss_nonce' );
 	?>
 	<script>
 		jQuery(function($) {
 			$(document).on('click', '.ph-notice .notice-dismiss', function() {
 				// Read the "data-notice" information to track which notice.
 				var type = $(this).closest('.ph-notice').data('notice');
-				var nonce = '<?php echo esc_js($nonce); ?>'; // Include the nonce from PHP.
+				var nonce = '<?php echo esc_js( $nonce ); ?>'; // Include the nonce from PHP.
 				// Since WP 2.8 ajax url is always defined in the admin header and points to admin-ajax.php.
 				$.ajax(ajaxurl, {
 					type: 'POST',
@@ -71,11 +75,13 @@ function ph_child_dismiss_js() {
 
 /**
  * Stores notice dismissing in options table
+ *
+ * @return void
  */
 function ph_child_ajax_notice_handler() {
 	$type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : false;
 
-	if ( current_user_can( 'manage_options' ) && check_ajax_referer('ph_child_dismiss_nonce', 'nonce') && $type) {
+	if ( current_user_can( 'manage_options' ) && check_ajax_referer( 'ph_child_dismiss_nonce', 'nonce' ) && $type ) {
 		update_option( "dismissed-$type", true );
 		update_site_option( "dismissed-$type", true );
 	}
@@ -88,6 +94,8 @@ add_action( 'wp_ajax_ph_child_dismissed_notice_handler', 'ph_child_ajax_notice_h
 
 /**
  * Flywheel exclusions notice
+ *
+ * @return void
  */
 function ph_child_flywheel_exclusions_notice() {
 	// on wp flywheel.
@@ -112,6 +120,8 @@ function ph_child_flywheel_exclusions_notice() {
 
 /**
  * WPEngine exclusion notice
+ *
+ * @return void
  */
 function ph_child_wpengine_exclusions_notice() {
 	// on wp engine.

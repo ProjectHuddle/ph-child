@@ -12,10 +12,13 @@ bin
 circle.yml
 composer.json
 composer.lock
-Gruntfile.js
+GruntFile.js
 package.json
 phpunit.xml
 phpunit.xml.dist
+phpstan-baseline.neon
+phpstan.neon
+stubs-generator.php
 multisite.xml
 multisite.xml.dist
 phpcs.ruleset.xml
@@ -28,3 +31,4 @@ node_modules
 *.tar.gz
 *.zip
 sync.sh
+package-lock.json
