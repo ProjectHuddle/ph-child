@@ -32,6 +32,18 @@ module.exports = function (grunt) {
       },
     },
 
+    copy: {
+			main: {
+				options: {
+					mode: true
+				},
+				src: [
+				'!phpinsights.php',
+				],
+				dest: '/'
+			} 
+		},
+
     makepot: {
       target: {
         options: {
@@ -76,7 +88,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask("i18n", ["addtextdomain", "makepot"]);
   grunt.registerTask("readme", ["wp_readme_to_markdown"]);
-  grunt.registerTask("release", ["compress"]);
+  grunt.registerTask("release", ["compress", "copy"]);
 
   grunt.util.linefeed = "\n";
 };
