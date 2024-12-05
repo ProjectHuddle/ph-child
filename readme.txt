@@ -1,7 +1,7 @@
 === SureFeedback Client Site ===
 Contributors: brainstormforce, 2winfactor
 Donate link: https://surefeedback.com
-Tags: project, huddle, child, feedback, design, approval
+Tags: project, huddle, child, feedback, design
 Requires at least: 4.7
 Tested up to: 6.7
 Stable tag: 1.2.5
@@ -9,7 +9,7 @@ Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Provides a secure connection between your SureFeedback parent site and your client sites, syncing identities so clients can use their WordPress identities for commenting.
+Provides a secure connection between your SureFeedback parent and client sites, syncing identities for WordPress-based commenting.
 
 == Description ==
 
