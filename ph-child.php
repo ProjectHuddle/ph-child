@@ -855,9 +855,19 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function ph_user_data() {
+
+			$current_user = wp_get_current_user();
+
+			$user_data = array(
+				'ID'            => $current_user->ID,
+				'user_login'    => $current_user->user_login,
+				'user_email'    => $current_user->user_email,
+				'display_name'  => $current_user->display_name,
+			);
+
 			?>
 			<script>
-				window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
+				window.PH_Child = <?php echo json_encode( $user_data ); ?>
 			</script>
 			<?php
 		}
