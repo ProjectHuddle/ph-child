@@ -5,10 +5,10 @@
  * Description: Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
- * Version: 1.2.5
+ * Version: 1.2.6
  *
  * Requires at least: 4.7
- * Tested up to: 6.6
+ * Tested up to: 6.7.1
  *
  * Text Domain: ph-child
  * Domain Path: languages
@@ -855,9 +855,19 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function ph_user_data() {
+
+			$current_user = wp_get_current_user();
+
+			$user_data = array(
+				'ID'            => $current_user->ID,
+				'user_login'    => $current_user->user_login,
+				'user_email'    => $current_user->user_email,
+				'display_name'  => $current_user->display_name,
+			);
+
 			?>
 			<script>
-				window.PH_Child = <?php echo json_encode( wp_get_current_user() ); ?>
+				window.PH_Child = <?php echo json_encode( $user_data ); ?>
 			</script>
 			<?php
 		}
