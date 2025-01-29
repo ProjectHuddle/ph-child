@@ -1,7 +1,7 @@
 {
   "name": "projecthuddle-child",
-  "version": "1.0.33",
-  "description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project",
+  "version": "1.2.6",
+  "description": "Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project",
   "main": "index.js",
   "scripts": {
     "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/ProjectHuddle/ph-child/issues"
   },
-  "homepage": "https://github.com/ProjectHuddle/ph-child#readme"
+  "homepage": "https://github.com/ProjectHuddle/ph-child#readme",
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-compress": "^2.0.0"
+  }
 }

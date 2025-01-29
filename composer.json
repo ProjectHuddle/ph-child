@@ -1,13 +1,31 @@
 {
-	"name": "projecthuddle/ph-child",
-  	"description": "Collect note-style feedback from your client’s websites and sync them with your ProjectHuddle parent project.",
-  	"require-dev": {
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-		"phpcompatibility/phpcompatibility-wp": "*",
-		"wp-coding-standards/wpcs": "^2.1.0"
-	},
-	"scripts": {
-		"format": "phpcbf --standard=phpcs.xml.dist --report-summary --report-source",
-		"lint": "phpcs --standard=phpcs.xml.dist --report-summary --report-source"
-	}
+  "name": "projecthuddle/ph-child",
+  "description": "Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.",
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "wp-coding-standards/wpcs": "^2.1.0",
+    "szepeviktor/phpstan-wordpress": "^1.3",
+    "phpstan/phpstan": "^1.12",
+    "php-stubs/wordpress-stubs": "^6.5",
+    "php-stubs/generator": "^0.8.4",
+    "phpunit/phpunit": "^10.5"
+  },
+  "scripts": {
+    "format": "phpcbf --standard=phpcs.xml.dist --report-summary --report-source",
+    "lint": "phpcs --standard=phpcs.xml.dist --report-summary --report-source",
+    "gen-stubs": "php -d memory_limit=-1 vendor/bin/generate-stubs artifact/phpstan/ph-child/ --out=tests/php/stubs/phchild-stubs.php && rm -rf artifact/phpstan",
+    "phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require": {
+    "php-stubs/wordpress-stubs": "^6.6",
+    "symfony/http-kernel": "^7.1",
+    "symfony/dependency-injection": "^7.1",
+    "symfony/translation-contracts": "^3.5"
+  }
 }
