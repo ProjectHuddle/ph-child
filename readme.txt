@@ -3,7 +3,7 @@ Contributors: brainstormforce, 2winfactor
 Donate link: https://surefeedback.com
 Tags: project, huddle, child, feedback, design
 Requires at least: 4.7
-Tested up to: 6.7.1
+Tested up to: 6.8
 Stable tag: 1.2.6
 Requires PHP: 5.6
 License: GPLv2 or later
