@@ -45,6 +45,8 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 
 // include child functions.
 require_once 'ph-child-functions.php';
+require_once 'ph-child-rest-api.php';
+
 
 if ( ! class_exists( 'PH_Child' ) ) :
 	/**
