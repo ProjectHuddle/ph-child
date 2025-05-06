@@ -34,13 +34,6 @@ class PH_Child_REST_API {
                 'permission_callback' => '__return_true',
             )
         ));
-
-        // Health check endpoint
-        register_rest_route('surefeedback/v1', '/health', array(
-            'methods' => 'GET',
-            'callback' => array($this, 'health_check'),
-            'permission_callback' => '__return_true',
-        ));
     }
 
     /**
@@ -138,17 +131,6 @@ class PH_Child_REST_API {
         $response->header('Access-Control-Allow-Methods', 'GET, OPTIONS');
         $response->header('Access-Control-Allow-Headers', 'Content-Type, X-SureFeedback-Token, Authorization');
         return $response;
-    }
-
-    /**
-     * Simple health check endpoint
-     */
-    public function health_check() {
-        return rest_ensure_response(array(
-            'status' => 'healthy',
-            'version' => '1.0',
-            'timestamp' => current_time('mysql'),
-        ));
     }
 }
 
