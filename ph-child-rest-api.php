@@ -66,31 +66,46 @@ class PH_Child_REST_API {
     /**
      * Get all published pages with optional search
      */
-    public function get_pages(WP_REST_Request $request) {
-        $search_query = sanitize_text_field($request->get_param('search'));
+  /**
+ * Get all published pages including the main page with optional search
+ */
+/**
+ * Get all published pages including the homepage
+ */
+public function get_pages(WP_REST_Request $request) {
+    $search_query = sanitize_text_field($request->get_param('search'));
 
-        $args = array(
-            'post_type'      => 'page',
-            'post_status'    => 'publish',
-            'posts_per_page' => -1,
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-            's'              => $search_query,
+    $args = array(
+        'post_type'      => 'page',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+        's'              => $search_query,
+    );
+
+    $pages = get_posts($args);
+
+    $response = array();
+
+    // Add homepage (static entry)
+    $response[] = array(
+        'id'    => 0,
+        'title' => 'Homepage',
+        'url'   => esc_url(home_url('/')),
+    );
+
+    // Add other pages
+    foreach ($pages as $page) {
+        $response[] = array(
+            'id'    => $page->ID,
+            'title' => esc_html($page->post_title),
+            'url'   => esc_url(get_permalink($page->ID)),
         );
-
-        $pages = get_posts($args);
-        
-        $response = array();
-        foreach ($pages as $page) {
-            $response[] = array(
-                'id'    => $page->ID,
-                'title' => esc_html($page->post_title),
-                'url'   => esc_url(get_permalink($page->ID)),
-            );
-        }
-
-        return rest_ensure_response($response);
     }
+
+    return rest_ensure_response($response);
+}
 
     /**
      * Allow CORS for all origins with token authentication
