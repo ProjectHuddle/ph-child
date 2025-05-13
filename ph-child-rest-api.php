@@ -88,15 +88,29 @@ public function get_pages(WP_REST_Request $request) {
 
     $response = array();
 
-    // Add homepage (static entry)
-    $response[] = array(
-        'id'    => 0,
-        'title' => 'Homepage',
-        'url'   => esc_url(home_url('/')),
-    );
+    // Get homepage ID and add homepage (static entry)
+    $homepage_id = get_option('page_on_front');
+    if ($homepage_id) {
+        $homepage = get_post($homepage_id);
+        $response[] = array(
+            'id'    => $homepage_id,
+            'title' => esc_html(get_the_title($homepage_id)),
+            'url'   => esc_url(get_permalink($homepage_id)),
+        );
+    } else {
+        // Fallback if no static page set
+        $response[] = array(
+            'id'    => 0,
+            'title' => 'Homepage',
+            'url'   => esc_url(home_url('/')),
+        );
+    }
 
-    // Add other pages
+    // Add other pages, but skip homepage if already included
     foreach ($pages as $page) {
+        if ($page->ID == $homepage_id) {
+            continue; // Already added above
+        }
         $response[] = array(
             'id'    => $page->ID,
             'title' => esc_html($page->post_title),
