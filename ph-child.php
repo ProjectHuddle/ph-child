@@ -5,7 +5,7 @@
  * Description: Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.
  * Author: Brainstorm Force
  * Author URI: https://www.brainstormforce.com
- * Version: 1.2.6
+ * Version: 1.2.7
  *
  * Requires at least: 4.7
  * Tested up to: 6.8
@@ -45,6 +45,8 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 
 // include child functions.
 require_once 'ph-child-functions.php';
+require_once 'ph-child-rest-api.php';
+
 
 if ( ! class_exists( 'PH_Child' ) ) :
 	/**
