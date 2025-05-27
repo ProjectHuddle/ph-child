@@ -101,7 +101,7 @@ public function get_pages(WP_REST_Request $request) {
         // Fallback if no static page set
         $response[] = array(
             'id'    => 0,
-            'title' => 'Site-Homepage',
+            'title' => 'Site Homepage',
             'url'   => esc_url(home_url('/')),
         );
     }

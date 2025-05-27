@@ -4,7 +4,7 @@ Donate link: https://surefeedback.com
 Tags: project, huddle, child, feedback, design
 Requires at least: 4.7
 Tested up to: 6.8
-Stable tag: 1.3.0
+Stable tag: 1.2.8
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -48,7 +48,7 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 
-= 1.3.0 =
+= 1.2.8 =
 * Improvement: Added a REST API for the Widget Control feature to allow external access and better integration
 * Improvement: Enhanced CORS policy handling to support secure and flexible cross-origin requests.
 * Fix: Implement security fixes to resolve known vulnerabilities.
