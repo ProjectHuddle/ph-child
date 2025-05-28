@@ -51,7 +51,6 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 = 1.2.8 =
 * Improvement: Added a REST API for the Widget Control feature to allow external access and better integration
 * Improvement: Enhanced CORS policy handling to support secure and flexible cross-origin requests.
-* Fix: Implement security fixes to resolve known vulnerabilities.
 
 = 1.2.7 =
 * Improvement: Compatibility to WordPress 6.8
