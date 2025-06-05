@@ -35,7 +35,7 @@ function ph_child_is_current_user_allowed_to_comment() {
 
 	// if they have one of the enabled roles, they can comment.
 	foreach ( $roles as $role ) {
-		if ( in_array( $role, $enabled_roles ) ) {
+		if ( array( $role, $enabled_roles ) ) {
 			return true;
 		}
 	}
