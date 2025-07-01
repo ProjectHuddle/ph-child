@@ -48,6 +48,10 @@ The purpose of this plugin is to make it simple to get targeted feedback from cl
 
 == Changelog ==
 
+= 1.2.9 =
+* Improvement: CORS handling is now generic and only applies to SureFeedback endpoints, ensuring compatibility with all other REST API plugins and integrations.
+* Fix: Resolved issue where OPTIONS requests to WordPress/WooCommerce REST APIs returned empty responses, restoring compatibility with Zapier and other integrations.
+
 = 1.2.8 =
 * Improvement: Added a REST API for the Widget Control feature to allow external access and better integration
 * Improvement: Enhanced CORS policy handling to support secure and flexible cross-origin requests.
