@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 2rem;
+            background: #f9fafb;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .test-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .error {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .info {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .test-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Toast UI Test</h1>
+    <p>Click the buttons below to test different toast types:</p>
+    
+    <div class="test-buttons">
+        <button class="test-button success" onclick="showSuccessToast()">Show Success Toast</button>
+        <button class="test-button error" onclick="showErrorToast()">Show Error Toast</button>
+        <button class="test-button info" onclick="showInfoToast()">Show Info Toast</button>
+    </div>
+    
+    <div id="surefeedback-admin-app"></div>
+    
+    <script type="module">
+        // Simulate the toast functionality for testing
+        console.log('Toast test page loaded');
+        console.log('In a real WordPress environment, the Vue app would be mounted here');
+        console.log('The toast system uses Radix Vue and would display notifications in the bottom-right corner');
+        
+        window.showSuccessToast = () => {
+            console.log('Success toast would appear: Settings saved successfully!');
+            alert('Success Toast: Settings saved successfully!\n\n(In the real app, this would be a styled toast notification)');
+        };
+        
+        window.showErrorToast = () => {
+            console.log('Error toast would appear: Something went wrong!');
+            alert('Error Toast: Something went wrong!\n\n(In the real app, this would be a styled toast notification)');
+        };
+        
+        window.showInfoToast = () => {
+            console.log('Info toast would appear: Connection tested successfully');
+            alert('Info Toast: Connection tested successfully\n\n(In the real app, this would be a styled toast notification)');
+        };
+    </script>
+</body>
+</html>

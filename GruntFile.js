@@ -74,9 +74,25 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-wp-readme-to-markdown");
   grunt.loadNpmTasks("grunt-contrib-compress");
 
+  // Custom task to build Vue.js assets
+  grunt.registerTask("build-vue", "Build Vue.js assets", function() {
+    var done = this.async();
+    var spawn = require('child_process').spawn;
+    grunt.log.writeln("Building Vue.js assets...");
+    var build = spawn('npm', ['run', 'build'], { stdio: 'inherit' });
+    build.on('close', function(code) {
+      if (code !== 0) {
+        grunt.fail.fatal('Vue.js build failed with code ' + code);
+      }
+      grunt.log.writeln("Vue.js assets built successfully.");
+      done();
+    });
+  });
+
   grunt.registerTask("i18n", ["addtextdomain", "makepot"]);
   grunt.registerTask("readme", ["wp_readme_to_markdown"]);
-  grunt.registerTask("release", ["compress"]);
+  grunt.registerTask("build", ["build-vue", "i18n"]);
+  grunt.registerTask("release", ["build", "compress"]);
 
   grunt.util.linefeed = "\n";
 };

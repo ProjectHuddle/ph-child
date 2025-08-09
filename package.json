@@ -4,6 +4,10 @@
   "description": "Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
     "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
   },
   "repository": {
@@ -22,8 +26,30 @@
     "url": "https://github.com/ProjectHuddle/ph-child/issues"
   },
   "homepage": "https://github.com/ProjectHuddle/ph-child#readme",
+  "dependencies": {
+    "@vueuse/core": "^13.6.0",
+    "axios": "^1.6.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.539.0",
+    "pinia": "^2.1.7",
+    "radix-vue": "^1.9.17",
+    "tailwind-merge": "^3.3.1",
+    "vue": "^3.4.0"
+  },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/node": "^20.10.0",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "autoprefixer": "^10.4.20",
     "grunt": "^1.6.1",
-    "grunt-contrib-compress": "^2.0.0"
+    "grunt-contrib-compress": "^2.0.0",
+    "grunt-wp-i18n": "^1.0.4",
+    "grunt-wp-readme-to-markdown": "^2.1.0",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "~5.2.0",
+    "vite": "^5.0.2",
+    "vue-tsc": "^1.8.27"
   }
 }
