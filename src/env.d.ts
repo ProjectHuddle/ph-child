@@ -1,10 +1,6 @@
 /// <reference types="vite/client" />
-
-declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
-  export default component
-}
+/// <reference types="react" />
+/// <reference types="react-dom" />
 
 // Extend the global Window interface
 interface SureFeedbackAdmin {

@@ -1,8 +1,10 @@
-module.exports = {
+const withTW = require('@bsf/force-ui/withTW');
+
+module.exports = withTW({
   darkMode: ["class"],
   content: [
     './index.html',
-    './src/**/*.{vue,ts,js}',
+    './src/**/*.{tsx,ts,js,jsx}',
   ],
   theme: {
     container: {
@@ -98,4 +100,8 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
   ],
-}
+  corePlugins: {
+    preflight: false,
+  },
+  important: '.surefeedback-styles',
+})

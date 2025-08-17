@@ -1,18 +1,16 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [react()],
   define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    __VUE_OPTIONS_API__: true,
-    __VUE_PROD_DEVTOOLS__: false
+    'process.env.NODE_ENV': JSON.stringify('production')
   },
   build: {
     lib: {
-      entry: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/main.ts'),
+      entry: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/main.tsx'),
       name: 'SureFeedbackAdmin',
       fileName: 'surefeedback-admin',
       formats: ['umd']
