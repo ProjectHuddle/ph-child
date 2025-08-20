@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import React from 'react';
 import { settingsService } from '@/services/settings';
 import type { 
   GeneralSettings, 

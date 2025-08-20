@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange' | 'prefix'> {
   size?: 'sm' | 'md' | 'lg';
   error?: boolean;
   label?: string;

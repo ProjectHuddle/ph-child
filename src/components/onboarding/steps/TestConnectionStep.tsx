@@ -178,7 +178,7 @@ export default function TestConnectionStep({
                 <Text size={12} color="tertiary" className="mb-2">
                   PERMISSIONS
                 </Text>
-                <Container containerType="flex" gap="xs" wrap>
+                <Container containerType="flex" gap="xs" wrap="wrap">
                   {connectionDetails.permissions.map((permission) => (
                     <Badge
                       key={permission}

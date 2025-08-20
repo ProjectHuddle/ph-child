@@ -101,7 +101,7 @@ export const ProgressSteps: React.FC<ProgressStepsProps> & { Step: React.FC<Step
   return (
     <div className={containerClasses}>
       {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child)) {
+        if (React.isValidElement<StepProps>(child)) {
           return React.cloneElement(child, {
             index,
             isCurrent: index === currentStep,
