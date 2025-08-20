@@ -43,9 +43,8 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 	define( 'PH_CHILD_PLUGIN_FILE', __FILE__ );
 }
 
-// include child functions.
-require_once 'ph-child-functions.php';
-require_once 'ph-child-rest-api.php';
+// Load the plugin loader
+require_once 'includes/core/class-ph-child-loader.php';
 
 
 if ( ! class_exists( 'PH_Child' ) ) :
@@ -76,27 +75,27 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			$this->whitelist_option_names = array(
 				'ph_child_id'           => array(
-					'description'       => __( 'Website project ID.', 'project-huddle' ),
+					'description'       => __( 'Website project ID.', 'ph-child' ),
 					'sanitize_callback' => 'intval',
 				),
 				'ph_child_api_key'      => array(
-					'description'       => __( 'Public API key for the script loader.', 'project-huddle' ),
+					'description'       => __( 'Public API key for the script loader.', 'ph-child' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_access_token' => array(
-					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'project-huddle' ),
+					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'ph-child' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_parent_url'   => array(
-					'description'       => __( 'Parent Site URL.', 'project-huddle' ),
+					'description'       => __( 'Parent Site URL.', 'ph-child' ),
 					'sanitize_callback' => 'esc_url',
 				),
 				'ph_child_signature'    => array(
-					'description'       => __( 'Secret signature to verify identity.', 'project-huddle' ),
+					'description'       => __( 'Secret signature to verify identity.', 'ph-child' ),
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_installed'    => array(
-					'description'       => __( 'Is the plugin installed?', 'project-huddle' ),
+					'description'       => __( 'Is the plugin installed?', 'ph-child' ),
 					'sanitize_callback' => 'boolval',
 				),
 			);
@@ -104,6 +103,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// options and menu.
 			add_action( 'admin_init', array( $this, 'options' ) );
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_menu_styles' ) );
 
 			// custom inline script and styles.
 			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
@@ -202,7 +202,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function parent_plugin_activated_error_notice() {
-			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'project-huddle' );
+			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'ph-child' );
 			echo '<div class="error"> <p>' . esc_html( $message ) . '</p></div>';
 		}
 
@@ -290,8 +290,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return array        Modified links
 		 */
 		public function add_settings_link( $links ) {
-			$settings_link = '<a href="' . admin_url( 'options-general.php?page=feedback-connection-options' ) . '">' . __( 'Settings', 'ph-child' ) . '</a>';
-			array_push( $links, $settings_link );
+			$dashboard_link = '<a href="' . admin_url( 'admin.php?page=surefeedback-dashboard' ) . '">' . __( 'Dashboard', 'ph-child' ) . '</a>';
+			$settings_link = '<a href="' . admin_url( 'admin.php?page=surefeedback-settings' ) . '">' . __( 'Settings', 'ph-child' ) . '</a>';
+			array_push( $links, $dashboard_link, $settings_link );
 			return $links;
 		}
 
@@ -339,7 +340,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function redirect_options_page( $plugin ) {
 			if ( plugin_basename( __FILE__ ) == $plugin ) {
-				exit( wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options&tab=connection' ) ) );
+				exit( wp_redirect( admin_url( 'admin.php?page=surefeedback-dashboard' ) ) );
 			}
 		}
 
@@ -387,13 +388,186 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function create_menu() {
 			$plugin_name = get_option( 'ph_child_plugin_name', false );
+			$menu_title = $plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' );
+			
+			// Add main menu page
+			add_menu_page(
+				__( 'SureFeedback', 'ph-child' ), // Page title
+				$menu_title, // Menu title
+				'manage_options', // Capability
+				'surefeedback-dashboard', // Menu slug
+				array( $this, 'dashboard_page' ), // Function
+				$this->get_menu_icon(), // Icon
+				58 // Position (after Settings)
+			);
+			
+			// Add dashboard submenu
+			add_submenu_page(
+				'surefeedback-dashboard', // Parent slug
+				__( 'Dashboard', 'ph-child' ), // Page title
+				__( 'Dashboard', 'ph-child' ), // Menu title
+				'manage_options', // Capability
+				'surefeedback-dashboard', // Menu slug
+				array( $this, 'dashboard_page' ) // Function
+			);
+			
+			// Add settings submenu
+			add_submenu_page(
+				'surefeedback-dashboard', // Parent slug
+				__( 'Settings', 'ph-child' ), // Page title
+				__( 'Settings', 'ph-child' ), // Menu title
+				'manage_options', // Capability
+				'surefeedback-settings', // Menu slug
+				array( $this, 'options_page' ) // Function
+			);
+			
+			// Keep the old settings page for backward compatibility
 			add_options_page(
 				__( 'Feedback Connection', 'ph-child' ),
-				$plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' ),
+				$menu_title,
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
 			);
+		}
+
+		/**
+		 * Get menu icon for SureFeedback
+		 *
+		 * @return string
+		 */
+		private function get_menu_icon() {
+			// Use the project huddle icon
+			$icon_file = PH_CHILD_PLUGIN_DIR . 'assets/project-huddle-icon.png';
+			
+			if ( file_exists( $icon_file ) ) {
+				return PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png';
+			}
+			
+			// Fallback to dashicons if icon file doesn't exist
+			return 'dashicons-format-chat';
+		}
+
+		/**
+		 * Dashboard page content
+		 *
+		 * @return void
+		 */
+		public function dashboard_page() {
+			// Enqueue admin scripts and styles for dashboard
+			$this->enqueue_admin_scripts_dashboard();
+			?>
+			<div class="wrap">
+				<div id="surefeedback-dashboard-app"></div>
+			</div>
+			<?php
+		}
+
+
+		/**
+		 * Enqueue admin scripts and styles for dashboard
+		 *
+		 * @return void
+		 */
+		public function enqueue_admin_scripts_dashboard() {
+			$screen = get_current_screen();
+			
+			// Only load on our dashboard page
+			if ( $screen->id !== 'toplevel_page_surefeedback-dashboard' ) {
+				return;
+			}
+			
+			// Check if built React dashboard assets exist
+			$js_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/dashboard.js';
+			$css_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/dashboard.css';
+
+			if ( file_exists( $js_file ) ) {
+				wp_enqueue_script(
+					'surefeedback-dashboard',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/dashboard.js',
+					array(),
+					filemtime( $js_file ),
+					true
+				);
+				
+				// Add module type for ES6 imports
+				add_filter( 'script_loader_tag', array( $this, 'add_module_type_to_dashboard_script' ), 10, 3 );
+
+				// Localize script with WordPress data
+				wp_localize_script(
+					'surefeedback-dashboard',
+					'sureFeedbackAdmin',
+					array(
+						'rest_url'         => rest_url(),
+						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
+						'admin_url'        => admin_url(),
+						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+					)
+				);
+			}
+
+			if ( file_exists( $css_file ) ) {
+				wp_enqueue_style(
+					'surefeedback-dashboard',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/dashboard.css',
+					array(),
+					filemtime( $css_file )
+				);
+			}
+			
+			// Enqueue WordPress admin styles
+			wp_enqueue_style( 'common' );
+			wp_enqueue_style( 'forms' );
+			wp_enqueue_style( 'dashicons' );
+		}
+
+		/**
+		 * Enqueue admin menu styles globally
+		 *
+		 * @return void
+		 */
+		public function enqueue_admin_menu_styles() {
+			// Enqueue menu icon styles on all admin pages
+			$menu_css = PH_CHILD_PLUGIN_DIR . 'assets/admin-menu.css';
+			if ( file_exists( $menu_css ) ) {
+				wp_enqueue_style(
+					'surefeedback-menu-styles',
+					PH_CHILD_PLUGIN_URL . 'assets/admin-menu.css',
+					array(),
+					filemtime( $menu_css )
+				);
+			}
+		}
+
+		/**
+		 * Add module type to dashboard script tag
+		 *
+		 * @param string $tag    The script tag.
+		 * @param string $handle The script handle.
+		 * @param string $src    The script source.
+		 * @return string
+		 */
+		public function add_module_type_to_dashboard_script( $tag, $handle, $src ) {
+			if ( 'surefeedback-dashboard' === $handle ) {
+				$tag = str_replace( '<script ', '<script type="module" ', $tag );
+			}
+			return $tag;
+		}
+
+		/**
+		 * Add module type to admin script tag
+		 *
+		 * @param string $tag    The script tag.
+		 * @param string $handle The script handle.
+		 * @param string $src    The script source.
+		 * @return string
+		 */
+		public function add_module_type_to_admin_script( $tag, $handle, $src ) {
+			if ( 'surefeedback-admin' === $handle ) {
+				$tag = str_replace( '<script ', '<script type="module" ', $tag );
+			}
+			return $tag;
 		}
 
 		/**
@@ -782,9 +956,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 								),
 								remove_query_arg( 'settings-updated' )
 							)
-						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+						) . '">' . esc_html__( 'Disconnect', 'ph-child' ) . '</a>';
 					if ( ! $whitelabeld_plugin_name ) {
-						echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+						echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'ph-child' ) . '</a>';
 					}
 					echo '</p>';
 				} else {
@@ -876,84 +1050,92 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Feedback page - custom settings page content.
+		 * Now loads Vue.js admin interface
 		 *
 		 * @return void
 		 */
 		public function options_page() {
+			// Enqueue admin scripts and styles
+			$this->enqueue_admin_scripts();
+
+			// Set initial tab from URL
+			$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
 			?>
-				<div class="wrap">
-					<h1>
-					<?php
-						$plugin_name = get_option( 'ph_child_plugin_name', false );
-						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'SureFeedback Options', 'ph-child' );
-					?>
-						</h1>
-
-					<?php $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general'; ?>
-
-					<h2 class="nav-tab-wrapper">
-						<a href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								'tab',
-								'general',
-								remove_query_arg( 'settings-updated' )
-							)
-						);
-						?>
-						" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e( 'General', 'ph-child' ); ?>
-						</a>
-
-						<a href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								'tab',
-								'connection',
-								remove_query_arg( 'settings-updated' )
-							)
-						);
-						?>
-						" class="nav-tab <?php echo 'connection' === $active_tab ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e( 'Connection', 'ph-child' ); ?>
-						</a>
-
-						<?php if ( ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL ) : ?>
-							<a href="
-							<?php
-							echo esc_url(
-								add_query_arg(
-									'tab',
-									'white_label',
-									remove_query_arg( 'settings-updated' )
-								)
-							);
-							?>
-							" class="nav-tab <?php echo 'white_label' === $active_tab ? 'nav-tab-active' : ''; ?>">
-								<?php esc_html_e( 'White Label', 'ph-child' ); ?>
-							</a>
-						<?php endif; ?>
-				</h2>
-
-				<form method="post" action="options.php">
-					<?php
-					if ( 'general' === $active_tab ) {
-								settings_fields( 'ph_child_general_options' );
-								do_settings_sections( 'ph_child_general_options' );
-					} elseif ( 'connection' === $active_tab ) {
-						settings_fields( 'ph_child_connection_options' );
-						do_settings_sections( 'ph_child_connection_options' );
-					} elseif ( 'white_label' === $active_tab ) {
-						settings_fields( 'ph_child_white_label_options' );
-						do_settings_sections( 'ph_child_white_label_options' );
-					}
-					submit_button();
-					?>
-				</form>
-			</div>
+			<div id="surefeedback-admin-app"></div>
+			<script>
+				// Set initial tab from URL hash or query parameter
+				if (window.location.hash) {
+					window.location.hash = window.location.hash;
+				} else {
+					window.location.hash = '<?php echo esc_js( $active_tab ); ?>';
+				}
+			</script>
 			<?php
+		}
+
+		/**
+		 * Enqueue admin scripts and styles for Vue.js app
+		 *
+		 * @return void
+		 */
+		public function enqueue_admin_scripts() {
+			$screen = get_current_screen();
+			
+			// Only load on our settings pages
+			$allowed_screens = array(
+				'settings_page_feedback-connection-options',
+				'surefeedback_page_surefeedback-settings'
+			);
+			
+			if ( ! in_array( $screen->id, $allowed_screens, true ) ) {
+				return;
+			}
+
+			// Check if built assets exist
+			$js_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/admin.js';
+			$css_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/admin.css';
+
+			if ( file_exists( $js_file ) ) {
+				wp_enqueue_script(
+					'surefeedback-admin',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.js',
+					array(),
+					filemtime( $js_file ),
+					true
+				);
+				
+				// Add module type for ES6 imports
+				add_filter( 'script_loader_tag', array( $this, 'add_module_type_to_admin_script' ), 10, 3 );
+
+				// Localize script with WordPress data
+				wp_localize_script(
+					'surefeedback-admin',
+					'sureFeedbackAdmin',
+					array(
+						'rest_url'         => rest_url(),
+						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
+						'admin_url'        => admin_url(),
+						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+					)
+				);
+			}
+
+			if ( file_exists( $css_file ) ) {
+				wp_enqueue_style(
+					'surefeedback-admin',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.css',
+					array(),
+					filemtime( $css_file )
+				);
+			}
+
+			// Enqueue WordPress admin styles that we depend on
+			wp_enqueue_style( 'common' );
+			wp_enqueue_style( 'forms' );
+			
+			// Enqueue dashicons for icons
+			wp_enqueue_style( 'dashicons' );
 		}
 
 		/**
@@ -1063,5 +1245,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 	}
 
+	// Initialize the plugin loader
+	PH_Child_Loader::get_instance();
+	
 	$plugin = new PH_Child();
 endif;

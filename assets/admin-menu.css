@@ -1,0 +1,79 @@
+/* SureFeedback Admin Menu Icon Styles */
+
+/* Force the icon to display properly */
+#adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image {
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+#adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image img {
+    width: 20px !important;
+    height: 20px !important;
+    padding: 6px 0 0 0 !important;
+    opacity: 0.6 !important;
+    filter: brightness(0) invert(1) !important;
+    transition: all 0.3s ease !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+/* Hover state - show original colored icon */
+#adminmenu .toplevel_page_surefeedback-dashboard:hover .wp-menu-image img {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Active/current state - show original colored icon */
+#adminmenu .toplevel_page_surefeedback-dashboard.wp-has-current-submenu .wp-menu-image img,
+#adminmenu .toplevel_page_surefeedback-dashboard.current .wp-menu-image img {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Force display and hide default WordPress icon */
+#adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image:before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Hide any default icon that might conflict */
+#adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image > div {
+    display: none !important;
+}
+
+/* Ensure our img is visible */
+#adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image img[src*="project-huddle-icon"] {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Active state styling */
+#adminmenu .toplevel_page_surefeedback-dashboard.wp-has-current-submenu {
+    background-color: #0073aa !important;
+}
+
+#adminmenu .toplevel_page_surefeedback-dashboard.wp-has-current-submenu .wp-menu-name {
+    color: #fff !important;
+}
+
+/* Hover effects */
+#adminmenu .toplevel_page_surefeedback-dashboard:hover {
+    color: #00a0d2 !important;
+}
+
+#adminmenu .toplevel_page_surefeedback-dashboard:hover .wp-menu-name {
+    color: #00a0d2 !important;
+}
+
+/* Additional specificity for stubborn WordPress themes */
+.wp-admin #adminmenu .toplevel_page_surefeedback-dashboard .wp-menu-image img {
+    opacity: 0.6 !important;
+    filter: brightness(0) invert(1) !important;
+}
+
+.wp-admin #adminmenu .toplevel_page_surefeedback-dashboard:hover .wp-menu-image img,
+.wp-admin #adminmenu .toplevel_page_surefeedback-dashboard.wp-has-current-submenu .wp-menu-image img {
+    opacity: 1 !important;
+    filter: none !important;
+}
