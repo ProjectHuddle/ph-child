@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface BadgeProps {
+  children?: React.ReactNode;
   label?: React.ReactNode;
   size?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
   variant?: 'neutral' | 'red' | 'yellow' | 'green' | 'blue' | 'inverse';
@@ -12,6 +13,7 @@ interface BadgeProps {
 }
 
 export const Badge: React.FC<BadgeProps> = ({
+  children,
   label,
   size = 'sm',
   variant = 'neutral',
@@ -52,7 +54,7 @@ export const Badge: React.FC<BadgeProps> = ({
   return (
     <span className={classes}>
       {icon && <span className="mr-1">{icon}</span>}
-      {label}
+      {children || label}
       {closable && onClose && (
         <button
           type="button"
