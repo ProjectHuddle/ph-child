@@ -4,6 +4,7 @@ import WelcomeContainer from '../components/WelcomeContainer'
 import QuickAccess from '../components/QuickAccess'
 import { Container } from "@bsf/force-ui";
 import Connection from './Connection'
+import QuickSettings from './QuickSettings'
 
 const Dashboard = () => {
   console.log('Dashboard component is rendering!');
@@ -29,7 +30,9 @@ const Dashboard = () => {
                         shrink={0}
                     >
                         <WelcomeContainer />
-                        {/* <ExtendWebsite /> */}
+                           <div className='pt-5'>
+                            <QuickSettings />
+                        </div>
                     </Container.Item>
                     <Container.Item
                         className="p-2 w-full ph_child-35-width"
@@ -43,7 +46,6 @@ const Dashboard = () => {
                     </Container.Item>
                 </Container>
       </div>
-      <h1 className="ph_child-dashboard-title text-2xl font-semibold text-gray-900 p-4">Dashboard</h1>
     </div>
   )
 }
