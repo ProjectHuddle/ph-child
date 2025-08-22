@@ -5,9 +5,9 @@ import QuickAccess from '../components/QuickAccess'
 import { Container } from "@bsf/force-ui";
 import Connection from './Connection'
 import QuickSettings from './QuickSettings'
+import ExtendWebsite from './ExtendWebsite'
 
 const Dashboard = () => {
-  console.log('Dashboard component is rendering!');
   return (
     <div id="surefeedback-dashboard-app" className="surefeedback-styles">
       <NavMenu />
@@ -30,9 +30,8 @@ const Dashboard = () => {
                         shrink={0}
                     >
                         <WelcomeContainer />
-                           <div className='pt-5'>
-                            <QuickSettings />
-                        </div>
+                         <QuickSettings />
+                         <ExtendWebsite />
                     </Container.Item>
                     <Container.Item
                         className="p-2 w-full ph_child-35-width"

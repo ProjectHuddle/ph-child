@@ -34,6 +34,16 @@ class PH_Child_REST_API {
                 'permission_callback' => '__return_true',
             )
         ));
+
+        register_rest_route(
+			'surefeedback/v1',
+			'/plugins',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_plugins_list' ],
+				'permission_callback' => array($this, 'verify_access'),
+			]
+		);
     }
 
     public function verify_access($request) {
@@ -101,6 +111,31 @@ class PH_Child_REST_API {
             return $served;
         }, 10, 4);
     }
+
+    /**
+	 * Callback function to return plugins list.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_plugins_list( $request ) {
+
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+
+		if ( ! wp_verify_nonce( $nonce, 'rest_nonce' ) ) {
+			return new WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'header-footer-elementor' ), [ 'status' => 403 ] );
+		}
+
+		// Fetch branding settings.
+		$plugins_list = get_bsf_plugins_list();
+
+		if ( ! is_array( $plugins_list ) ) {
+			return new WP_REST_Response( [ 'message' => __( 'Plugins list not found', 'header-footer-elementor' ) ], 404 );
+		}
+
+		return new WP_REST_Response( $plugins_list, 200 );
+		
+	}
 }
 
 // Initialize the REST API
