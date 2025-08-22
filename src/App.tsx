@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import CustomRouter from "./router/CustomRouter";
+import CustomRouter from "./router/customRouter";
 import './styles.css'
 
 const App = () => {

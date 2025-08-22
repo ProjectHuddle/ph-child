@@ -5,21 +5,24 @@ let prev = "";
 
 export function Route({ path, onRoute, children }) {
   // Extract route from RouterContext
-  const { route } = useContext(RouterContext);
+  const { route, matched } = useContext(RouterContext);
 
-  const checkMatch = match(`${path}`);
-  const matched = checkMatch(`${route.hash.substr(1)}`);
+  // Check if this route path matches the Router's matched route
+  const isMatched = matched && matched.name === path;
 
-  if (!matched) {
+  console.log(`Route ${path}: matched route="${matched?.name}", isMatched=`, isMatched);
+
+  if (!isMatched) {
     return null;
   }
 
+  const hashPath = route.hash.substr(1);
   if (onRoute) {
-    if (prev !== matched.path) {
+    if (prev !== hashPath) {
       onRoute();
     }
-    prev = matched.path;
+    prev = hashPath;
   }
 
-  return <div>{cloneElement(children, { route: matched })}</div>;
+  return <div>{cloneElement(children, { route: matched.data })}</div>;
 }

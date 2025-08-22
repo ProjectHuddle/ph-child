@@ -1,9 +1,9 @@
 export const routes = {
     dashboard: {
-        path: "surefeedback-dashboard",
+        path: "dashboard",
     },
     settings: {
-        path: "surefeedback-settings",
+        path: "settings",
     },
     upgrade: {
         path: "upgrade",

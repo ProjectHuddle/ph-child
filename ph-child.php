@@ -290,8 +290,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return array        Modified links
 		 */
 		public function add_settings_link( $links ) {
-			$dashboard_link = '<a href="' . admin_url( 'admin.php?page=surefeedback-dashboard' ) . '">' . __( 'Dashboard', 'ph-child' ) . '</a>';
-			$settings_link = '<a href="' . admin_url( 'admin.php?page=surefeedback-settings' ) . '">' . __( 'Settings', 'ph-child' ) . '</a>';
+			$dashboard_link = '<a href="' . admin_url( 'admin.php?page=surefeedback#dashboard' ) . '">' . __( 'Dashboard', 'ph-child' ) . '</a>';
+			$settings_link = '<a href="' . admin_url( 'admin.php?page=surefeedback#settings' ) . '">' . __( 'Settings', 'ph-child' ) . '</a>';
 			array_push( $links, $dashboard_link, $settings_link );
 			return $links;
 		}
@@ -340,7 +340,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function redirect_options_page( $plugin ) {
 			if ( plugin_basename( __FILE__ ) == $plugin ) {
-				exit( wp_redirect( admin_url( 'admin.php?page=surefeedback-dashboard' ) ) );
+				exit( wp_redirect( admin_url( 'admin.php?page=surefeedback#dashboard' ) ) );
 			}
 		}
 
@@ -395,30 +395,30 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				__( 'SureFeedback', 'ph-child' ), // Page title
 				$menu_title, // Menu title
 				'manage_options', // Capability
-				'surefeedback-dashboard', // Menu slug
-				array( $this, 'dashboard_page' ), // Function
+				'surefeedback', // Menu slug
+				array( $this, 'main_page' ), // Function
 				$this->get_menu_icon(), // Icon
 				58 // Position (after Settings)
 			);
 			
 			// Add dashboard submenu
 			add_submenu_page(
-				'surefeedback-dashboard', // Parent slug
+				'surefeedback', // Parent slug
 				__( 'Dashboard', 'ph-child' ), // Page title
 				__( 'Dashboard', 'ph-child' ), // Menu title
 				'manage_options', // Capability
-				'surefeedback-dashboard', // Menu slug
-				array( $this, 'dashboard_page' ) // Function
+				'surefeedback', // Menu slug
+				array( $this, 'main_page' ) // Function
 			);
 			
 			// Add settings submenu
 			add_submenu_page(
-				'surefeedback-dashboard', // Parent slug
+				'surefeedback', // Parent slug
 				__( 'Settings', 'ph-child' ), // Page title
 				__( 'Settings', 'ph-child' ), // Menu title
 				'manage_options', // Capability
-				'surefeedback-settings', // Menu slug
-				array( $this, 'options_page' ) // Function
+				'surefeedback#settings', // Menu slug
+				array( $this, 'main_page' ) // Function
 			);
 			
 			// Keep the old settings page for backward compatibility
@@ -438,10 +438,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		private function get_menu_icon() {
 			// Use the project huddle icon
-			$icon_file = PH_CHILD_PLUGIN_DIR . 'assets/project-huddle-icon.png';
+			$icon_file = PH_CHILD_PLUGIN_DIR . '';
 			
 			if ( file_exists( $icon_file ) ) {
-				return PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png';
+				return PH_CHILD_PLUGIN_URL . '';
 			}
 			
 			// Fallback to dashicons if icon file doesn't exist
@@ -449,18 +449,27 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 
 		/**
-		 * Dashboard page content
+		 * Main page content (handles both dashboard and settings)
 		 *
 		 * @return void
 		 */
-		public function dashboard_page() {
-			// Enqueue admin scripts and styles for dashboard
+		public function main_page() {
+			// Enqueue admin scripts and styles
 			$this->enqueue_admin_scripts_dashboard();
 			?>
 			<div class="wrap">
 				<div id="surefeedback-dashboard-app"></div>
 			</div>
 			<?php
+		}
+
+		/**
+		 * Dashboard page content (deprecated - kept for backward compatibility)
+		 *
+		 * @return void
+		 */
+		public function dashboard_page() {
+			$this->main_page();
 		}
 
 
@@ -473,18 +482,18 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$screen = get_current_screen();
 			
 			// Only load on our dashboard page
-			if ( $screen->id !== 'toplevel_page_surefeedback-dashboard' ) {
+			if ( $screen->id !== 'toplevel_page_surefeedback' ) {
 				return;
 			}
 			
 			// Check if built React dashboard assets exist
-			$js_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/dashboard.js';
+			$js_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/admin.js';
 			$css_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/admin.css';
 
 			if ( file_exists( $js_file ) ) {
 				wp_enqueue_script(
 					'surefeedback-dashboard',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/dashboard.js',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.js',
 					array(),
 					filemtime( $js_file ),
 					true
@@ -1086,7 +1095,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// Only load on our settings pages
 			$allowed_screens = array(
 				'settings_page_feedback-connection-options',
-				'surefeedback_page_surefeedback-settings'
+				'surefeedback_page_surefeedback#settings'
 			);
 			
 			if ( ! in_array( $screen->id, $allowed_screens, true ) ) {

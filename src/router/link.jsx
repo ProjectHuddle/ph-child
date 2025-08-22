@@ -17,8 +17,9 @@ export function Link(props) {
 
   const handleClick = (e) => {
     e.preventDefault();
-    // Dont' navigate if current path
-    if (route.path === to) {
+    // Don't navigate if current hash path matches
+    const currentHashPath = route.hash.substr(1);
+    if (currentHashPath === to) {
       return;
     }
     // Trigger onClick prop manually

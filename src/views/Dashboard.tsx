@@ -5,6 +5,7 @@ import QuickAccess from '../components/QuickAccess'
 import { Container } from "@bsf/force-ui";
 
 const Dashboard = () => {
+  console.log('Dashboard component is rendering!');
   return (
     <div id="surefeedback-dashboard-app" className="surefeedback-styles">
       <NavMenu />

@@ -16,9 +16,12 @@ class Router extends Component {
 
     // Listen for path changes from the history API
     this.unlisten = history.listen(this.handleRouteChange);
+    
+    // Also listen for hash changes
+    window.addEventListener('hashchange', this.handleHashChange);
 
-    const route = locationToRoute(history.location);
-    const { search } = history.location;
+    const route = locationToRoute(window.location);
+    const { search } = window.location;
 
     // Define the initial RouterContext value
     this.state = {
@@ -32,10 +35,16 @@ class Router extends Component {
   componentWillUnmount() {
     // Stop listening for changes if the Router component unmounts
     this.unlisten();
+    window.removeEventListener('hashchange', this.handleHashChange);
   }
 
   handleRouteChange = (location) => {
-    const route = locationToRoute(location?.location);
+    const route = locationToRoute(location?.location || location);
+    this.setState({ route: route });
+  };
+
+  handleHashChange = () => {
+    const route = locationToRoute(window.location);
     this.setState({ route: route });
   };
 
@@ -44,29 +53,41 @@ class Router extends Component {
     const { children, NotFound } = this.props;
     const { route, defaultRoute } = this.state;
 
-    if (!route.hash) {
-      history.push(defaultRoute);
-      return <div></div>;
+    console.log('Router render - route:', route, 'defaultRoute:', defaultRoute);
+
+    // If no hash or empty hash, set to default route
+    let currentRoute = route;
+    if (!route.hash || route.hash === '#' || route.hash === '') {
+      currentRoute = {
+        ...route,
+        hash: `#${this.props.defaultRoute}`
+      };
+      // Update the URL hash without triggering a page reload
+      window.location.hash = `#${this.props.defaultRoute}`;
     }
 
     let matched = false;
-    // match route
-    (this.routes || []).forEach((name) => {
-      const checkMatch = match(route.hash.substr(1));
-      const isMatched = checkMatch(`${route.hash.substr(1)}`);
-      if (!isMatched) {
-        return;
+    // match route - find the first matching route
+    for (const routePath of this.routes || []) {
+      const checkMatch = match(routePath);
+      const hashPath = currentRoute.hash.substr(1);
+      const isMatched = checkMatch(hashPath);
+      console.log(`Router matching ${routePath} against ${hashPath}:`, isMatched);
+      if (isMatched) {
+        matched = {
+          name: routePath,
+          data: isMatched,
+        };
+        break; // Only match the first route
       }
-      matched = {
-        name,
-        data: isMatched,
-      };
-    });
+    }
 
-    const routerContextValue = { route, matched };
+    const routerContextValue = { route: currentRoute, matched };
 
     // Check if 404 if no route matched
     const is404 = !matched;
+    
+    console.log('Router final state - matched:', matched, 'is404:', is404);
 
     return (
       <RouterContext.Provider value={routerContextValue}>

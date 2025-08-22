@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Topbar, Button, Badge, DropdownMenu } from "@bsf/force-ui";
 import {
 	ArrowUpRight,
@@ -10,12 +10,12 @@ import {
 } from "lucide-react";
 import { __ } from "@wordpress/i18n";
 import { routes } from "../admin/settings/routes";
-import { Link } from "../router/index";
+import { Link, RouterContext } from "../router/index";
 
 function updateNavMenuActiveState() {
 	const currentPath = window.location.hash;
 	const menuItems = document.querySelectorAll(
-		"#adminmenu #toplevel_page_hfe a"
+		"#adminmenu #toplevel_page_surefeedback a"
 	);
 
 	menuItems.forEach((item) => {
@@ -26,7 +26,8 @@ function updateNavMenuActiveState() {
 		if (
 			href &&
 			(currentPath.includes(href.split("#")[1]) ||
-				("#surefeedback-dashboard" === currentPath && itemText === "Dashboard"))
+				("#dashboard" === currentPath && itemText === "Dashboard") ||
+				("#settings" === currentPath && itemText === "Settings"))
 		) {
 			parentLi.classList.add("current");
 		} else {
@@ -37,6 +38,7 @@ function updateNavMenuActiveState() {
 
 const NavMenu = () => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const { route } = useContext(RouterContext);
 
 	useEffect(() => {
 		updateNavMenuActiveState();
@@ -45,12 +47,12 @@ const NavMenu = () => {
 		return () => {
 			window.removeEventListener("hashchange", updateNavMenuActiveState);
 		};
-	}, []);
+	}, [route]);
 
 	// Get the current URL's hash part (after the #).
-	const currentPath = window.location.hash;
+	const currentPath = route.hash.substr(1);
 
-	const isActive = (path) => currentPath.includes(path);
+	const isActive = (path) => currentPath === path;
 
 	const linkStyle = (path) => ({
 		color: isActive(path) ? "#111827" : "#4B5563",
