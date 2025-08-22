@@ -194,7 +194,7 @@
   @apply hidden;
 }
 
-.wp-admin #surefeedback-admin {
+.wp-admin #surefeedback-dashboard-app {
   @apply m-0 p-0;
 }
 

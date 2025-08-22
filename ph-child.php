@@ -479,7 +479,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			
 			// Check if built React dashboard assets exist
 			$js_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/dashboard.js';
-			$css_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/dashboard.css';
+			$css_file = PH_CHILD_PLUGIN_DIR . 'assets/dist/admin.css';
 
 			if ( file_exists( $js_file ) ) {
 				wp_enqueue_script(
@@ -510,7 +510,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $css_file ) ) {
 				wp_enqueue_style(
 					'surefeedback-dashboard',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/dashboard.css',
+					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.css',
 					array(),
 					filemtime( $css_file )
 				);
