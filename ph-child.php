@@ -503,6 +503,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						'admin_url'        => admin_url(),
 						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
 						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+						'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
+						'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
 					)
 				);
 			}

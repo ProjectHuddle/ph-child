@@ -80,12 +80,12 @@ const NavMenu = () => {
 					<Topbar.Left>
 						<Topbar.Item>
 							<Link to={routes.dashboard.path}>
-								{/* <img
-									src={`${hfeSettingsData.icon_url}`}
+								<img
+									src={`${sureFeedbackAdmin.icon_url}`}
 									alt="Icon"
 									className="ml-4 cursor-pointer"
 									style={{ height: "35px", width: "35px" }}
-								/> */}
+								/>
 							</Link>
 						</Topbar.Item>
 					</Topbar.Left>
