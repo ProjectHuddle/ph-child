@@ -22,6 +22,7 @@ const ExtendWebsite = () => {
                         'X-WP-Nonce': sureFeedbackAdmin.rest_nonce,
                     },
                 });
+                // console.log({data});
                 const pluginsData = convertToPluginsArray(data);
                 setPlugins(pluginsData);
 

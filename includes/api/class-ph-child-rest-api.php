@@ -9,6 +9,14 @@ if (!defined('ABSPATH')) {
 }
 
 class PH_Child_REST_API {
+
+    /**
+	 * Plugins List
+	 *
+	 * @var get_bsf_plugins_list
+	 */
+	private static $get_bsf_plugins_list = null;
+
     /**
      * Initialize REST API routes
      */
@@ -135,6 +143,21 @@ class PH_Child_REST_API {
 
 		return new WP_REST_Response( $plugins_list, 200 );
 		
+	}
+
+    /**
+	 * Provide General settings array().
+	 *
+	 * @since 2.2.1
+	 * @return array()
+	 */
+	public static function get_bsf_plugins_list() {
+
+		if ( ! isset( self::$get_bsf_plugins_list ) ) {
+			self::$get_bsf_plugins_list = get_bsf_plugins();
+		}
+        var_dump(self::$get_bsf_plugins_list);
+		return self::$get_bsf_plugins_list;
 	}
 }
 
