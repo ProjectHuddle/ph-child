@@ -514,6 +514,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
 						'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
 						'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
+						'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
 					)
 				);
 			}
