@@ -515,6 +515,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
 						'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
 						'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
+						'connection_url'             => PH_CHILD_PLUGIN_URL . 'assets/connection.svg',
 					)
 				);
 			}

@@ -3,6 +3,7 @@ import NavMenu from '../components/NavMenu'
 import WelcomeContainer from '../components/WelcomeContainer'
 import QuickAccess from '../components/QuickAccess'
 import { Container } from "@bsf/force-ui";
+import Connection from './Connection'
 
 const Dashboard = () => {
   console.log('Dashboard component is rendering!');
@@ -36,6 +37,9 @@ const Dashboard = () => {
                     >
                         {/* <UltimateFeatures /> */}
                         <QuickAccess />
+                        <div className="mt-4">
+                          <Connection />
+                        </div>
                     </Container.Item>
                 </Container>
       </div>
