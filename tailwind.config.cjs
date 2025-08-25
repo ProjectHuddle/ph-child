@@ -103,5 +103,5 @@ module.exports = withTW({
   corePlugins: {
     preflight: false,
   },
-  important: '.surefeedback-styles',
+  important: '#surefeedback-dashboard-app .surefeedback-styles',
 })

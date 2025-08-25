@@ -5,7 +5,7 @@ import './assets/tailwind.css'
 
 // Wait for DOM to be ready
 function initApp() {
-  const container = document.getElementById('surefeedback-admin-app')
+  const container = document.getElementById('surefeedback-dashboard-app')
   if (!container) return
   try {
     const root = createRoot(container)

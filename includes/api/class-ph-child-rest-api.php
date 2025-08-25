@@ -9,6 +9,14 @@ if (!defined('ABSPATH')) {
 }
 
 class PH_Child_REST_API {
+
+    /**
+	 * Plugins List
+	 *
+	 * @var get_bsf_plugins_list
+	 */
+	private static $get_bsf_plugins_list = null;
+
     /**
      * Initialize REST API routes
      */
@@ -34,6 +42,16 @@ class PH_Child_REST_API {
                 'permission_callback' => '__return_true',
             )
         ));
+
+        register_rest_route(
+			'surefeedback/v1',
+			'/plugins',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_plugins_list' ],
+				'permission_callback' => array($this, 'verify_access'),
+			]
+		);
     }
 
     public function verify_access($request) {
@@ -101,6 +119,37 @@ class PH_Child_REST_API {
             return $served;
         }, 10, 4);
     }
+
+    /**
+	 * Callback function to return plugins list.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_plugins_list( $request ) {
+		// Fetch branding settings.
+		$plugins_list = get_bsf_plugins_list();
+
+		if ( ! is_array( $plugins_list ) ) {
+			return new WP_REST_Response( [ 'message' => __( 'Plugins list not found', 'ph-child' ) ], 404 );
+		}
+
+		return new WP_REST_Response( $plugins_list, 200 );
+	}
+
+    /**
+	 * Provide General settings array().
+	 *
+	 * @since 2.2.1
+	 * @return array()
+	 */
+	public static function get_bsf_plugins_list() {
+
+		if ( ! isset( self::$get_bsf_plugins_list ) ) {
+			self::$get_bsf_plugins_list = get_bsf_plugins();
+		}
+		return self::$get_bsf_plugins_list;
+	}
 }
 
 // Initialize the REST API
