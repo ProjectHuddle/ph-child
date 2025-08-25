@@ -19,7 +19,7 @@ const ExtendWebsite = () => {
                     path: '/surefeedback/v1/plugins',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-WP-Nonce': sureFeedbackAdmin.rest_nonce,
+                        'X-SureFeedback-Token': sureFeedbackAdmin.access_token,
                     },
                 });
                 // console.log({data});

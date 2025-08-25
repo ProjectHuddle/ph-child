@@ -127,22 +127,14 @@ class PH_Child_REST_API {
 	 * @return WP_REST_Response
 	 */
 	public function get_plugins_list( $request ) {
-
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-
-		if ( ! wp_verify_nonce( $nonce, 'rest_nonce' ) ) {
-			return new WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'header-footer-elementor' ), [ 'status' => 403 ] );
-		}
-
 		// Fetch branding settings.
 		$plugins_list = get_bsf_plugins_list();
 
 		if ( ! is_array( $plugins_list ) ) {
-			return new WP_REST_Response( [ 'message' => __( 'Plugins list not found', 'header-footer-elementor' ) ], 404 );
+			return new WP_REST_Response( [ 'message' => __( 'Plugins list not found', 'ph-child' ) ], 404 );
 		}
 
 		return new WP_REST_Response( $plugins_list, 200 );
-		
 	}
 
     /**
@@ -156,7 +148,6 @@ class PH_Child_REST_API {
 		if ( ! isset( self::$get_bsf_plugins_list ) ) {
 			self::$get_bsf_plugins_list = get_bsf_plugins();
 		}
-        var_dump(self::$get_bsf_plugins_list);
 		return self::$get_bsf_plugins_list;
 	}
 }
