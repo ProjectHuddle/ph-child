@@ -103,7 +103,7 @@ const NavMenu = () => {
 									}`}
 									style={linkStyle("dashboard")}
 								>
-									{__("Dashboard", "header-footer-elementor")}
+									{__("Dashboard", "ph_child")}
 								</Link>
 								<Link
 									to={routes.settings.path}
@@ -114,44 +114,21 @@ const NavMenu = () => {
 									}`}
 									style={linkStyle("settings")}
 								>
-									{__("Settings", "header-footer-elementor")}
+									{__("Settings", "ph_child")}
 								</Link>
 								<Link
-									to={routes.upgrade.path}
+									to={routes.settings.path}
 									className={`${
-										isActive("upgrade") ? "active-link" : ""
+										isActive("settings") ? "active-link" : ""
 									}`}
-									style={linkStyle("upgrade")}
+									style={linkStyle("settings")}
 								>
 									{__(
-										"Free vs Pro",
-										"header-footer-elementor"
+										"Connections",
+										"ph_child"
 									)}
 								</Link>
 							</nav>
-						</Topbar.Item>
-						<Topbar.Item>
-							<Button
-								icon={<ArrowUpRight />}
-								iconPosition="right"
-								variant="ghost"
-								className="ph_child-remove-ring mb-2"
-								style={{
-									color: "#6005FF",
-									// paddingBottom: "10px",
-									background: "none",
-									border: "none",
-									padding: 0,
-									cursor: "pointer",
-								}}
-								onClick={() =>
-									handleRedirect(
-										"https://ultimateelementor.com/pricing/?utm_source=uae-lite-dashboard&utm_medium=navigation-bar&utm_campaign=uae-lite-upgrade"
-									)
-								}
-							>
-								{__("Get Pro", "header-footer-elementor")}
-							</Button>
 						</Topbar.Item>
 					</Topbar.Middle>
 					<Topbar.Right className="gap-4">
@@ -161,7 +138,7 @@ const NavMenu = () => {
 									<Badge
 										label={__(
 											"Free",
-											"header-footer-elementor"
+											"ph_child"
 										)}
 										size="xs"
 										variant="neutral"
@@ -175,7 +152,7 @@ const NavMenu = () => {
 											<DropdownMenu.Item>
 												{__(
 													"Version",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											{/* <DropdownMenu.Item>
@@ -184,7 +161,7 @@ const NavMenu = () => {
 													<Badge
 														label={__(
 															"Free",
-															"header-footer-elementor"
+															"ph_child"
 														)}
 														size="xs"
 														variant="neutral"
@@ -209,7 +186,7 @@ const NavMenu = () => {
 											<DropdownMenu.Item>
 												{__(
 													"Useful Resources",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											<DropdownMenu.Item
@@ -226,7 +203,7 @@ const NavMenu = () => {
 												/>
 												{__(
 													"Getting Started",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											<DropdownMenu.Item
@@ -239,7 +216,7 @@ const NavMenu = () => {
 												<FileText />
 												{__(
 													"How to use widgets",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											<DropdownMenu.Item
@@ -252,7 +229,7 @@ const NavMenu = () => {
 												<FileText />
 												{__(
 													"How to use features",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											<DropdownMenu.Item
@@ -265,7 +242,7 @@ const NavMenu = () => {
 												<FileText />
 												{__(
 													"How to use templates",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 											<DropdownMenu.Item
@@ -278,7 +255,7 @@ const NavMenu = () => {
 												<Headset />
 												{__(
 													"Contact us",
-													"header-footer-elementor"
+													"ph_child"
 												)}
 											</DropdownMenu.Item>
 										</DropdownMenu.List>
