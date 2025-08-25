@@ -66,23 +66,16 @@ const WhiteLabel = () => {
           </Button>
         </div>
       </div>
-      <Container
-        align="stretch"
-        className="flex flex-row w-full"
-        containerType="flex"
-        direction="column"
-        gap="sm"
-        justify="start"
-      >
+  
         <div>
           <Container
             align="stretch"
-            className="flex flex-column p-6 bg-background-primary"
+            className="flex flex-column p-6 rounded-md bg-background-primary"
             containerType="flex"
             direction="column"
             style={{
               padding: "24px",
-              borderRadius: "8px",
+              borderRadius: "8px !important",
             }}
           >
             <Title
@@ -239,7 +232,7 @@ const WhiteLabel = () => {
             </Button>
           </Container>
         </div>
-      </Container>
+      
     </div>
   );
 };
