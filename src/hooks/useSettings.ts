@@ -285,6 +285,36 @@ export function useSettings() {
     })
   }, [])
 
+  const updateGuestComments = useCallback((enabled: boolean) => {
+    setSettings(prev => ({
+      ...prev,
+      general: {
+        ...prev.general,
+        ph_child_guest_comments_enabled: enabled
+      }
+    }))
+  }, [])
+
+  const updateAdminComments = useCallback((enabled: boolean) => {
+    setSettings(prev => ({
+      ...prev,
+      general: {
+        ...prev.general,
+        ph_child_admin: enabled
+      }
+    }))
+  }, [])
+
+  const updateWhiteLabelField = useCallback((field: keyof typeof initialState.whiteLabel, value: string) => {
+    setSettings(prev => ({
+      ...prev,
+      whiteLabel: {
+        ...prev.whiteLabel,
+        [field]: value
+      }
+    }))
+  }, [])
+
   return {
     // State
     settings,
@@ -307,6 +337,9 @@ export function useSettings() {
     testConnection,
     setActiveTab,
     clearErrors,
-    updateRoleSelection
+    updateRoleSelection,
+    updateGuestComments,
+    updateAdminComments,
+    updateWhiteLabelField
   }
 }

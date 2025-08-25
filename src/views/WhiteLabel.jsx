@@ -1,10 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Container, Title, Button, Switch, Loader } from "@bsf/force-ui";
 import { LoaderCircle, FileText } from "lucide-react";
-import apiFetch from "@wordpress/api-fetch";
 import { __ } from "@wordpress/i18n";
+import { useSettings } from '../hooks/useSettings';
 
 const WhiteLabel = () => {
+  const {
+    settings,
+    loading,
+    saving,
+    errors,
+    loadSettings,
+    saveWhiteLabelSettings,
+    updateWhiteLabelField,
+    clearErrors
+  } = useSettings();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  const handleInputChange = (field, value) => {
+    updateWhiteLabelField(field, value);
+  };
+
+  const handleSaveChanges = async () => {
+    setIsLoading(true);
+    const success = await saveWhiteLabelSettings();
+    setIsLoading(false);
+    
+    if (success) {
+      // Show success message or notification if needed
+    }
+  };
   return (
     <div className="rounded-lg">
       <div
@@ -12,12 +42,11 @@ const WhiteLabel = () => {
         style={{ paddingBottom: "24px" }}
       >
         <Title
-          description=""
           icon={null}
           iconPosition="right"
           size="sm"
           tag="h2"
-          title={__("White Label", "uael")}
+          title={__("White Label", "ph-child")}
         />
 
         <div
@@ -29,14 +58,17 @@ const WhiteLabel = () => {
             style={{ backgroundColor: "#6005ff", position: "relative" }}
             className="flex items-center justify-center"
             iconPosition="left"
+            onClick={handleSaveChanges}
+            disabled={saving || isLoading}
           >
-            Save
+            {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+            {__("Save", "ph-child")}
           </Button>
         </div>
       </div>
       <Container
         align="stretch"
-        className="flex flex-row"
+        className="flex flex-row w-full"
         containerType="flex"
         direction="column"
         gap="sm"
@@ -56,7 +88,7 @@ const WhiteLabel = () => {
             <Title
               size="sm"
               tag="h2"
-              title={__("Plugins Details", "uael")}
+              title={__("Plugins Details", "ph-child")}
               description={__(
                 "You can change the author name and plugin details that are displayed in the WordPress backend.",
                 "uael"
@@ -64,133 +96,118 @@ const WhiteLabel = () => {
             />
             <Container.Item className="flex flex-col w-full space-y-1 space-x-2">
               <div className="text-base text-field-label font-semibold m-0">
-                Plugin Name
+                {__("Plugin Name", "ph-child")}
               </div>
               <input
-                label={__("Plugin Description:", "uael")}
-                name="description"
+                name="ph_child_plugin_name"
                 type="text"
                 className="w-full border border-subtle"
-                // value={settings.description}
-                // onChange={(e) => handleChange(e.target.name, e.target.value)}
-                placeholder={__(
-                  "Ultimate Addons is a premium extension for Elementor...",
-                  "uael"
-                )}
+                value={settings.whiteLabel.ph_child_plugin_name || ''}
+                onChange={(e) => handleInputChange('ph_child_plugin_name', e.target.value)}
+                placeholder={__("SureFeedback Client Site", "ph-child")}
+                disabled={saving}
                 style={{
                   height: "48px",
-                  borderColor: "#e0e0e0", // Default border color
-                  outline: "none", // Removes the default outline
+                  borderColor: "#e0e0e0",
+                  outline: "none",
                   boxShadow: "none",
-                  marginTop: "16px", // Removes the default box shadow
+                  marginTop: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#6005FF")} // Apply focus color
-                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")} // Revert to default color
+                onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
+                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
               />
             </Container.Item>
             <Container.Item className="flex flex-col w-full space-y-1 space-x-2">
               <div className="text-base text-field-label font-semibold m-0">
-                Plugin Description
+                {__("Plugin Description", "ph-child")}
               </div>
-              <input
-                label={__("Plugin Description:", "uael")}
-                name="description"
-                type="text"
-                className="w-full border border-subtle"
-                // value={settings.description}
-                // onChange={(e) => handleChange(e.target.name, e.target.value)}
-                placeholder={__(
-                  "Ultimate Addons is a premium extension for Elementor...",
-                  "uael"
-                )}
+              <textarea
+                name="ph_child_plugin_description"
+                className="w-full border border-subtle resize-none"
+                value={settings.whiteLabel.ph_child_plugin_description || ''}
+                onChange={(e) => handleInputChange('ph_child_plugin_description', e.target.value)}
+                placeholder={__("Collect feedback from client websites and sync with SureFeedback parent project", "ph-child")}
+                disabled={saving}
+                rows={3}
                 style={{
                   height: "88px",
-                  borderColor: "#e0e0e0", // Default border color
-                  outline: "none", // Removes the default outline
+                  borderColor: "#e0e0e0",
+                  outline: "none",
                   boxShadow: "none",
-                  marginTop: "16px", // Removes the default box shadow
+                  marginTop: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#6005FF")} // Apply focus color
-                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")} // Revert to default color
+                onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
+                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
               />
             </Container.Item>
             <Container.Item className="flex flex-col w-full space-y-1 space-x-2">
               <div className="text-base text-field-label font-semibold m-0">
-                Plugin Author
+                {__("Plugin Author", "ph-child")}
               </div>
               <input
-                label={__("Plugin Author:", "uael")}
-                name="description"
+                name="ph_child_plugin_author"
                 type="text"
                 className="w-full border border-subtle"
-                // value={settings.description}
-                // onChange={(e) => handleChange(e.target.name, e.target.value)}
-                placeholder={__(
-                  "Ultimate Addons is a premium extension for Elementor...",
-                  "uael"
-                )}
+                value={settings.whiteLabel.ph_child_plugin_author || ''}
+                onChange={(e) => handleInputChange('ph_child_plugin_author', e.target.value)}
+                placeholder={__("Your Agency Name", "ph-child")}
+                disabled={saving}
                 style={{
                   height: "48px",
-                  borderColor: "#e0e0e0", // Default border color
-                  outline: "none", // Removes the default outline
+                  borderColor: "#e0e0e0",
+                  outline: "none",
                   boxShadow: "none",
-                  marginTop: "16px", // Removes the default box shadow
+                  marginTop: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#6005FF")} // Apply focus color
-                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")} // Revert to default color
+                onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
+                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
               />
             </Container.Item>
             <Container.Item className="flex flex-col w-full space-y-1 space-x-2">
               <div className="text-base text-field-label font-semibold m-0">
-                Plugin Author URL
+                {__("Author URL", "ph-child")}
               </div>
               <input
-                label={__("Plugin Author URL:", "uael")}
-                name="Author URL"
-                type="text"
+                name="ph_child_plugin_author_url"
+                type="url"
                 className="w-full border border-subtle"
-                // value={settings.description}
-                // onChange={(e) => handleChange(e.target.name, e.target.value)}
-                placeholder={__(
-                  "Ultimate Addons is a premium extension for Elementor...",
-                  "uael"
-                )}
+                value={settings.whiteLabel.ph_child_plugin_author_url || ''}
+                onChange={(e) => handleInputChange('ph_child_plugin_author_url', e.target.value)}
+                placeholder={__("https://youragency.com", "ph-child")}
+                disabled={saving}
                 style={{
                   height: "48px",
-                  borderColor: "#e0e0e0", // Default border color
-                  outline: "none", // Removes the default outline
+                  borderColor: "#e0e0e0",
+                  outline: "none",
                   boxShadow: "none",
-                  marginTop: "16px", // Removes the default box shadow
+                  marginTop: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#6005FF")} // Apply focus color
-                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")} // Revert to default color
+                onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
+                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
               />
             </Container.Item>
 
             <Container.Item className="flex flex-col w-full space-y-1 space-x-2">
               <div className="text-base text-field-label font-semibold m-0">
-                Plugin Link
+                {__("Plugin URL", "ph-child")}
               </div>
               <input
-                label={__("Plugin Link:", "uael")}
-                name="Link"
-                type="text"
+                name="ph_child_plugin_link"
+                type="url"
                 className="w-full border border-subtle"
-                // value={settings.description}
-                // onChange={(e) => handleChange(e.target.name, e.target.value)}
-                placeholder={__(
-                  "Ultimate Addons is a premium extension for Elementor...",
-                  "uael"
-                )}
+                value={settings.whiteLabel.ph_child_plugin_link || ''}
+                onChange={(e) => handleInputChange('ph_child_plugin_link', e.target.value)}
+                placeholder={__("https://youragency.com/feedback-solution", "ph-child")}
+                disabled={saving}
                 style={{
                   height: "48px",
-                  borderColor: "#e0e0e0", // Default border color
-                  outline: "none", // Removes the default outline
+                  borderColor: "#e0e0e0",
+                  outline: "none",
                   boxShadow: "none",
-                  marginTop: "16px", // Removes the default box shadow
+                  marginTop: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#6005FF")} // Apply focus color
-                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")} // Revert to default color
+                onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
+                onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
               />
             </Container.Item>
 
@@ -203,13 +220,22 @@ const WhiteLabel = () => {
               }}
             />
 
+            {errors.whiteLabel && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-600">{errors.whiteLabel}</p>
+              </div>
+            )}
+
             <Button
               type="submit"
               style={{ backgroundColor: "#0017E1", marginTop: "14px" }}
               iconPosition="left"
-              className="sticky uavc-remove-ring w-4/12"
+              className="sticky w-4/12"
+              onClick={handleSaveChanges}
+              disabled={saving || isLoading}
             >
-              {__("Save Changes", "ultimate_vc")}
+              {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+              {__("Save Changes", "ph-child")}
             </Button>
           </Container>
         </div>

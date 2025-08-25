@@ -1,23 +1,71 @@
 import React, { useState, useEffect } from "react";
 import { Button, Title, Container, Switch } from "@bsf/force-ui";
 import { __ } from "@wordpress/i18n";
-// import apiFetch from "@wordpress/api-fetch";
 import { LoaderCircle } from "lucide-react";
+import { useSettings } from '../hooks/useSettings';
 
 const GeneralSettings = () => {
+  const {
+    settings,
+    availableRoles,
+    loading,
+    saving,
+    errors,
+    loadSettings,
+    saveGeneralSettings,
+    updateRoleSelection,
+    updateGuestComments,
+    updateAdminComments,
+    clearErrors
+  } = useSettings();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (availableRoles.length === 0) {
+      loadSettings();
+    }
+  }, [availableRoles.length, loadSettings]);
+
+  const handleRoleChange = async (roleName, selected) => {
+    updateRoleSelection(roleName, selected);
+    // Auto-save the setting immediately
+    await saveGeneralSettings();
+  };
+
+  const handleGuestCommentsChange = async (checked) => {
+    updateGuestComments(checked);
+    // Auto-save the setting immediately
+    await saveGeneralSettings();
+  };
+
+  const handleAdminCommentsChange = async (checked) => {
+    updateAdminComments(checked);
+    // Auto-save the setting immediately
+    await saveGeneralSettings();
+  };
+
+  const handleSaveChanges = async () => {
+    setIsLoading(true);
+    const success = await saveGeneralSettings();
+    setIsLoading(false);
+    
+    if (success) {
+      // Show success message or notification if needed
+    }
+  };
+
   return (
     <>
       <Title
-        description=""
         icon={null}
         iconPosition="right"
         size="sm"
         tag="h2"
-        title={__("General Settings", "ultimate_vc")}
+        title={__("General Settings", "ph-child")}
         description={__(
-          "Manage global preferences for your SureFeedback workspace, including branding, access controls, notifications, and default project configurations.",
-          "ultimate_vc"
+          "Configure user permissions and commenting features",
+          "ph-child"
         )}
       />
       <div
@@ -33,52 +81,23 @@ const GeneralSettings = () => {
             iconPosition="right"
             size="xs"
             tag="h2"
-            title={__("Enable Access", "ultimate_vc")}
+            title={__("User Permissions", "ph-child")}
           />
           <div
             style={{ marginTop: "15px" }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4"
           >
-            <label className="flex items-center space-x-2 text-base text-black font-medium">
-              <input
-                type="checkbox"
-                className="role-checkbox uavc-remove-ring"
-                checked={false}
-              />
-              <span className="text-sm">Administrator</span>
-            </label>
-            <label className="flex items-center space-x-2 text-base text-black font-medium">
-              <input
-                type="checkbox"
-                className="role-checkbox uavc-remove-ring"
-                checked={false}
-              />
-              <span className="text-sm">Editor</span>
-            </label>
-            <label className="flex items-center space-x-2 text-base text-black font-medium">
-              <input
-                type="checkbox"
-                className="role-checkbox uavc-remove-ring"
-                checked={false}
-              />
-              <span className="text-sm">Author</span>
-            </label>
-            <label className="flex items-center space-x-2 text-base text-black font-medium">
-              <input
-                type="checkbox"
-                className="role-checkbox uavc-remove-ring"
-                checked={false}
-              />
-              <span className="text-sm">Contributor</span>
-            </label>
-            <label className="flex items-center space-x-2 text-base text-black font-medium">
-              <input
-                type="checkbox"
-                className="role-checkbox uavc-remove-ring"
-                checked={false}
-              />
-              <span className="text-sm">Subscriber</span>
-            </label>
+            {availableRoles.map((role) => (
+              <label key={role.name} className="flex items-center space-x-2 text-base text-black font-medium">
+                <input
+                  type="checkbox"
+                  className="role-checkbox uavc-remove-ring"
+                  checked={settings.general.ph_child_role_can_comment.includes(role.name)}
+                  onChange={(e) => handleRoleChange(role.name, e.target.checked)}
+                />
+                <span className="text-sm">{role.label}</span>
+              </label>
+            ))}
           </div>
         </div>
         <Container
@@ -92,18 +111,13 @@ const GeneralSettings = () => {
         >
           <Container.Item className="shrink flex flex-col mt-6 space-y-1">
             <div className="text-base font-semibold m-0 mb-2">
-              {__("Guess Comments", "ultimate_vc")}
+              {__("Guest Comments", "ph-child")}
             </div>
             <div
               style={{ color: "#9CA3AF" }}
               className="text-sm font-normal m-0"
             >
-              {sprintf(
-                __(
-                  "Allow visitors to view and add comments on your site without access token",
-                  "ultimate_vc"
-                )
-              )}
+              {__("Allow non-logged in visitors to view and add comments", "ph-child")}
             </div>
           </Container.Item>
           <Container.Item
@@ -114,8 +128,8 @@ const GeneralSettings = () => {
           >
             <Switch
               size="md"
-              //   value={combinedCssEnabled}
-              //   onChange={handleCombinedCssSwitch}
+              value={settings.general.ph_child_guest_comments_enabled}
+              onChange={handleGuestCommentsChange}
             />
           </Container.Item>
         </Container>
@@ -140,18 +154,13 @@ const GeneralSettings = () => {
         >
           <Container.Item className="shrink flex flex-col space-y-1">
             <div className="text-base font-semibold m-0 mb-2">
-              {__("Admin", "ultimate_vc")}
+              {__("Admin Area Comments", "ph-child")}
             </div>
             <div
               style={{ color: "#9CA3AF" }}
               className="text-sm font-normal m-0"
             >
-              {sprintf(
-                __(
-                  "Allow commenting in your site’s Wordpress dashboard area",
-                  "ultimate_vc"
-                )
-              )}
+              {__("Enable commenting on WordPress admin pages", "ph-child")}
             </div>
           </Container.Item>
           <Container.Item
@@ -162,8 +171,8 @@ const GeneralSettings = () => {
           >
             <Switch
               size="md"
-              //   value={combinedJsEnabled}
-              //   onChange={handleCombinedJsSwitch}
+              value={settings.general.ph_child_admin}
+              onChange={handleAdminCommentsChange}
             />
           </Container.Item>
         </Container>
@@ -177,13 +186,22 @@ const GeneralSettings = () => {
           }}
         />
 
+        {errors.general && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">{errors.general}</p>
+          </div>
+        )}
+
         <Button
           type="submit"
           style={{ backgroundColor: "#0017E1", marginTop: "14px" }}
           iconPosition="left"
           className="w-full sticky uavc-remove-ring"
+          onClick={handleSaveChanges}
+          disabled={saving || isLoading}
         >
-          {__("Save Changes", "ultimate_vc")}
+          {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+          {__("Save Changes", "ph-child")}
         </Button>
       </div>
     </>
