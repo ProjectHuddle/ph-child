@@ -5,7 +5,9 @@
       "Bash(npm run build:*)",
       "Bash(grep:*)",
       "Bash(npm run type-check:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(unzip:*)",
+      "Bash(php artisan:*)"
     ],
     "deny": [],
     "ask": [],

@@ -67,6 +67,7 @@ class PH_Child_Loader {
 		// API classes
 		require_once $this->plugin_path . 'includes/api/class-ph-child-rest-api.php';
 		require_once $this->plugin_path . 'includes/admin/class-ph-child-admin-api.php';
+		require_once $this->plugin_path . 'includes/admin/class-ph-child-connection-handler.php';
 	}
 
 	/**

@@ -68,6 +68,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * Get things going
 		 */
 		public function __construct() {
+			// Add CORS headers for asset requests
+			add_action( 'send_headers', array( $this, 'add_cors_headers' ) );
+			
+			// Add admin notices for connection status
+			add_action( 'admin_notices', array( $this, 'show_connection_notices' ) );
+			
 			if ( defined( 'PH_VERSION' ) ) {
 				add_action( 'admin_notices', array( $this, 'parent_plugin_activated_error_notice' ) );
 				return;
@@ -97,6 +103,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'ph_child_installed'    => array(
 					'description'       => __( 'Is the plugin installed?', 'ph-child' ),
 					'sanitize_callback' => 'boolval',
+				),
+				'ph_child_connected'    => array(
+					'description'       => __( 'Is the plugin connected to SureFeedback SaaS?', 'ph-child' ),
+					'sanitize_callback' => 'boolval',
+				),
+				'ph_child_connected_email' => array(
+					'description'       => __( 'Email address used for connection.', 'ph-child' ),
+					'sanitize_callback' => 'sanitize_email',
 				),
 			);
 
@@ -430,6 +444,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'surefeedback#connection', // Menu slug
 				array( $this, 'main_page' ) // Function
 			);
+
+			// Add settings submenu
+			add_submenu_page(
+				'surefeedback', // Parent slug
+				__( 'Connect', 'ph-child' ), // Page title
+				__( 'Connect', 'ph-child' ), // Menu title
+				'manage_options', // Capability
+				'surefeedback#connect', // Menu slug
+				array( $this, 'main_page' ) // Function
+			);
 			
 			// Keep the old settings page for backward compatibility
 			add_options_page(
@@ -512,20 +536,26 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				// Add module type for ES6 imports
 				add_filter( 'script_loader_tag', array( $this, 'add_module_type_to_dashboard_script' ), 10, 3 );
 
+				// Get connection data
+				$connection_data = PH_Child_Connection_Handler::get_connection_data();
+				
 				// Localize script with WordPress data
 				wp_localize_script(
 					'surefeedback-dashboard',
 					'sureFeedbackAdmin',
-					array(
-						'rest_url'         => rest_url(),
-						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
-						'admin_url'        => admin_url(),
-						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
-						'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
-						'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
-						'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
-						'connection_url'             => PH_CHILD_PLUGIN_URL . 'assets/connection.svg',
+					array_merge(
+						array(
+							'rest_url'         => rest_url(),
+							'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
+							'admin_url'        => admin_url(),
+							'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+							'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+							'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
+							'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
+							'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
+							'connection_url'             => PH_CHILD_PLUGIN_URL . 'assets/connection.svg',
+						),
+						$connection_data
 					)
 				);
 			}
@@ -1130,16 +1160,22 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				// Add module type for ES6 imports
 				add_filter( 'script_loader_tag', array( $this, 'add_module_type_to_admin_script' ), 10, 3 );
 
+				// Get connection data
+				$connection_data = PH_Child_Connection_Handler::get_connection_data();
+				
 				// Localize script with WordPress data
 				wp_localize_script(
 					'surefeedback-admin',
 					'sureFeedbackAdmin',
-					array(
-						'rest_url'         => rest_url(),
-						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
-						'admin_url'        => admin_url(),
-						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
-						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+					array_merge(
+						array(
+							'rest_url'         => rest_url(),
+							'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
+							'admin_url'        => admin_url(),
+							'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+							'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+						),
+						$connection_data
 					)
 				);
 			}
@@ -1265,6 +1301,43 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				})(document, 'script', '<?php echo esc_url_raw( "//$url" ); ?>', 'ph_access_token');
 			</script>
 			<?php
+		}
+
+		/**
+		 * Add CORS headers for asset requests to handle different ports
+		 *
+		 * @return void
+		 */
+		public function add_cors_headers() {
+			// Only add CORS headers for our plugin assets
+			if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], '/wp-content/plugins/ph-child/assets/' ) !== false ) {
+				header( 'Access-Control-Allow-Origin: *' );
+				header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
+				header( 'Access-Control-Allow-Headers: Content-Type' );
+			}
+		}
+
+		/**
+		 * Show connection status notices
+		 *
+		 * @return void
+		 */
+		public function show_connection_notices() {
+			if ( ! isset( $_GET['connection'] ) ) {
+				return;
+			}
+
+			$connection_status = sanitize_text_field( $_GET['connection'] );
+			
+			if ( 'success' === $connection_status ) {
+				echo '<div class="notice notice-success is-dismissible"><p>';
+				esc_html_e( 'Successfully connected to SureFeedback!', 'ph-child' );
+				echo '</p></div>';
+			} elseif ( 'denied' === $connection_status ) {
+				echo '<div class="notice notice-error is-dismissible"><p>';
+				esc_html_e( 'Connection to SureFeedback was denied. Please try again.', 'ph-child' );
+				echo '</p></div>';
+			}
 		}
 	}
 

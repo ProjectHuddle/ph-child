@@ -5,6 +5,9 @@ export const routes = {
     settings: {
         path: "settings",
     },
+      connect: {
+        path: "connect",
+    },
     connection: {
         path: "connection",
     },
