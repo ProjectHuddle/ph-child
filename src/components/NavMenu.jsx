@@ -117,11 +117,11 @@ const NavMenu = () => {
 									{__("Settings", "ph_child")}
 								</Link>
 								<Link
-									to={routes.settings.path}
+									to={routes.connection.path}
 									className={`${
-										isActive("settings") ? "active-link" : ""
+										isActive("connection") ? "active-link" : ""
 									}`}
-									style={linkStyle("settings")}
+									style={linkStyle("connection")}
 								>
 									{__(
 										"Connections",

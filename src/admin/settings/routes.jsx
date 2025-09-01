@@ -5,6 +5,9 @@ export const routes = {
     settings: {
         path: "settings",
     },
+    connection: {
+        path: "connection",
+    },
     upgrade: {
         path: "upgrade",
     },

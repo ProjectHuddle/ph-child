@@ -420,6 +420,16 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'surefeedback#settings', // Menu slug
 				array( $this, 'main_page' ) // Function
 			);
+
+			// Add settings submenu
+			add_submenu_page(
+				'surefeedback', // Parent slug
+				__( 'Connection', 'ph-child' ), // Page title
+				__( 'Connection', 'ph-child' ), // Menu title
+				'manage_options', // Capability
+				'surefeedback#connection', // Menu slug
+				array( $this, 'main_page' ) // Function
+			);
 			
 			// Keep the old settings page for backward compatibility
 			add_options_page(
