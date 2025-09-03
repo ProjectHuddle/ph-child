@@ -1,0 +1,370 @@
+<?php
+/**
+ * Connection Handler.
+ * 
+ * Handles SureFeedback SaaS connection authentication and callback
+ * 
+ * @package SureFeedback Child
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * PH_Child_Connection_Handler Class
+ * 
+ * Handles connection authentication with SureFeedback SaaS platform
+ * 
+ * @since 1.0.0
+ */
+class PH_Child_Connection_Handler {
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		add_action( 'admin_init', array( $this, 'handle_connection_callback' ) );
+		add_action( 'wp_ajax_sf_disconnect', array( $this, 'handle_disconnect' ) );
+	}
+
+	/**
+	 * Handle SureFeedback connection callback
+	 * 
+	 * Processes the return from SureFeedback SaaS after authentication
+	 * 
+	 * @return void
+	 */
+	public function handle_connection_callback() {
+		// Check if this is a SureFeedback connection callback
+		if ( ! isset( $_GET['surefeedback-connect-nonce'] ) || ! isset( $_GET['connection-status'] ) ) {
+			return;
+		}
+
+		// Verify nonce
+		$nonce = sanitize_text_field( wp_unslash( $_GET['surefeedback-connect-nonce'] ) );
+		if ( false === wp_verify_nonce( $nonce, 'surefeedback-connect' ) ) {
+			return;
+		}
+
+		// Check user permissions
+		if ( false === current_user_can( 'administrator' ) ) {
+			return;
+		}
+
+		// Get connection parameters
+		$connection_status = (bool) sanitize_text_field( wp_unslash( $_GET['connection-status'] ) );
+		$access_key = isset( $_GET['surefeedback-access-key'] ) ? sanitize_text_field( wp_unslash( $_GET['surefeedback-access-key'] ) ) : false;
+		$connected_email = isset( $_GET['connected_email'] ) ? sanitize_email( wp_unslash( $_GET['connected_email'] ) ) : '';
+		$project_id = isset( $_GET['project_id'] ) ? intval( $_GET['project_id'] ) : 0;
+		$api_key = isset( $_GET['api_key'] ) ? sanitize_text_field( wp_unslash( $_GET['api_key'] ) ) : '';
+		$parent_url = isset( $_GET['parent_url'] ) ? esc_url( wp_unslash( $_GET['parent_url'] ) ) : '';
+		$script_token = isset( $_GET['script_token'] ) ? sanitize_text_field( wp_unslash( $_GET['script_token'] ) ) : '';
+
+		// Handle connection denial
+		if ( false === $connection_status ) {
+			$access_key = 'connection-denied';
+		}
+
+		// Save connection data
+		if ( $access_key ) {
+			update_option( 'ph_child_access_token', $access_key );
+		}
+
+		if ( $connected_email ) {
+			update_option( 'ph_child_connected_email', $connected_email );
+		}
+
+		if ( $project_id > 0 ) {
+			update_option( 'ph_child_id', $project_id );
+		}
+
+		if ( $api_key ) {
+			update_option( 'ph_child_api_key', $api_key );
+		}
+
+		if ( $parent_url ) {
+			update_option( 'ph_child_parent_url', $parent_url );
+		}
+
+		if ( $script_token ) {
+			update_option( 'ph_child_script_token', $script_token );
+		}
+
+		// Mark as installed and connected
+		if ( $connection_status && $access_key !== 'connection-denied' ) {
+			update_option( 'ph_child_installed', true );
+			update_option( 'ph_child_connected', true );
+			
+			// Automatically inject SureFeedback script after successful connection
+			if ( $script_token ) {
+				$this->inject_surefeedback_script( $script_token, $parent_url );
+			}
+		} else {
+			update_option( 'ph_child_connected', false );
+		}
+
+		// Redirect to admin page
+		$redirect_url = admin_url( 'admin.php?page=surefeedback' );
+		if ( $connection_status && $access_key !== 'connection-denied' ) {
+			$redirect_url = add_query_arg( 'connection', 'success', $redirect_url );
+		} else {
+			$redirect_url = add_query_arg( 'connection', 'denied', $redirect_url );
+		}
+
+		wp_safe_redirect( $redirect_url );
+		exit;
+	}
+
+	/**
+	 * Handle disconnect request via AJAX
+	 * 
+	 * @return void
+	 */
+	public function handle_disconnect() {
+		// Verify nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'ph-child-site-disconnect-nonce' ) ) {
+			wp_send_json_error( 'Invalid nonce' );
+		}
+
+		// Check user permissions
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'Insufficient permissions' );
+		}
+
+		// Clear connection data
+		delete_option( 'ph_child_access_token' );
+		delete_option( 'ph_child_connected' );
+		delete_option( 'ph_child_connected_email' );
+		delete_option( 'ph_child_id' );
+		delete_option( 'ph_child_api_key' );
+		delete_option( 'ph_child_parent_url' );
+		delete_option( 'ph_child_script_token' );
+
+		// Remove SureFeedback script from functions.php
+		$this->remove_surefeedback_script();
+
+		wp_send_json_success( 'Disconnected successfully' );
+	}
+
+	/**
+	 * Get connection status
+	 * 
+	 * @return bool True if connected, false otherwise
+	 */
+	public static function is_connected() {
+		$access_token = get_option( 'ph_child_access_token', '' );
+		$connected = get_option( 'ph_child_connected', false );
+		
+		return $connected && ! empty( $access_token ) && 'connection-denied' !== $access_token;
+	}
+
+	/**
+	 * Get connection data for frontend
+	 * 
+	 * @return array Connection data
+	 */
+	public static function get_connection_data() {
+		return array(
+			'connectUrl'    => self::get_connect_url(),
+			'connectNonce'  => wp_create_nonce( 'surefeedback-connect' ),
+			'siteUrl'       => site_url(),
+			'siteTitle'     => get_bloginfo( 'name' ),
+			'sourceType'    => 'surefeedback-plugin',
+			'accessKey'     => get_option( 'ph_child_access_token', '' ),
+			'connected'     => self::is_connected(),
+			'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
+			'scriptToken'   => get_option( 'ph_child_script_token', '' ),
+			'scriptInjected' => self::is_script_injected(),
+		);
+	}
+
+	/**
+	 * Get SureFeedback SaaS connection URL
+	 * 
+	 * @return string Connection URL
+	 */
+	private static function get_connect_url() {
+		// Use environment-specific URL
+		if ( defined( 'SUREFEEDBACK_CONNECT_URL' ) ) {
+			return SUREFEEDBACK_CONNECT_URL;
+		}
+		
+		// For local development - you may need to adjust this URL
+		// to match your actual SureFeedback Laravel instance
+		$local_development_url = 'http://127.0.0.1:8001/connect-sf/connect';
+		
+		// Check if we're in a local environment
+		$is_local = in_array( $_SERVER['SERVER_NAME'], array( 'localhost', '127.0.0.1' ) ) 
+		           || strpos( $_SERVER['SERVER_NAME'], '.local' ) !== false;
+		
+		if ( $is_local ) {
+			return $local_development_url;
+		}
+		
+		// Production SureFeedback SaaS URL
+		return 'https://app.surefeedback.com/connect-sf/connect';
+	}
+
+	/**
+	 * Inject SureFeedback script into active theme's functions.php
+	 * 
+	 * @param string $script_token Script token for the site
+	 * @param string $parent_url SureFeedback SaaS URL
+	 * @return bool True on success, false on failure
+	 */
+	private function inject_surefeedback_script( $script_token, $parent_url ) {
+		// Get the current theme's functions.php path
+		$theme_path = get_template_directory();
+		$functions_php = $theme_path . '/functions.php';
+
+		// Check if functions.php exists and is writable
+		if ( ! file_exists( $functions_php ) || ! is_writable( $functions_php ) ) {
+			return false;
+		}
+
+		// Get current functions.php content
+		$content = file_get_contents( $functions_php );
+		
+		// Check if SureFeedback script is already present
+		if ( strpos( $content, '// SureFeedback Widget Script - Auto-injected' ) !== false ) {
+			return true; // Already injected
+		}
+
+		// Generate the script content
+		$script_content = $this->generate_surefeedback_script( $script_token, $parent_url );
+
+		// Find the last ?> tag or add to the end
+		if ( strpos( $content, '?>' ) !== false ) {
+			// Insert before the last closing PHP tag
+			$content = str_replace( '?>', $script_content . "\n?>", $content );
+		} else {
+			// Just append to the end if no closing tag
+			$content .= "\n" . $script_content;
+		}
+
+		// Write the updated content back to functions.php
+		$result = file_put_contents( $functions_php, $content );
+
+		return $result !== false;
+	}
+
+	/**
+	 * Remove SureFeedback script from active theme's functions.php
+	 * 
+	 * @return bool True on success, false on failure
+	 */
+	private function remove_surefeedback_script() {
+		// Get the current theme's functions.php path
+		$theme_path = get_template_directory();
+		$functions_php = $theme_path . '/functions.php';
+
+		// Check if functions.php exists and is writable
+		if ( ! file_exists( $functions_php ) || ! is_writable( $functions_php ) ) {
+			return false;
+		}
+
+		// Get current functions.php content
+		$content = file_get_contents( $functions_php );
+
+		// Find and remove SureFeedback script block
+		$start_marker = '// SureFeedback Widget Script - Auto-injected';
+		$end_marker = '// End SureFeedback Widget Script';
+
+		$start_pos = strpos( $content, $start_marker );
+		if ( $start_pos !== false ) {
+			$end_pos = strpos( $content, $end_marker, $start_pos );
+			if ( $end_pos !== false ) {
+				// Include the end marker in removal
+				$end_pos += strlen( $end_marker );
+				
+				// Remove the script block including surrounding newlines
+				$before = rtrim( substr( $content, 0, $start_pos ) );
+				$after = ltrim( substr( $content, $end_pos ) );
+				
+				$content = $before . ( $before && $after ? "\n" : '' ) . $after;
+				
+				// Write the updated content back to functions.php
+				$result = file_put_contents( $functions_php, $content );
+				return $result !== false;
+			}
+		}
+
+		return true; // Nothing to remove or already removed
+	}
+
+	/**
+	 * Generate SureFeedback widget script content
+	 * 
+	 * @param string $script_token Script token
+	 * @param string $parent_url SureFeedback SaaS URL
+	 * @return string Generated script content
+	 */
+	private function generate_surefeedback_script( $script_token, $parent_url ) {
+		// Escape the values for safe insertion
+		$safe_token = esc_js( $script_token );
+		$safe_url = esc_url( $parent_url );
+		
+		// Build the script content as separate parts to avoid PHP parsing issues
+		$script_parts = array();
+		
+		$script_parts[] = '// SureFeedback Widget Script - Auto-injected';
+		$script_parts[] = 'if ( ! function_exists( \'add_surefeedback_widget\' ) ) {';
+		$script_parts[] = '	function add_surefeedback_widget() {';
+		$script_parts[] = '		// Only load on frontend, not in admin or page builders';
+		$script_parts[] = '		if ( is_admin() || ( isset( $_GET[\'elementor-preview\'] ) ) || ( isset( $_GET[\'et_fb\'] ) ) ) {';
+		$script_parts[] = '			return;';
+		$script_parts[] = '		}';
+		$script_parts[] = '		?>';
+		$script_parts[] = '		<script>';
+		$script_parts[] = '		(function() {';
+		$script_parts[] = '			window.SureFeedback = window.SureFeedback || {};';
+		$script_parts[] = '			window.SureFeedback.config = {';
+		$script_parts[] = '				apiToken: \'' . $safe_token . '\',';
+		$script_parts[] = '				baseUrl: \'' . $safe_url . '\',';
+		$script_parts[] = '				position: \'bottom-right\',';
+		$script_parts[] = '				theme: \'light\'';
+		$script_parts[] = '			};';
+		$script_parts[] = '			';
+		$script_parts[] = '			var script = document.createElement(\'script\');';
+		$script_parts[] = '			script.src = \'' . $safe_url . '/widget.js\';';
+		$script_parts[] = '			script.async = true;';
+		$script_parts[] = '			script.onload = function() {';
+		$script_parts[] = '				if (window.SureFeedbackWidget) {';
+		$script_parts[] = '					window.SureFeedbackWidget.init(window.SureFeedback.config);';
+		$script_parts[] = '				}';
+		$script_parts[] = '			};';
+		$script_parts[] = '			document.head.appendChild(script);';
+		$script_parts[] = '		})();';
+		$script_parts[] = '		</script>';
+		$script_parts[] = '		<?php';
+		$script_parts[] = '	}';
+		$script_parts[] = '	add_action( \'wp_footer\', \'add_surefeedback_widget\' );';
+		$script_parts[] = '}';
+		$script_parts[] = '// End SureFeedback Widget Script';
+		
+		return "\n" . implode( "\n", $script_parts );
+	}
+
+	/**
+	 * Check if SureFeedback script is injected in functions.php
+	 * 
+	 * @return bool True if script is injected, false otherwise
+	 */
+	public static function is_script_injected() {
+		$theme_path = get_template_directory();
+		$functions_php = $theme_path . '/functions.php';
+
+		if ( ! file_exists( $functions_php ) ) {
+			return false;
+		}
+
+		$content = file_get_contents( $functions_php );
+		return strpos( $content, '// SureFeedback Widget Script - Auto-injected' ) !== false;
+	}
+}
+
+// Initialize the connection handler
+new PH_Child_Connection_Handler();

@@ -38,6 +38,43 @@ if ( ! defined( 'PH_CHILD_PLUGIN_URL' ) ) {
 	define( 'PH_CHILD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
+/**
+ * Get plugin URL that respects current request port
+ * Fixes CORS issues when WordPress is accessed via non-standard ports
+ * 
+ * @return string Plugin URL with correct port
+ */
+function ph_child_get_plugin_url() {
+	$plugin_url = PH_CHILD_PLUGIN_URL;
+	
+	// If we're accessing WordPress via a non-standard port, update the plugin URL
+	if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['SERVER_PORT'] ) ) {
+		$current_host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+		$server_port = sanitize_text_field( wp_unslash( $_SERVER['SERVER_PORT'] ) );
+		
+		// Parse the plugin URL
+		$parsed_plugin_url = wp_parse_url( $plugin_url );
+		$parsed_current_url = wp_parse_url( home_url() );
+		
+		// If the current request has a different port than the home URL, update the plugin URL
+		if ( $parsed_plugin_url && $parsed_current_url ) {
+			$plugin_host = $parsed_plugin_url['host'] ?? '';
+			$current_url_port = $parsed_current_url['port'] ?? ( ( $parsed_current_url['scheme'] === 'https' ) ? 443 : 80 );
+			
+			// Check if we're accessing via a different port
+			if ( strpos( $current_host, ':' ) !== false && $plugin_host ) {
+				$plugin_url = str_replace( 
+					$plugin_host, 
+					$current_host, 
+					$plugin_url 
+				);
+			}
+		}
+	}
+	
+	return $plugin_url;
+}
+
 // Plugin Root File.
 if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 	define( 'PH_CHILD_PLUGIN_FILE', __FILE__ );
@@ -527,7 +564,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $js_file ) ) {
 				wp_enqueue_script(
 					'surefeedback-dashboard',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.js',
+					ph_child_get_plugin_url() . 'assets/dist/admin.js',
 					array(),
 					filemtime( $js_file ),
 					true
@@ -550,10 +587,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							'admin_url'        => admin_url(),
 							'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
 							'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
-							'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
-							'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
-							'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
-							'connection_url'             => PH_CHILD_PLUGIN_URL . 'assets/connection.svg',
+							'icon_url'             => ph_child_get_plugin_url() . 'assets/project-huddle-icon.png',
+							'welcome_url'             => ph_child_get_plugin_url() . 'assets/Video player.png',
+							'settings_selected_url'             => ph_child_get_plugin_url() . 'assets/settings.svg',
+							'connection_url'             => ph_child_get_plugin_url() . 'assets/connection.svg',
 						),
 						$connection_data
 					)
@@ -563,7 +600,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $css_file ) ) {
 				wp_enqueue_style(
 					'surefeedback-dashboard',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.css',
+					ph_child_get_plugin_url() . 'assets/dist/admin.css',
 					array(),
 					filemtime( $css_file )
 				);
@@ -586,7 +623,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $menu_css ) ) {
 				wp_enqueue_style(
 					'surefeedback-menu-styles',
-					PH_CHILD_PLUGIN_URL . 'assets/admin-menu.css',
+					ph_child_get_plugin_url() . 'assets/admin-menu.css',
 					array(),
 					filemtime( $menu_css )
 				);
@@ -1151,7 +1188,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $js_file ) ) {
 				wp_enqueue_script(
 					'surefeedback-admin',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.js',
+					ph_child_get_plugin_url() . 'assets/dist/admin.js',
 					array(),
 					filemtime( $js_file ),
 					true
@@ -1183,7 +1220,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( file_exists( $css_file ) ) {
 				wp_enqueue_style(
 					'surefeedback-admin',
-					PH_CHILD_PLUGIN_URL . 'assets/dist/admin.css',
+					ph_child_get_plugin_url() . 'assets/dist/admin.css',
 					array(),
 					filemtime( $css_file )
 				);
@@ -1231,6 +1268,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 			// make sure we only load once.
 			if ( $loaded ) {
+				return;
+			}
+
+			// Don't load old widget if new SureFeedback connection handler is active
+			if ( class_exists( 'PH_Child_Connection_Handler' ) && PH_Child_Connection_Handler::is_connected() ) {
+				echo '<!-- SureFeedback: Using new connection system -->';
 				return;
 			}
 

@@ -1,0 +1,87 @@
+// SureFeedback Widget Script - Manual Installation
+// Copy this code to your theme's functions.php file
+
+if ( ! function_exists( 'add_surefeedback_widget' ) ) {
+    function add_surefeedback_widget() {
+        // Only load on frontend, not in admin or page builders
+        if ( is_admin() || ( isset( $_GET['elementor-preview'] ) ) || ( isset( $_GET['et_fb'] ) ) ) {
+            return;
+        }
+        
+        // Get connection data from plugin options
+        $script_token = get_option( 'ph_child_script_token', '' );
+        $api_key = get_option( 'ph_child_api_key', '' );
+        $project_id = get_option( 'ph_child_id', '' );
+        
+        if ( ! $script_token && ! $api_key ) {
+            return; // No connection data available
+        }
+        ?>
+        <script>
+        (function() {
+            // Load SureFeedback widget
+            window.SureFeedback = window.SureFeedback || {};
+            window.SureFeedback.init = function() {
+                var config = {
+                    apiKey: '<?php echo esc_js( $api_key ); ?>',
+                    projectId: '<?php echo esc_js( $project_id ); ?>',
+                    scriptToken: '<?php echo esc_js( $script_token ); ?>',
+                    domain: window.location.hostname,
+                    position: 'bottom-right'
+                };
+                
+                // Create SureFeedback widget
+                var widget = document.createElement('div');
+                widget.id = 'surefeedback-widget';
+                widget.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;';
+                
+                var button = document.createElement('button');
+                button.innerHTML = '💬';
+                button.style.cssText = 'width:50px;height:50px;border-radius:50%;background:#3b82f6;color:white;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 12px rgba(59,130,246,0.3);';
+                
+                button.onclick = function() {
+                    // This would normally open the SureFeedback modal
+                    // For now, show a simple feedback form
+                    var feedback = prompt('Share your feedback:');
+                    if (feedback) {
+                        // Send feedback to SureFeedback API (adjust URL for production)
+                        var apiUrl = window.location.hostname === 'localhost' || window.location.hostname.includes('.local') 
+                            ? 'http://127.0.0.1:8001/api/feedback' 
+                            : 'https://app.surefeedback.com/api/feedback';
+                        
+                        fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-API-Key': config.apiKey
+                            },
+                            body: JSON.stringify({
+                                message: feedback,
+                                url: window.location.href,
+                                project_id: config.projectId,
+                                timestamp: new Date().toISOString()
+                            })
+                        }).then(function(response) {
+                            if (response.ok) {
+                                alert('Thank you for your feedback!');
+                            } else {
+                                alert('Failed to submit feedback. Please try again.');
+                            }
+                        }).catch(function() {
+                            alert('Failed to submit feedback. Please check your connection.');
+                        });
+                    }
+                };
+                
+                widget.appendChild(button);
+                document.body.appendChild(widget);
+            };
+            
+            // Initialize immediately
+            window.SureFeedback.init();
+        })();
+        </script>
+        <?php
+    }
+    add_action( 'wp_footer', 'add_surefeedback_widget' );
+}
