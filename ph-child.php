@@ -328,7 +328,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				delete_option( $name );
 			}
 
-			wp_redirect( admin_url( 'options-general.php?page=feedback-connection-options&tab=connection' ) );
+			wp_redirect( admin_url( 'admin.php?page=surefeedback#connection' ) );
 		}
 
 		/**

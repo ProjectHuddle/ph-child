@@ -1,3 +1,4 @@
+import React from 'react';
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -23,6 +24,7 @@ interface SettingsStoreState extends SettingsState {
   saveConnectionSettings: (settings?: Partial<ConnectionSettings>) => Promise<boolean>;
   saveWhiteLabelSettings: (settings?: Partial<WhiteLabelSettings>) => Promise<boolean>;
   testConnection: (settings?: Partial<ConnectionSettings>) => Promise<boolean>;
+  refreshConnectionStatus: () => void;
   
   // State updates
   updateGeneralSettings: (settings: Partial<GeneralSettings>) => void;
@@ -124,7 +126,17 @@ export const useSettingsStore = create<SettingsStoreState>()(
               draft.general = { ...DEFAULT_GENERAL_SETTINGS, ...general };
               draft.connection = { ...DEFAULT_CONNECTION_SETTINGS, ...connection };
               draft.whiteLabel = { ...DEFAULT_WHITE_LABEL_SETTINGS, ...whiteLabel };
-              draft.connectionStatus = { ...DEFAULT_CONNECTION_STATUS, ...connectionStatus };
+              
+              // Properly determine connection status based on loaded data
+              const hasConnectionData = connection?.ph_child_parent_url && connection?.ph_child_id;
+              const computedConnectionStatus = {
+                connected: !!hasConnectionData,
+                parent_url: connection?.ph_child_parent_url || undefined,
+                project_id: connection?.ph_child_id || undefined,
+                last_verified: connectionStatus?.last_verified || undefined,
+              };
+              
+              draft.connectionStatus = computedConnectionStatus;
               draft.loading = false;
               draft.isDirty = false;
             });
@@ -286,6 +298,18 @@ export const useSettingsStore = create<SettingsStoreState>()(
           return false;
         }
       },
+
+      // Refresh connection status based on current connection data
+      refreshConnectionStatus: () =>
+        set((draft) => {
+          const hasConnectionData = draft.connection.ph_child_parent_url && draft.connection.ph_child_id;
+          draft.connectionStatus = {
+            connected: !!hasConnectionData,
+            parent_url: draft.connection.ph_child_parent_url || undefined,
+            project_id: draft.connection.ph_child_id || undefined,
+            last_verified: draft.connectionStatus.last_verified,
+          };
+        }),
 
       // State update actions
       updateGeneralSettings: (settings: Partial<GeneralSettings>) =>
