@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Title, Button, Switch, Loader } from "@bsf/force-ui";
+import { Container, Title, Button, Switch, Loader, toast, Toaster } from "@bsf/force-ui";
 import { LoaderCircle, FileText } from "lucide-react";
 import { __ } from "@wordpress/i18n";
 import { useSettings } from '../hooks/useSettings';
@@ -32,7 +32,7 @@ const WhiteLabel = () => {
     setIsLoading(false);
     
     if (success) {
-      // Show success message or notification if needed
+      toast.success(__('White label settings saved successfully!', 'ph-child'));
     }
   };
   return (
@@ -213,7 +213,32 @@ const WhiteLabel = () => {
            </div>
           </Container>
         </div>
-      
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={8}
+        containerStyle={{
+          top: 20,
+          right: 20,
+          marginTop: "40px",
+        }}
+        toastOptions={{
+          duration: 1000,
+          style: {
+            background: "white",
+          },
+          success: {
+            duration: 2000,
+            style: {
+              color: "",
+            },
+            iconTheme: {
+              primary: "#6005ff",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
     </div>
   );
 };

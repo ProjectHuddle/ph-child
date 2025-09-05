@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Title, Container, Switch } from "@bsf/force-ui";
+import { Button, Title, Container, Switch, toast, Toaster } from "@bsf/force-ui";
 import { __ } from "@wordpress/i18n";
 import { LoaderCircle } from "lucide-react";
 import { useSettings } from '../hooks/useSettings';
@@ -51,7 +51,7 @@ const GeneralSettings = () => {
     setIsLoading(false);
     
     if (success) {
-      // Show success message or notification if needed
+      toast.success(__('Settings saved successfully!', 'ph-child'));
     }
   };
 
@@ -207,6 +207,32 @@ const GeneralSettings = () => {
         </Button>
        </div>
       </div>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={8}
+        containerStyle={{
+          top: 20,
+          right: 20,
+          marginTop: "40px",
+        }}
+        toastOptions={{
+          duration: 1000,
+          style: {
+            background: "white",
+          },
+          success: {
+            duration: 2000,
+            style: {
+              color: "",
+            },
+            iconTheme: {
+              primary: "#6005ff",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
     </>
   );
 };
