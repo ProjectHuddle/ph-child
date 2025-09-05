@@ -72,11 +72,12 @@ const GeneralSettings = () => {
         className="box-border bg-background-primary p-6 rounded-lg"
         style={{
           marginTop: "24px",
+          borderRadius: "8px !important",
         }}
       >
         <div className="flex flex-col">
           <Title
-            // description={__('Select user roles that can access debug options. Admins are always enabled', 'ultimate_vc')}
+            // description={__('Select user roles that can access debug options. Admins are always enabled', 'ph_child')}
             icon={null}
             iconPosition="right"
             size="xs"
@@ -192,17 +193,19 @@ const GeneralSettings = () => {
           </div>
         )}
 
-        <Button
+       <div className="flex justify-end">
+         <Button
           type="submit"
-          style={{ backgroundColor: "#0017E1", marginTop: "14px" }}
+          style={{ backgroundColor: "#4353FF", marginTop: "14px", borderRadius: '6px' }}
           iconPosition="left"
-          className="w-full sticky uavc-remove-ring"
+          className="w-40 sticky uavc-remove-ring"
           onClick={handleSaveChanges}
           disabled={saving || isLoading}
         >
           {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
           {__("Save Changes", "ph-child")}
         </Button>
+       </div>
       </div>
     </>
   );

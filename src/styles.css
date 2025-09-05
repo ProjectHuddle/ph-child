@@ -311,6 +311,35 @@ input[type="checkbox"].uae-role-checkbox:focus{
 	box-shadow:0 0 0 1px rgb(92, 46, 222);
 }
 
+input[type="checkbox"].role-checkbox {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #d1d5db;
+	border-radius: 4px;
+	background-color: white;
+	position: relative;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+input[type="checkbox"].role-checkbox:checked {
+	background-color: #4353FF;
+	border-color: #4353FF;
+}
+
+input[type="checkbox"].role-checkbox:checked::after {
+	content: '✓';
+	color: white;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 1;
+}
+
 #wpfooter{
     background-color: white;
 }

@@ -21,23 +21,24 @@ const WelcomeContainer = () => {
 						className="max-w-lg"
 						size="lg"
 						tag="h3"
-						title={__("Welcome to SureFeedback", "header-footer-elementor")}
+						title={__("Welcome to SureFeedback", "ph_child")}
 					/>
 					<p className="text-sm font-medium text-text-tertiary m-0 mt-2">
 						{__(
 							"Revolutionise your client and team collaboration with SureFeedback. Say goodbye to long email trails and say hello to flawless communication.",
-							"header-footer-elementor"
+							"ph_child"
 						)}
 					</p>
 					<div className="flex items-center pt-6 gap-2 flex-wrap">
 					<Button
 							iconPosition="right"
 							variant="primary"
-							className="text-[#6005FF] border-none hfe-remove-ring flex-shrink-0"
+							className="text-[#6005FF] border-none ph_child-remove-ring rounded-md flex-shrink-0"
 							style={{
 								backgroundColor: "var(--Colors-Button-button-secondary, #DDD6FE)",
 								transition: "background-color 0.3s ease",
 								border: "none",
+								borderRadius: "6px",
 								outline: 'none',       // Removes the default outline
 								boxShadow: 'none',     // Removes the default box shadow
 							}}
@@ -56,7 +57,7 @@ const WelcomeContainer = () => {
 							// 	);
 							// }}
 						>
-							{__("Connect to SureFeedback", "header-footer-elementor")}
+							{__("Connect to SureFeedback", "ph_child")}
 						</Button>
 						<div
 							style={{

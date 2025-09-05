@@ -68,11 +68,11 @@ const Connection = () => {
                                 onClick={(e) => handleTabRedirect(e, setting.tab)}
                             >
                                 <Button
-                                    className="ph_child-remove-ring rounded-md"
+                                    className="ph_child-remove-ring w-80 rounded-md"
                                     icon={<Plus />}
                                     iconPosition="right"
                                     size="md"
-                                    style={{ width: '330px', borderRadius: '4px' }}
+                                    style={{  borderRadius: '4px' }}
                                     variant="primary"
                                 >
                                     {__('Connect', 'ph_child')}

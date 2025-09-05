@@ -55,7 +55,7 @@ const ExtendWebsite = () => {
         <div className="rounded-lg bg-white w-full">
             <div className="flex items-center justify-between p-4" style={{ paddingBottom: '0' }}>
                 <p className="m-0 text-sm font-semibold text-text-primary">
-                    {__("Super Charge Your Workflow", "header-footer-elementor")}
+                    {__("Super Charge Your Workflow", "ph_child")}
                 </p>
                 <div className="flex items-center gap-x-2 mr-7"></div>
             </div>

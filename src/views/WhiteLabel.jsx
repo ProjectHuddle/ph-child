@@ -39,7 +39,7 @@ const WhiteLabel = () => {
     <div className="rounded-lg">
       <div
         className="flex flex-row items-center justify-between"
-        style={{ paddingBottom: "24px" }}
+        style={{ paddingBottom: "24px", borderRadius: "8px !important" }}
       >
         <Title
           icon={null}
@@ -48,23 +48,6 @@ const WhiteLabel = () => {
           tag="h2"
           title={__("White Label", "ph-child")}
         />
-
-        <div
-          className="flex items-center justify-between [&_h2]:text-[#6005ff]"
-          style={{ gap: "22px" }}
-        >
-          <Button
-            type="submit"
-            style={{ backgroundColor: "#6005ff", position: "relative" }}
-            className="flex items-center justify-center"
-            iconPosition="left"
-            onClick={handleSaveChanges}
-            disabled={saving || isLoading}
-          >
-            {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-            {__("Save", "ph-child")}
-          </Button>
-        </div>
       </div>
   
         <div>
@@ -219,9 +202,10 @@ const WhiteLabel = () => {
               </div>
             )}
 
-            <Button
+           <div className="flex justify-end">
+             <Button
               type="submit"
-              style={{ backgroundColor: "#0017E1", marginTop: "14px" }}
+              style={{ backgroundColor: "#4353FF", marginTop: "14px", borderRadius: '6px' }}
               iconPosition="left"
               className="sticky w-4/12"
               onClick={handleSaveChanges}
@@ -230,6 +214,7 @@ const WhiteLabel = () => {
               {(saving || isLoading) && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
               {__("Save Changes", "ph-child")}
             </Button>
+           </div>
           </Container>
         </div>
       

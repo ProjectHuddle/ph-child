@@ -14,19 +14,19 @@ const Settings = () => {
             icon: (
                 <img
                     src={`${sureFeedbackAdmin.settings_selected_url}`}
-                    alt={__("Custom SVG", "header-footer-elementor")}
+                    alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
             ),
             selected: (
                 <img
                     src={`${sureFeedbackAdmin.settings_selected_url}`}
-                    alt={__("Custom SVG", "header-footer-elementor")}
+                    alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
             ),
-               main: __("Editor", "header-footer-elementor"),
-            title: __("General Settings", "header-footer-elementor"),
+               main: __("Editor", "ph_child"),
+            title: __("General Settings", "ph_child"),
             content: <GeneralSettings />,
         },
         {
@@ -34,32 +34,32 @@ const Settings = () => {
             icon: (
                 <img
                     src={`${sureFeedbackAdmin.settings_selected_url}`}
-                    alt={__("Custom SVG", "header-footer-elementor")}
+                    alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
             ),
             selected: (
                 <img
                     src={`${sureFeedbackAdmin.settings_selected_url}`}
-                    alt={__("Custom SVG", "header-footer-elementor")}
+                    alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
             ),
-            title: __("White Label", "header-footer-elementor"),
+            title: __("White Label", "ph_child"),
             content: <WhiteLabel />,
         },
   	]
 
     // Default state: Set 'My Account' (first item) as the default when the settings tab is clicked
     const [selectedItem, setSelectedItem] = useState(() => {
-        const savedItemId = localStorage.getItem("hfeSelectedItemId");
+        const savedItemId = localStorage.getItem("phSelectedItemId");
         const savedItem = items.find((item) => item.id === Number(savedItemId));
         return savedItem || items[0]; // Default to the first item if no saved item is found
     });
 
     useEffect(() => {
         // Store selectedItemId in localStorage (or other persistent storage) to retain selection
-        localStorage.setItem("hfeSelectedItemId", selectedItem.id.toString());
+        localStorage.setItem("phSelectedItemId", selectedItem.id.toString());
     }, [selectedItem]);
 
     useEffect(() => {

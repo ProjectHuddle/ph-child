@@ -26,12 +26,13 @@ const QuickSettings = () => {
     };
 
     return (
-        <div className='rounded-lg bg-white w-full mb-4'>
+        <div className='rounded-lg bg-white w-full mb-4' style={{ borderRadius: '6px', }}>
             <div className='flex flex-col md:flex-row md:items-center md:justify-between p-4'
                 style={{
-                    paddingBottom: '0'
+                    paddingBottom: '0',
+                    borderRadius: '6px',
                 }}>
-                <p className='m-0 text-sm font-semibold text-text-primary mb-2 md:mb-0'>{__("Quick Settings", "ultimate_vc")}</p>
+                <p className='m-0 text-sm font-semibold text-text-primary mb-2 md:mb-0'>{__("Quick Settings", "ph_child")}</p>
             </div>
             <div className='flex  flex-col rounded-lg p-4'>
                 {loading ? (
@@ -84,7 +85,7 @@ const QuickSettings = () => {
                                             onClick={(e) => handleTabRedirect(e, setting.tab)}
                                             className="text-sm text-text-tertiary cursor-pointer no-underline hover:text-gray-600"
                                         >
-                                            {__("Configure", "ultimate_vc")}
+                                            {__("Customize", "ph_child")}
                                         </Link>
                                     </div>
                                 </Container.Item>

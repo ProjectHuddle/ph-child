@@ -70,7 +70,7 @@ const ExtendWebsiteWidget = ({
 
 				e.target.innerText = __(
 					"Installing..",
-					"header-footer-elementor",
+					"ph_child",
 				);
 
 				apiFetch({
@@ -81,7 +81,7 @@ const ExtendWebsiteWidget = ({
 					if (data.success || data.errorCode === "folder_exists") {
 						e.target.innerText = __(
 							"Installed",
-							"header-footer-elementor",
+							"ph_child",
 						);
 						if (currentPluginData.type === "theme") {
 							// Change button state to "Activate" after successful installation
@@ -92,7 +92,7 @@ const ExtendWebsiteWidget = ({
 								"hfe_recommended_plugin_activate";
 							e.target.innerText = __(
 								"Activate",
-								"header-footer-elementor",
+								"ph_child",
 							);
 						} else {
 							activatePlugin(currentPluginData);
@@ -100,17 +100,17 @@ const ExtendWebsiteWidget = ({
 					} else {
 						e.target.innerText = __(
 							"Install",
-							"header-footer-elementor",
+							"ph_child",
 						);
 						alert(
 							currentPluginData.type === "theme"
 								? __(
 										"Theme Installation failed, Please try again later.",
-										"header-footer-elementor",
+										"ph_child",
 								  )
 								: __(
 										"Plugin Installation failed, Please try again later.",
-										"header-footer-elementor",
+										"ph_child",
 								  ),
 						);
 					}
@@ -141,7 +141,7 @@ const ExtendWebsiteWidget = ({
 		);
 		const spanElement = buttonElement.querySelector("span");
 
-		spanElement.innerText = __("Activating..", "header-footer-elementor");
+		spanElement.innerText = __("Activating..", "ph_child");
 
 		apiFetch({
 			url: hfe_admin_data.ajax_url,
@@ -156,7 +156,7 @@ const ExtendWebsiteWidget = ({
 					buttonElement.classList.add("hfe-plugin-activated");
 					spanElement.innerText = __(
 						"Activated",
-						"header-footer-elementor",
+						"ph_child",
 					);
 					window.open(settings_url, "_blank");
 					setTimeout(() => {
@@ -166,9 +166,9 @@ const ExtendWebsiteWidget = ({
 				}
 			} else {
 				if ("theme" == pluginData.type) {
-					// console.log(__(`Theme Activation failed, Please try again later.`, 'header-footer-elementor'));
+					// console.log(__(`Theme Activation failed, Please try again later.`, 'ph_child'));
 				} else {
-					// console.log(__(`Plugin Activation failed, Please try again later.`, 'header-footer-elementor'));
+					// console.log(__(`Plugin Activation failed, Please try again later.`, 'ph_child'));
 				}
 				const buttonElement = document.querySelector(
 					`[data-slug="${pluginData.slug}"]`,
@@ -180,7 +180,7 @@ const ExtendWebsiteWidget = ({
 						// Check if spanElement is not null
 						spanElement.innerText = __(
 							"Activate",
-							"header-footer-elementor",
+							"ph_child",
 						);
 					}
 				}
@@ -213,7 +213,7 @@ const ExtendWebsiteWidget = ({
 				<div className="flex items-center gap-x-2">
 					{/* {isFree && (
 						<Badge
-							label={__("Free", "header-footer-elementor")}
+							label={__("Free", "ph_child")}
 							size="xs"
 							type="pill"
 							variant="green"
@@ -231,14 +231,14 @@ const ExtendWebsiteWidget = ({
 									<Dialog.Title>
 										{__(
 											"Activate Theme",
-											"header-footer-elementor",
+											"ph_child",
 										)}
 									</Dialog.Title>
 								</div>
 								<Dialog.Description>
 									{__(
 										"Are you sure you want to switch your current theme to Astra?",
-										"header-footer-elementor",
+										"ph_child",
 									)}
 								</Dialog.Description>
 							</Dialog.Header>
@@ -246,13 +246,13 @@ const ExtendWebsiteWidget = ({
 								<Button
 									onClick={() => activatePlugin(pluginData)}
 								>
-									{__("Yes", "header-footer-elementor")}
+									{__("Yes", "ph_child")}
 								</Button>
 								<Button
 									variant="outline"
 									onClick={() => setIsDialogOpen(false)}
 								>
-									{__("Close", "header-footer-elementor")}
+									{__("Close", "ph_child")}
 								</Button>
 							</Dialog.Footer>
 						</Dialog.Panel>
@@ -266,15 +266,15 @@ const ExtendWebsiteWidget = ({
 					onClick={() => window.open(plugin.siteurl, "_blank")}
 					style={{ marginTop: "-8px" }}
 				>
-					{__(name, "header-footer-elementor")}
+					{__(name, "ph_child")}
 				</p>
 				<p className="text-sm font-medium text-text-tertiary m-0">
-					{__(desc, "header-footer-elementor")}
+					{__(desc, "ph_child")}
 				</p>
-				<div className="hfe-remove-ring">
+				<div className="ph_child-remove-ring">
 					<Button
 						size="sm"
-						className="cursor-pointer hfe-remove-ring bg-white hover:bg-gray-100 hover:text-gray-900 hover:shadow-md text-gray-800 rounded mt-4 px-2 py-2 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-gray-400"
+						className="cursor-pointer ph_child-remove-ring bg-white hover:bg-gray-100 hover:text-gray-900 hover:shadow-md text-gray-800 rounded mt-4 px-2 py-2 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-gray-400"
 						onClick={handlePluginAction}
 						data-plugin={zipUrl}
 						data-type={type}
@@ -292,12 +292,12 @@ const ExtendWebsiteWidget = ({
 						}
 					>
 						{status === "Activated"
-							? __("Visit Site", "header-footer-elementor")
+							? __("Visit Site", "ph_child")
 							: "Installed" === status
-							? __("Activate", "header-footer-elementor")
+							? __("Activate", "ph_child")
 							: __(
 									"Install & Activate",
-									"header-footer-elementor",
+									"ph_child",
 							  )}
 					</Button>
 				</div>

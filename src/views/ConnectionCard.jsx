@@ -25,7 +25,7 @@ const ConnectionCard = () => {
       >
         <div className="flex flex-col">
           <Title
-            // description={__('Select user roles that can access debug options. Admins are always enabled', 'ultimate_vc')}
+            // description={__('Select user roles that can access debug options. Admins are always enabled', 'ph_child')}
             icon={null}
             iconPosition="right"
             size="xs"
@@ -64,7 +64,7 @@ const ConnectionCard = () => {
                 transition: "color 0.3s ease, border-color 0.3s ease",
                 fontSize: "16px",
               }}
-              className="hfe-remove-ring text-[#6005FF]"
+              className="ph_child-remove-ring text-[#6005FF]"
               onClick={() => {
                 window.open(
                   "https://ultimateelementor.com/pricing/?utm_source=uae-lite-settings&utm_medium=My-accounts&utm_campaign=uae-lite-upgrade",
@@ -72,7 +72,7 @@ const ConnectionCard = () => {
                 );
               }}
             >
-              {__("Need Help ?", "header-footer-elementor")}
+              {__("Need Help ?", "ph_child")}
             </Button>
           </div>
         </div>

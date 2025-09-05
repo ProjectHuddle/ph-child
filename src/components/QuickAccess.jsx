@@ -6,9 +6,10 @@ import { __ } from "@wordpress/i18n";
 const QuickAccess = () => {
 	return (
 		<div
-			className="box-border hfe-dashboard-quick-access p-4 bg-white rounded-lg shadow-md"
+			className="box-border p-4 bg-white rounded-lg shadow-md"
 			style={{
 				width: "-webkit-fill-available",
+				borderRadius: "6px",
 			}}
 		>
 			<Title
@@ -17,7 +18,7 @@ const QuickAccess = () => {
 				iconPosition="right"
 				size="xs"
 				tag="h3"
-				title={__("Quick Access", "header-footer-elementor")}
+				title={__("Quick Access", "ph_child")}
 			/>
 
 			<Container
@@ -39,7 +40,7 @@ const QuickAccess = () => {
 					shrink={1}
 				>
 					<Button
-						className="text-black hfe-remove-ring"
+						className="text-black ph_child-remove-ring"
 						icon={<Headphones />}
 						iconPosition="left"
 						variant="link"
@@ -50,12 +51,12 @@ const QuickAccess = () => {
 							);
 						}}
 					>
-						{__("VIP Priority Support", "header-footer-elementor")}
+						{__("VIP Priority Support", "ph_child")}
 					</Button>
 					<Badge
 						label={__(
 							"PRO",
-							"header-footer-elementor"
+							"ph_child"
 						)}
 						size="xs"
 						variant="inverse"
@@ -68,7 +69,7 @@ const QuickAccess = () => {
 					shrink={1}
 				>
 					<Button
-						className="text-black hfe-remove-ring"
+						className="text-black ph_child-remove-ring"
 						icon={<BookOpenText />}
 						iconPosition="left"
 						variant="link"
@@ -79,12 +80,12 @@ const QuickAccess = () => {
 							);
 						}}
 					>
-						{__("Knowledge Base", "header-footer-elementor")}
+						{__("Knowledge Base", "ph_child")}
 					</Button>
 				</Container.Item>
 				<Container.Item className="p-4 bg-white rounded-lg shadow-container-item">
 					<Button
-						className="text-black hfe-remove-ring"
+						className="text-black ph_child-remove-ring"
 						icon={<HelpCircle />}
 						iconPosition="left"
 						variant="link"
@@ -95,12 +96,12 @@ const QuickAccess = () => {
 							);
 						}}
 					>
-						{__("Help Centre", "header-footer-elementor")}
+						{__("Help Centre", "ph_child")}
 					</Button>
 				</Container.Item>
 				<Container.Item className="p-4 bg-white rounded-lg shadow-container-item">
 					<Button
-						className="text-black hfe-remove-ring"
+						className="text-black ph_child-remove-ring"
 						icon={<NotepadText />}
 						iconPosition="left"
 						variant="link"
@@ -111,12 +112,12 @@ const QuickAccess = () => {
 							);
 						}}
 					>
-						{__("Request a Feature", "header-footer-elementor")}
+						{__("Request a Feature", "ph_child")}
 					</Button>
 				</Container.Item>
 				{/* <Container.Item className="p-4 bg-white rounded-lg shadow-container-item">
 					<Button
-						className="text-black hfe-remove-ring"
+						className="text-black ph_child-remove-ring"
 						icon={<MessagesSquareIcon />}
 						iconPosition="left"
 						variant="link"
@@ -127,7 +128,7 @@ const QuickAccess = () => {
 							);
 						}}
 					>
-						{__("Join the Community", "header-footer-elementor")}
+						{__("Join the Community", "ph_child")}
 					</Button>
 				</Container.Item> */}
 			</Container>
