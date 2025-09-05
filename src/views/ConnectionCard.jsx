@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button, Title, Container } from "@bsf/force-ui";
 import { __ } from "@wordpress/i18n";
 import { LoaderCircle, ArrowUpRight, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
@@ -8,6 +8,8 @@ import { useToast } from "../hooks/useToast";
 const ConnectionCard = () => {
   const [manualConnectionData, setManualConnectionData] = useState("");
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const initializedRef = useRef(false);
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
   
   const {
     connectionStatus,
@@ -24,21 +26,18 @@ const ConnectionCard = () => {
 
   const { showToast } = useToast();
 
-  // Initialize settings on component mount
+  // Initialize settings on component mount - only once
   useEffect(() => {
-    loadSettings();
-  }, [loadSettings]);
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      loadSettings().then(() => {
+        setHasInitiallyLoaded(true);
+      });
+    }
+  }, []); // No dependencies - run only once
 
-  // Handle URL changes and detect successful disconnect
+  // Handle URL changes and detect successful disconnect - run only once
   useEffect(() => {
-    const handleUrlChange = () => {
-      // Force reload settings when URL changes (e.g., after redirect from disconnect)
-      loadSettings();
-    };
-
-    // Listen for popstate events (back/forward navigation)
-    window.addEventListener('popstate', handleUrlChange);
-    
     // Check if we just came back from a disconnect operation
     const urlParams = new URLSearchParams(window.location.search);
     const hasDisconnectSuccess = urlParams.has('ph-child-site-disconnect');
@@ -53,29 +52,26 @@ const ConnectionCard = () => {
       // Show success message and refresh data
       setTimeout(() => {
         showToast(__("Successfully disconnected from SureFeedback", "ph-child"), "success");
-        loadSettings(); // Force refresh the settings
-        refreshConnectionStatus(); // Also refresh connection status
+        loadSettings().then(() => {
+          setHasInitiallyLoaded(true); // Ensure we show the updated state
+        });
       }, 100);
     }
+
+    // Listen for popstate events (back/forward navigation) 
+    const handleUrlChange = () => {
+      loadSettings();
+    };
+    
+    window.addEventListener('popstate', handleUrlChange);
 
     return () => {
       window.removeEventListener('popstate', handleUrlChange);
     };
-  }, [loadSettings, showToast, refreshConnectionStatus]);
+  }, []); // Empty dependency array - run only once on mount
 
-  // Force refresh when connection status changes
-  useEffect(() => {
-    if (!connectionStatus.connected && connectionStatus.parent_url === undefined) {
-      // This might indicate a fresh disconnect, ensure we have the latest state
-      const timeoutId = setTimeout(() => {
-        loadSettings();
-      }, 500);
-      
-      return () => clearTimeout(timeoutId);
-    }
-  }, [connectionStatus, loadSettings]);
-
-  const handleManualImport = async () => {
+  // Memoize callback functions to prevent unnecessary re-renders
+  const handleManualImport = useCallback(async () => {
     if (!manualConnectionData.trim()) {
       showToast(__("Please enter connection details", "ph-child"), "error");
       return;
@@ -105,9 +101,9 @@ const ConnectionCard = () => {
     } catch (error) {
       showToast(__("Invalid JSON format. Please check your connection details.", "ph-child"), "error");
     }
-  };
+  }, [manualConnectionData, saveConnectionSettings, showToast, errors.connection]);
 
-  const handleDisconnect = async () => {
+  const handleDisconnect = useCallback(async () => {
     if (!window.confirm(__("Are you sure you want to disconnect? This will remove all connection settings.", "ph-child"))) {
       return;
     }
@@ -126,9 +122,9 @@ const ConnectionCard = () => {
       setIsDisconnecting(false);
       showToast(__("Failed to disconnect", "ph-child"), "error");
     }
-  };
+  }, [showToast]);
 
-  const handleTestConnection = async () => {
+  const handleTestConnection = useCallback(async () => {
     const success = await testConnection();
     
     if (success) {
@@ -136,11 +132,11 @@ const ConnectionCard = () => {
     } else {
       showToast(errors.connection || __("Connection test failed", "ph-child"), "error");
     }
-  };
+  }, [testConnection, showToast, errors.connection]);
 
-  const getConnectionStatusDisplay = () => {
-    // Always show a status, even during loading states
-    if (loading) {
+  const getConnectionStatusDisplay = useCallback(() => {
+    // Show loading only on initial load, not subsequent updates
+    if (!hasInitiallyLoaded && loading) {
       return (
         <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: "#f8f9fa" }}>
           <LoaderCircle size={16} className="animate-spin" />
@@ -151,7 +147,7 @@ const ConnectionCard = () => {
 
     if (connectionStatus.connected && connectionStatus.parent_url) {
       return (
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: "#daecda" }}>
+        <div className="flex items-center w-80 gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: "#daecda", marginTop: "12px", borderRadius: "6px" }}>
           <CheckCircle size={16} style={{ color: "#559a55" }} />
           <span style={{ color: "#559a55", fontWeight: "500" }}>
             {__("Connected to", "ph-child")} {connectionStatus.parent_url}
@@ -168,14 +164,14 @@ const ConnectionCard = () => {
         </span>
       </div>
     );
-  };
+  }, [hasInitiallyLoaded, loading, connectionStatus.connected, connectionStatus.parent_url]);
 
-  const getDashboardUrl = () => {
+  const getDashboardUrl = useCallback(() => {
     if (connectionStatus.connected && connectionStatus.parent_url && connectionStatus.project_id) {
       return `${connectionStatus.parent_url}/wp-admin/post.php?post=${connectionStatus.project_id}&action=edit`;
     }
     return null;
-  };
+  }, [connectionStatus.connected, connectionStatus.parent_url, connectionStatus.project_id]);
 
   return (
     <>
@@ -194,6 +190,7 @@ const ConnectionCard = () => {
         className="box-border bg-background-primary p-6 max-w-3xl rounded-lg"
         style={{
           marginTop: "24px",
+          borderRadius: "6px",
         }}
       >
         <div className="flex flex-col">
