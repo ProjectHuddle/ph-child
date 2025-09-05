@@ -157,10 +157,10 @@ const ConnectionCard = () => {
     }
     
     return (
-      <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: "#f1ebd3" }}>
+      <div className="flex items-center w-4/5 gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: "#f1ebd3", marginTop: "12px", borderRadius: "6px" }}>
         <AlertCircle size={16} style={{ color: "#9c8a44" }} />
         <span style={{ color: "#9c8a44", fontWeight: "500" }}>
-          {__("Not Connected. Please connect this plugin to your SureFeedback installation.", "ph-child")}
+          {__("Not Connected. Please connect this plugin to your SureFeedback installation", "ph-child")}
         </span>
       </div>
     );
@@ -213,19 +213,23 @@ const ConnectionCard = () => {
               <Button
                 variant="secondary"
                 onClick={handleDisconnect}
+                className="ph_child-remove-ring"
                 disabled={isDisconnecting}
-                icon={isDisconnecting ? <LoaderCircle className="animate-spin" /> : null}
+                style={{ backgroundColor: "#4353FF", borderRadius: '6px' }}
               >
+                {isDisconnecting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                 {isDisconnecting ? __("Disconnecting...", "ph-child") : __("Disconnect", "ph-child")}
               </Button>
               
               {getDashboardUrl() && (
                 <Button
                   variant="secondary"
+                   className="ph_child-remove-ring"
                   onClick={() => window.open(getDashboardUrl(), "_blank")}
-                  icon={<ExternalLink />}
                   iconPosition="right"
+                  style={{ backgroundColor: "#4353FF", borderRadius: '6px' }}
                 >
+                  <ExternalLink className="ml-2 h-4 w-4" />
                   {__("Visit Dashboard Site", "ph-child")}
                 </Button>
               )}
@@ -234,8 +238,10 @@ const ConnectionCard = () => {
                 variant="secondary"
                 onClick={handleTestConnection}
                 disabled={loading}
-                icon={loading ? <LoaderCircle className="animate-spin" /> : null}
+                 className="ph_child-remove-ring"
+                style={{ backgroundColor: "#4353FF", borderRadius: '6px' }}
               >
+                {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                 {loading ? __("Testing...", "ph-child") : __("Test Connection", "ph-child")}
               </Button>
             </div>
@@ -245,8 +251,6 @@ const ConnectionCard = () => {
             <div
               className="flex items-center justify-between px-4 rounded-xl mt-4"
               style={{
-                paddingTop: "6px",
-                paddingBottom: "6px",
                 backgroundColor: "#F3F0FF",
               }}
             >
@@ -259,12 +263,13 @@ const ConnectionCard = () => {
                 </p>
               </span>
               <Button
-                icon={<ArrowUpRight />}
                 iconPosition="right"
                 variant="link"
                 style={{
+                  // backgroundColor: "#4353FF",
                   color: "#6005FF",
                   borderColor: "#6005FF",
+                  borderRadius: '6px',
                   transition: "color 0.3s ease, border-color 0.3s ease",
                   fontSize: "16px",
                 }}
@@ -276,6 +281,7 @@ const ConnectionCard = () => {
                   );
                 }}
               >
+                <ArrowUpRight className="ml-2 h-4 w-4" />
                 {__("Need Help ?", "ph-child")}
               </Button>
             </div>
@@ -288,7 +294,7 @@ const ConnectionCard = () => {
               className="w-full border-b-0 border-x-0 border-t border-solid border-t-border-subtle"
               style={{
                 marginTop: "34px",
-                marginBottom: "34px",
+                marginBottom: "24px",
                 borderColor: "#E5E7EB",
               }}
             />
@@ -315,7 +321,7 @@ const ConnectionCard = () => {
                   name="manual_connection"
                   className="w-full border border-subtle"
                   placeholder={__("Paste your connection JSON data here...", "ph-child")}
-                  rows={8}
+                  rows={6}
                   style={{
                     borderColor: "#e0e0e0",
                     outline: "none",
@@ -323,6 +329,7 @@ const ConnectionCard = () => {
                     marginTop: "8px",
                     padding: "12px",
                     fontFamily: "monospace",
+                    borderRadius: "6px",
                     fontSize: "12px",
                   }}
                   onFocus={(e) => (e.target.style.borderColor = "#6005FF")}
@@ -340,11 +347,11 @@ const ConnectionCard = () => {
               type="button"
               onClick={handleManualImport}
               disabled={saving || !manualConnectionData.trim()}
-              style={{ backgroundColor: "#0017E1", marginTop: "14px" }}
+              style={{ backgroundColor: "#4353FF", marginTop: "14px", borderRadius: '6px' }}
               iconPosition="left"
               className="w-40 sticky uavc-remove-ring"
-              icon={saving ? <LoaderCircle className="animate-spin" /> : null}
             >
+              {saving && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
               {saving ? __("Saving...", "ph-child") : __("Save Changes", "ph-child")}
             </Button>
           </>
