@@ -69,10 +69,10 @@ const GeneralSettings = () => {
         )}
       />
       <div
-        className="box-border bg-background-primary p-6 rounded-lg"
+        className="box-border bg-background-primary p-6"
         style={{
           marginTop: "24px",
-          borderRadius: "8px !important",
+          borderRadius: "8px",
         }}
       >
         <div className="flex flex-col">

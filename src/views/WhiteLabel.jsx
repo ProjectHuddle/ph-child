@@ -39,7 +39,7 @@ const WhiteLabel = () => {
     <div className="rounded-lg">
       <div
         className="flex flex-row items-center justify-between"
-        style={{ paddingBottom: "24px", borderRadius: "8px !important" }}
+        style={{ paddingBottom: "24px", borderRadius: "8px" }}
       >
         <Title
           icon={null}
@@ -50,16 +50,12 @@ const WhiteLabel = () => {
         />
       </div>
   
-        <div>
+        <div style={{ borderRadius: "8px", overflow: "hidden" }} className="bg-background-primary">
           <Container
             align="stretch"
-            className="flex flex-column p-6 rounded-md bg-background-primary"
+            className="flex flex-column p-6"
             containerType="flex"
             direction="column"
-            style={{
-              padding: "24px",
-              borderRadius: "8px !important",
-            }}
           >
             <Title
               size="sm"
