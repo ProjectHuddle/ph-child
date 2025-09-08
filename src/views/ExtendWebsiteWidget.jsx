@@ -6,6 +6,7 @@ import { __ } from "@wordpress/i18n";
 const ExtendWebsiteWidget = ({
 	plugin,
 	setUpdateCounter, // Receive setUpdateCounter as a prop
+	markPluginAsActivated, // Receive markPluginAsActivated as a prop
 }) => {
 	const {
 		path,
@@ -65,43 +66,57 @@ const ExtendWebsiteWidget = ({
 						? "hfe_recommended_theme_install"
 						: "hfe_recommended_plugin_install",
 				);
-				formData.append("_ajax_nonce", hfe_admin_data.installer_nonce);
+				formData.append("_ajax_nonce", sureFeedbackAdmin.installer_nonce);
 				formData.append("slug", currentPluginData.slug);
 
-				e.target.innerText = __(
-					"Installing..",
-					"ph_child",
-				);
+				if (e.target) {
+					e.target.innerText = __(
+						"Installing..",
+						"ph_child",
+					);
+				}
 
 				apiFetch({
-					url: hfe_admin_data.ajax_url,
+					url: sureFeedbackAdmin.ajax_url,
 					method: "POST",
 					body: formData,
 				}).then((data) => {
 					if (data.success || data.errorCode === "folder_exists") {
-						e.target.innerText = __(
-							"Installed",
-							"ph_child",
-						);
+						if (e.target) {
+							e.target.innerText = __(
+								"Installed",
+								"ph_child",
+							);
+						}
 						if (currentPluginData.type === "theme") {
 							// Change button state to "Activate" after successful installation
 							const buttonElement = document.querySelector(
 								`[data-slug="${currentPluginData.slug}"]`,
 							);
-							buttonElement.dataset.action =
-								"hfe_recommended_plugin_activate";
-							e.target.innerText = __(
-								"Activate",
-								"ph_child",
-							);
+							if (buttonElement) {
+								buttonElement.dataset.action =
+									"hfe_recommended_plugin_activate";
+								if (e.target) {
+									e.target.innerText = __(
+										"Activate",
+										"ph_child",
+									);
+								}
+							}
 						} else {
 							activatePlugin(currentPluginData);
+							// Mark as activated immediately for faster UI update
+							if (markPluginAsActivated) {
+								markPluginAsActivated(currentPluginData.init);
+							}
 						}
 					} else {
-						e.target.innerText = __(
-							"Install",
-							"ph_child",
-						);
+						if (e.target) {
+							e.target.innerText = __(
+								"Install",
+								"ph_child",
+							);
+						}
 						alert(
 							currentPluginData.type === "theme"
 								? __(
@@ -112,6 +127,14 @@ const ExtendWebsiteWidget = ({
 										"Plugin Installation failed, Please try again later.",
 										"ph_child",
 								  ),
+						);
+					}
+				}).catch((error) => {
+					console.error("Plugin installation failed:", error);
+					if (e.target) {
+						e.target.innerText = __(
+							"Install",
+							"ph_child",
 						);
 					}
 				});
@@ -131,7 +154,7 @@ const ExtendWebsiteWidget = ({
 		setIsDialogOpen(false);
 		const formData = new window.FormData();
 		formData.append("action", "hfe_recommended_plugin_activate");
-		formData.append("nonce", hfe_admin_data.nonce);
+		formData.append("nonce", sureFeedbackAdmin.nonce);
 		formData.append("plugin", pluginData.init);
 		formData.append("type", pluginData.type);
 		formData.append("slug", pluginData.slug);
@@ -139,18 +162,20 @@ const ExtendWebsiteWidget = ({
 		const buttonElement = document.querySelector(
 			`[data-slug="${pluginData.slug}"]`,
 		);
-		const spanElement = buttonElement.querySelector("span");
+		const spanElement = buttonElement ? buttonElement.querySelector("span") : null;
 
-		spanElement.innerText = __("Activating..", "ph_child");
+		if (spanElement) {
+			spanElement.innerText = __("Activating..", "ph_child");
+		}
 
 		apiFetch({
-			url: hfe_admin_data.ajax_url,
+			url: sureFeedbackAdmin.ajax_url,
 			method: "POST",
 			body: formData,
 		}).then((data) => {
 			if (data.success) {
-				if (spanElement) {
-					// Check if spanElement is not null
+				if (spanElement && buttonElement) {
+					// Check if both elements are not null
 					buttonElement.style.color = "#16A34A";
 					buttonElement.dataset.action = "site_redirect";
 					buttonElement.classList.add("hfe-plugin-activated");
@@ -158,11 +183,13 @@ const ExtendWebsiteWidget = ({
 						"Activated",
 						"ph_child",
 					);
+					
+					// Mark plugin as activated in parent component
+					if (markPluginAsActivated) {
+						markPluginAsActivated(pluginData.init);
+					}
+					
 					window.open(settings_url, "_blank");
-					setTimeout(() => {
-						// Reload the section or recall the REST API
-						setUpdateCounter((prev) => prev + 1);
-					}, 5000);
 				}
 			} else {
 				if ("theme" == pluginData.type) {
@@ -183,6 +210,21 @@ const ExtendWebsiteWidget = ({
 							"ph_child",
 						);
 					}
+				}
+			}
+		}).catch((error) => {
+			console.error("Plugin activation failed:", error);
+			// Reset button text on error
+			const buttonElement = document.querySelector(
+				`[data-slug="${pluginData.slug}"]`,
+			);
+			if (buttonElement) {
+				const spanElement = buttonElement.querySelector("span");
+				if (spanElement) {
+					spanElement.innerText = __(
+						"Activate",
+						"ph_child",
+					);
 				}
 			}
 		});

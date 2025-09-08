@@ -127,6 +127,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// remove disconnect args after successful disconnect.
 			add_filter( 'removable_query_args', array( $this, 'remove_disconnect_args' ) );
 
+			// AJAX handlers for plugin management
+			add_action( 'wp_ajax_hfe_recommended_plugin_install', array( $this, 'ajax_install_plugin' ) );
+			add_action( 'wp_ajax_hfe_recommended_plugin_activate', array( $this, 'ajax_activate_plugin' ) );
+			add_action( 'wp_ajax_get_plugin_status', array( $this, 'ajax_get_plugin_status' ) );
+
 			// update registration option in database for parent site reference.
 			register_activation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'register_installation' ) );
 			register_deactivation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'deregister_installation' ) );
@@ -520,12 +525,24 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						'rest_url'         => rest_url(),
 						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
 						'admin_url'        => admin_url(),
+						'ajax_url'         => admin_url( 'admin-ajax.php' ),
+						'plugin_url'       => PH_CHILD_PLUGIN_URL,
+						'nonce'            => wp_create_nonce( 'ph_child_admin_nonce' ),
+						'installer_nonce'  => wp_create_nonce( 'ph_child_installer_nonce' ),
 						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
 						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
 						'icon_url'             => PH_CHILD_PLUGIN_URL . 'assets/project-huddle-icon.png',
 						'welcome_url'             => PH_CHILD_PLUGIN_URL . 'assets/Video player.png',
+						'settings_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings_unselected.svg',
 						'settings_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/settings.svg',
+						'label_url'             => PH_CHILD_PLUGIN_URL . 'assets/label.svg',
+						'label_selected_url'             => PH_CHILD_PLUGIN_URL . 'assets/label_selected.svg',
 						'connection_url'             => PH_CHILD_PLUGIN_URL . 'assets/connection.svg',
+						'surerank_icon'    => PH_CHILD_PLUGIN_URL . 'assets/images/settings/surerank.svg',
+						'surecart_icon'    => PH_CHILD_PLUGIN_URL . 'assets/images/settings/surecart.svg',
+						'sureforms_icon'   => PH_CHILD_PLUGIN_URL . 'assets/images/settings/sureforms.svg',
+						'presto_player_icon' => PH_CHILD_PLUGIN_URL . 'assets/images/settings/pplayer.svg',
+						'suretriggers_icon' => PH_CHILD_PLUGIN_URL . 'assets/images/settings/OttoKit-Symbol-Primary.svg',
 					)
 				);
 			}
@@ -1138,8 +1155,17 @@ if ( ! class_exists( 'PH_Child' ) ) :
 						'rest_url'         => rest_url(),
 						'rest_nonce'       => wp_create_nonce( 'wp_rest' ),
 						'admin_url'        => admin_url(),
+						'ajax_url'         => admin_url( 'admin-ajax.php' ),
+						'plugin_url'       => PH_CHILD_PLUGIN_URL,
+						'nonce'            => wp_create_nonce( 'ph_child_admin_nonce' ),
+						'installer_nonce'  => wp_create_nonce( 'ph_child_installer_nonce' ),
 						'disconnect_nonce' => wp_create_nonce( 'ph-child-site-disconnect-nonce' ),
 						'showWhiteLabel'   => ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL,
+						'surerank_icon'    => PH_CHILD_PLUGIN_URL . 'assets/images/settings/surerank.svg',
+						'surecart_icon'    => PH_CHILD_PLUGIN_URL . 'assets/images/settings/surecart.svg',
+						'sureforms_icon'   => PH_CHILD_PLUGIN_URL . 'assets/images/settings/sureforms.svg',
+						'presto_player_icon' => PH_CHILD_PLUGIN_URL . 'assets/images/settings/pplayer.svg',
+						'suretriggers_icon' => PH_CHILD_PLUGIN_URL . 'assets/images/settings/OttoKit-Symbol-Primary.svg',
 					)
 				);
 			}
@@ -1265,6 +1291,132 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				})(document, 'script', '<?php echo esc_url_raw( "//$url" ); ?>', 'ph_access_token');
 			</script>
 			<?php
+		}
+
+		/**
+		 * AJAX handler for plugin installation
+		 *
+		 * @return void
+		 */
+		public function ajax_install_plugin() {
+			// Check nonce for security
+			if ( ! wp_verify_nonce( $_POST['_ajax_nonce'], 'ph_child_installer_nonce' ) ) {
+				wp_die( 'Security check failed' );
+			}
+
+			// Check user capabilities
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_die( 'You do not have sufficient permissions to install plugins.' );
+			}
+
+			$slug = sanitize_text_field( $_POST['slug'] );
+			
+			include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+			include_once ABSPATH . 'wp-admin/includes/file.php';
+			include_once ABSPATH . 'wp-admin/includes/misc.php';
+			include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+			$api = plugins_api( 'plugin_information', array( 'slug' => $slug ) );
+
+			if ( is_wp_error( $api ) ) {
+				wp_send_json_error( array( 'message' => 'Plugin not found' ) );
+				return;
+			}
+
+			$upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
+			$result = $upgrader->install( $api->download_link );
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+			} else {
+				// Activate plugin after installation
+				$plugin_file = $upgrader->plugin_info();
+				if ( $plugin_file ) {
+					$activate_result = activate_plugin( $plugin_file );
+					if ( is_wp_error( $activate_result ) ) {
+						wp_send_json_success( array( 
+							'message' => 'Plugin installed but activation failed',
+							'errorCode' => 'activation_failed'
+						) );
+					} else {
+						wp_send_json_success( array( 'message' => 'Plugin installed and activated successfully' ) );
+					}
+				} else {
+					wp_send_json_success( array( 'message' => 'Plugin installed successfully' ) );
+				}
+			}
+		}
+
+		/**
+		 * AJAX handler for plugin activation
+		 *
+		 * @return void
+		 */
+		public function ajax_activate_plugin() {
+			// Check nonce for security
+			if ( ! wp_verify_nonce( $_POST['nonce'], 'ph_child_admin_nonce' ) ) {
+				wp_die( 'Security check failed' );
+			}
+
+			// Check user capabilities
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				wp_die( 'You do not have sufficient permissions to activate plugins.' );
+			}
+
+			$plugin = sanitize_text_field( $_POST['plugin'] );
+			
+			$result = activate_plugin( $plugin );
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+			} else {
+				wp_send_json_success( array( 'message' => 'Plugin activated successfully' ) );
+			}
+		}
+
+		/**
+		 * AJAX handler to get plugin status
+		 *
+		 * @return void
+		 */
+		public function ajax_get_plugin_status() {
+			// Check nonce for security
+			if ( ! wp_verify_nonce( $_POST['nonce'], 'ph_child_admin_nonce' ) ) {
+				wp_die( 'Security check failed' );
+			}
+
+			// Check user capabilities
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				wp_die( 'You do not have sufficient permissions to check plugin status.' );
+			}
+
+			// Include required WordPress files
+			if ( ! function_exists( 'get_plugins' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+
+			$plugin_list = array(
+				'surerank/surerank.php',
+				'surecart/surecart.php', 
+				'sureforms/sureforms.php',
+				'presto-player/presto-player.php',
+				'suretriggers/suretriggers.php'
+			);
+
+			$status_map = array();
+			$installed_plugins = get_plugins();
+
+			foreach ( $plugin_list as $plugin ) {
+				if ( ! isset( $installed_plugins[ $plugin ] ) ) {
+					$status_map[ $plugin ] = 'Install';
+				} elseif ( is_plugin_active( $plugin ) ) {
+					$status_map[ $plugin ] = 'Activated';
+				} else {
+					$status_map[ $plugin ] = 'Installed';
+				}
+			}
+
+			wp_send_json_success( $status_map );
 		}
 	}
 

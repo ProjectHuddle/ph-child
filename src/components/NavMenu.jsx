@@ -146,8 +146,8 @@ const NavMenu = () => {
 									<span className="sr-only">Open Menu</span>
 								</DropdownMenu.Trigger>
 								<DropdownMenu.Portal>
-								<DropdownMenu.ContentWrapper>
-								<DropdownMenu.Content className="w-60">
+								<DropdownMenu.ContentWrapper className="z-999999" style={{ backgroundColor: 'white', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+								<DropdownMenu.Content className="w-60" style={{ backgroundColor: 'white' }}>
 										<DropdownMenu.List>
 											<DropdownMenu.Item>
 												{__(
@@ -180,8 +180,8 @@ const NavMenu = () => {
 									<CircleHelp />
 								</DropdownMenu.Trigger>
 								<DropdownMenu.Portal>
-								<DropdownMenu.ContentWrapper>
-								<DropdownMenu.Content className="w-60">
+								<DropdownMenu.ContentWrapper className="z-999999" style={{ backgroundColor: 'white', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+								<DropdownMenu.Content className="w-60" style={{ backgroundColor: 'white' }}>
 										<DropdownMenu.List>
 											<DropdownMenu.Item>
 												{__(

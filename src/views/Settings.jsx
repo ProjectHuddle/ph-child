@@ -13,7 +13,7 @@ const Settings = () => {
             id: 1,
             icon: (
                 <img
-                    src={`${sureFeedbackAdmin.settings_selected_url}`}
+                    src={`${sureFeedbackAdmin.settings_url}`}
                     alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
@@ -33,14 +33,14 @@ const Settings = () => {
             id: 2,
             icon: (
                 <img
-                    src={`${sureFeedbackAdmin.settings_selected_url}`}
+                    src={`${sureFeedbackAdmin.label_url}`}
                     alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />
             ),
             selected: (
                 <img
-                    src={`${sureFeedbackAdmin.settings_selected_url}`}
+                    src={`${sureFeedbackAdmin.label_selected_url}`}
                     alt={__("Custom SVG", "ph_child")}
                     className="object-contain"
                 />

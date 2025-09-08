@@ -184,6 +184,16 @@ if ( ! class_exists( 'PH_Child_Admin_API' ) ) :
 					),
 				)
 			);
+
+			register_rest_route(
+				'surefeedback/v1',
+				'/plugin-status',
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( $this, 'get_plugin_status' ),
+					'permission_callback' => array( $this, 'check_admin_permissions' ),
+				)
+			);
 		}
 
 		/**
@@ -479,7 +489,38 @@ if ( ! class_exists( 'PH_Child_Admin_API' ) ) :
 			}
 			return '';
 		}
-	}
 
-	new PH_Child_Admin_API();
+		/**
+		 * Get plugin status for recommendations
+		 */
+		public function get_plugin_status( $request ) {
+			// Include required WordPress files
+			if ( ! function_exists( 'get_plugins' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+
+			$plugin_list = array(
+				'surerank/surerank.php',
+				'surecart/surecart.php', 
+				'sureforms/sureforms.php',
+				'presto-player/presto-player.php',
+				'suretriggers/suretriggers.php'
+			);
+
+			$status_map = array();
+			$installed_plugins = get_plugins();
+
+			foreach ( $plugin_list as $plugin ) {
+				if ( ! isset( $installed_plugins[ $plugin ] ) ) {
+					$status_map[ $plugin ] = 'Install';
+				} elseif ( is_plugin_active( $plugin ) ) {
+					$status_map[ $plugin ] = 'Activated';
+				} else {
+					$status_map[ $plugin ] = 'Installed';
+				}
+			}
+
+			return rest_ensure_response( $status_map );
+		}
+	}
 endif;

@@ -31,7 +31,7 @@ const Dashboard = () => {
                     >
                         <WelcomeContainer />
                          <QuickSettings />
-                         {/* <ExtendWebsite /> */}
+                         <ExtendWebsite />
                     </Container.Item>
                     <Container.Item
                         className="p-2 w-full ph_child-35-width"
