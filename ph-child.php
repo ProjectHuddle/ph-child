@@ -105,6 +105,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_menu_styles' ) );
 
+			add_action( 'admin_notices', [ $this, 'hide_admin_notices' ], 1 );
+            add_action( 'all_admin_notices', [ $this, 'hide_admin_notices' ], 1 );
+
 			// custom inline script and styles.
 			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
 
@@ -594,6 +597,24 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			}
 			return $tag;
 		}
+
+		/**
+         * Hide admin notices on the custom settings page.
+         *
+         * @since 2.2.1
+         * @return void
+         */
+        public static function hide_admin_notices() {
+            $screen                = get_current_screen();
+            $pages_to_hide_notices = [
+                'edit-elementor-hf',     // Edit screen for elementor-hf post type.
+                'elementor-hf',          // New post screen for elementor-hf post type.
+            ];
+            if ( in_array( $screen->id, $pages_to_hide_notices ) || 'toplevel_page_surefeedback' === $screen->id ) {
+                remove_all_actions( 'admin_notices' );
+                remove_all_actions( 'all_admin_notices' );
+            }
+        }
 
 		/**
 		 * Add module type to admin script tag

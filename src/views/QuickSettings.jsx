@@ -11,10 +11,10 @@ const QuickSettings = () => {
     const [loading, setLoading] = useState(false);
 
     const settings = [
-        { label: 'Product License', tab: 1, icon: BadgeCheck },
-        { label: 'General Settings', tab: 1, icon: Settings },
-        { label: 'Icon Manager', tab: 1, icon: FolderKanban },
-        { label: 'Google Manager', tab: 1, icon: Globe },
+      { label: 'Connection', tab: 1, icon: BadgeCheck },
+        { label: 'Integration', tab: 1, icon: Settings },
+        { label: 'White Label', tab: 2, icon: FolderKanban },
+        { label: 'Admin Access', tab: 1, icon: Globe },
     ];
 
     const handleTabRedirect = (e, tab) => {
