@@ -20,18 +20,27 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { apiGateway } from '../api/gateway.js';
-import { useConnection } from '../hooks/useConnection.js';
-import { APP_URLS } from '../api/apiurls.js';
+// Images - using data from PHP localization
+const ConnectedConnection = window.sureFeedbackAdmin?.connection?.connected_image || '';
+const PowerOff = window.sureFeedbackAdmin?.connection?.power_off_image || '';
 
 /**
- * Connected Component (SaaS)
+ * Legacy Connected Component
  * 
- * Shows connection UI for SaaS (new OAuth) connections
+ * Shows legacy connection UI for old plugin connections
+ * This maintains backward compatibility with existing installations
  */
-const Connected = ({ connectionData }) => {
+const LegacyConnected = () => {
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { disconnect: disconnectConnection } = useConnection();
+
+  const connectionData = window.sureFeedbackAdmin?.connection || {};
+  const siteUrl = connectionData?.site_data?.site_url || '';
+  const siteId = connectionData?.site_id || '';
+  
+  // Images - using data from PHP localization
+  const ConnectedConnection = window.sureFeedbackAdmin?.connection?.connected_image || '';
+  const PowerOff = window.sureFeedbackAdmin?.connection?.power_off_image || '';
 
   const handleDisconnectClick = () => {
     if (isDisconnecting) return;
@@ -42,23 +51,23 @@ const Connected = ({ connectionData }) => {
     setIsDisconnecting(true);
 
     try {
-      // Disconnect from SaaS (remove bearer token)
-      disconnectConnection();
-      
-      // Also call WordPress REST API to clear stored tokens
-      try {
-        await apiGateway.post('connection/reset');
-      } catch (e) {
-        console.warn('Failed to reset connection via REST API:', e);
-      }
+      const data = await apiGateway.post('connection/reset');
 
-      toast.success(__("Site disconnected successfully! Redirecting...", "surefeedback"));
-      setIsDialogOpen(false);
-      
-      // Redirect to the connection setup page after a brief delay
-      setTimeout(() => {
-        window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
-      }, 1500);
+      if (data.success) {
+        toast.success(__("Site disconnected successfully! Redirecting...", "surefeedback"));
+        setIsDialogOpen(false);
+        
+        // Redirect to the connection setup page after a brief delay
+        setTimeout(() => {
+          window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
+        }, 1500);
+      } else {
+        toast.error(
+          data.message ||
+            __("Failed to disconnect. Please try again.", "surefeedback")
+        );
+        setIsDialogOpen(false);
+      }
     } catch (error) {
       toast.error(
         __(
@@ -73,28 +82,24 @@ const Connected = ({ connectionData }) => {
   };
 
   const handleGoToDashboard = () => {
-    const appUrl = window.sureFeedbackAdmin?.appBaseUrl || APP_URLS.SITES();
-    window.open(appUrl, "_blank");
+    if (siteUrl && siteId) {
+      const dashboardUrl = `${siteUrl}/wp-admin/post.php?post=${siteId}&action=edit`;
+      window.open(dashboardUrl, "_blank");
+    } else {
+      window.open("https://app.surefeedback.com", "_blank");
+    }
   };
-
-  // Get connection info from connectionData or window
-  const siteUrl = connectionData?.site_url || 
-                  window.sureFeedbackAdmin?.connection?.site_data?.site_url || 
-                  window.location.origin;
-  
-  // Images - using data from PHP localization
-  const ConnectedConnection = window.sureFeedbackAdmin?.connection?.connected_image || '';
-  const PowerOff = window.sureFeedbackAdmin?.connection?.power_off_image || '';
 
   return (
     <div className="flex justify-center items-start bg-background p-4 pt-8">
       <Card className="shadow-sm text-center max-w-2xl w-full rounded-lg border border-border">
         <CardContent className="flex flex-col justify-center items-center space-y-6 px-16 py-8 min-h-[400px]">
           {/* Success Icon */}
-            {ConnectedConnection && <img src={ConnectedConnection} alt="Connected" className="w-18 h-18" />}
+          <img src={ConnectedConnection} alt="Connected" className="w-18 h-18" />
+          
           {/* Message */}
           <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-semibold text-[#0F172A] ">
+            <h2 className="text-2xl font-semibold text-[#0F172A]">
               {__("Website Connected Successfully!", "surefeedback")}
             </h2>
             <p className="text-muted-foreground text-sm max-w-[300px] mx-auto">
@@ -112,7 +117,7 @@ const Connected = ({ connectionData }) => {
                 {__("Connection Site:", "surefeedback")}
               </span>
               <span className="text-sm text-muted-foreground">
-                {siteUrl}
+                {siteUrl || "Unknown"}
               </span>
             </div>
             <Separator />
@@ -127,19 +132,6 @@ const Connected = ({ connectionData }) => {
                 </span>
               </div>
             </div>
-            {connectionData?.connection_id && (
-              <>
-                <Separator />
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-foreground">
-                    {__("Connection Type:", "surefeedback")}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {__("SaaS", "surefeedback")}
-                  </span>
-                </div>
-              </>
-            )}
           </div>
 
           {/* Buttons */}
@@ -158,18 +150,21 @@ const Connected = ({ connectionData }) => {
                 </>
               ) : (
                 <>
-                  {/* <Unplug className="mr-2 h-4 w-4" /> */}
-                  {PowerOff && <img src={PowerOff} alt="Disconnect" className="h-4 w-4" />}
+                  <img src={PowerOff} alt="Disconnect" className="h-4 w-4" />
                   {__("Disconnect", "surefeedback")}
                 </>
               )}
             </Button>
 
-            <Button variant="outline" size="sm" onClick={handleGoToDashboard} className="flex-1 h-[48px] text-sm rounded-lg border border-[#020617]">
-              <ExternalLink className=" h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleGoToDashboard} 
+              className="flex-1 h-[48px] text-sm rounded-lg border border-[#020617]"
+            >
+              <ExternalLink className="h-4 w-4" />
               {__("Go to Dashboard", "surefeedback")}
             </Button>
-
           </div>
         </CardContent>
       </Card>
@@ -213,4 +208,5 @@ const Connected = ({ connectionData }) => {
   );
 };
 
-export default Connected;
+export default LegacyConnected;
+

@@ -387,12 +387,48 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function create_menu() {
 			$plugin_name = get_option( 'ph_child_plugin_name', false );
-			add_options_page(
-				__( 'Feedback Connection', 'ph-child' ),
-				$plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' ),
+			$menu_title = $plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' );
+			$menu_icon = PH_CHILD_PLUGIN_URL . 'assets/images/settings/surefeedback-icon.svg';
+
+			// Add main menu page
+			add_menu_page(
+				__( 'SureFeedback', 'ph-child' ),
+				$menu_title,
+				'manage_options',
+				'feedback-connection-options',
+				array( $this, 'options_page' ),
+				$menu_icon,
+				30
+			);
+
+			// Add Connection submenu
+			add_submenu_page(
+				'feedback-connection-options',
+				__( 'Connection', 'ph-child' ),
+				__( 'Connection', 'ph-child' ),
 				'manage_options',
 				'feedback-connection-options',
 				array( $this, 'options_page' )
+			);
+
+			// Add Widget Control submenu
+			add_submenu_page(
+				'feedback-connection-options',
+				__( 'Widget Control', 'ph-child' ),
+				__( 'Widget Control', 'ph-child' ),
+				'manage_options',
+				'feedback-widget-control',
+				array( $this, 'widget_control_page' )
+			);
+
+			// Add Settings submenu
+			add_submenu_page(
+				'feedback-connection-options',
+				__( 'Settings', 'ph-child' ),
+				__( 'Settings', 'ph-child' ),
+				'manage_options',
+				'feedback-settings',
+				array( $this, 'settings_page' )
 			);
 
 			// Enqueue admin assets
@@ -407,8 +443,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @param string $hook Current admin page hook.
 		 */
 		public function enqueue_assets( $hook ) {
-			// Only load on our plugin page
-			if ( 'settings_page_feedback-connection-options' !== $hook ) {
+			// Only load on our plugin pages
+			$plugin_pages = array(
+				'toplevel_page_feedback-connection-options',
+				'surefeedback_page_feedback-connection-options',
+				'surefeedback_page_feedback-widget-control',
+				'surefeedback_page_feedback-settings',
+			);
+
+			if ( ! in_array( $hook, $plugin_pages, true ) ) {
 				return;
 			}
 
@@ -446,6 +489,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$api_base_url = defined( 'PH_CHILD_API_BASE_URL' ) ? PH_CHILD_API_BASE_URL : 'https://api.surefeedback.com/api/v1';
 			$app_base_url = defined( 'PH_CHILD_APP_BASE_URL' ) ? PH_CHILD_APP_BASE_URL : 'https://app.surefeedback.com';
 
+			// Detect connection type
+			$is_legacy_connection = $this->is_legacy_connection();
+			$is_saas_connection   = $this->is_saas_connection();
+
 			// Localize script with data
 			$localized_data = array(
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
@@ -459,9 +506,17 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'appBaseUrl'   => $app_base_url,
 				'projectId'    => get_option( 'ph_child_project_id', '' ),
 				'connection'   => array(
+					'type'      => $is_legacy_connection ? 'legacy' : ( $is_saas_connection ? 'saas' : 'none' ),
+					'is_legacy' => $is_legacy_connection,
+					'is_saas'   => $is_saas_connection,
 					'site_data' => array(
 						'site_url' => get_option( 'ph_child_parent_url', '' ),
 					),
+					// Legacy connection data
+					'site_id'   => get_option( 'ph_child_id', '' ),
+					'api_key'   => get_option( 'ph_child_api_key', '' ),
+					'access_token' => get_option( 'ph_child_access_token', '' ),
+					'signature' => get_option( 'ph_child_signature', '' ),
 				),
 			);
 
@@ -470,6 +525,32 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'sureFeedbackAdmin',
 				$localized_data
 			);
+		}
+
+		/**
+		 * Check if connection is legacy (old plugin system)
+		 *
+		 * @return bool
+		 */
+		private function is_legacy_connection() {
+			$parent_url = get_option( 'ph_child_parent_url', '' );
+			$site_id    = get_option( 'ph_child_id', '' );
+			$api_key    = get_option( 'ph_child_api_key', '' );
+
+			return ! empty( $parent_url ) && ! empty( $site_id ) && ! empty( $api_key );
+		}
+
+		/**
+		 * Check if connection is SaaS (new OAuth system)
+		 *
+		 * @return bool
+		 */
+		private function is_saas_connection() {
+			// Check for bearer token in options (stored after OAuth exchange)
+			$bearer_token = get_option( 'ph_child_bearer_token', '' );
+			$connection_id = get_option( 'ph_child_connection_id', '' );
+
+			return ! empty( $bearer_token ) || ! empty( $connection_id );
 		}
 
 		/**
@@ -960,17 +1041,19 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 *
 		 * @since 1.2.10
 		 */
-		private function render_react_app() {
-			// Determine container type based on URL parameters
-			$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';
-			$container_type = 'dashboard';
+		private function render_react_app( $container_type = null ) {
+			// Determine container type from parameter or URL
+			if ( null === $container_type ) {
+				$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';
+				$container_type = 'dashboard';
 
-			if ( 'connection' === $active_tab ) {
-				$container_type = 'connection';
-			} elseif ( 'settings' === $active_tab || 'general' === $active_tab ) {
-				$container_type = 'settings';
-			} elseif ( 'widget-control' === $active_tab ) {
-				$container_type = 'widget-control';
+				if ( 'connection' === $active_tab ) {
+					$container_type = 'connection';
+				} elseif ( 'settings' === $active_tab || 'general' === $active_tab ) {
+					$container_type = 'settings';
+				} elseif ( 'widget-control' === $active_tab ) {
+					$container_type = 'widget-control';
+				}
 			}
 
 			echo '<div id="ph-child-app" data-container-type="' . esc_attr( $container_type ) . '"></div>';
@@ -984,36 +1067,105 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function options_page() {
+			// Determine container type based on current page
+			$container_type = 'connection';
+			if ( isset( $_GET['page'] ) ) {
+				$page = sanitize_text_field( $_GET['page'] );
+				if ( 'feedback-widget-control' === $page ) {
+					$container_type = 'widget-control';
+				} elseif ( 'feedback-settings' === $page ) {
+					$container_type = 'settings';
+				} elseif ( 'feedback-connection-options' === $page ) {
+					$container_type = 'connection';
+				}
+			}
+
+			// Get page hook for CSS targeting
+			$page_hook = 'toplevel_page_feedback-connection-options';
+			if ( isset( $_GET['page'] ) ) {
+				$page_slug = sanitize_text_field( $_GET['page'] );
+				if ( 'feedback-widget-control' === $page_slug ) {
+					$page_hook = 'surefeedback_page_feedback-widget-control';
+				} elseif ( 'feedback-settings' === $page_slug ) {
+					$page_hook = 'surefeedback_page_feedback-settings';
+				}
+			}
+
 			// Hide WordPress admin elements for better React app experience
 			?>
 			<style>
-				body.settings_page_feedback-connection-options #adminmenumain,
-				body.settings_page_feedback-connection-options #adminmenuback,
-				body.settings_page_feedback-connection-options #adminmenuwrap,
-				body.settings_page_feedback-connection-options #wpadminbar {
+				body.toplevel_page_feedback-connection-options #adminmenumain,
+				body.toplevel_page_feedback-connection-options #adminmenuback,
+				body.toplevel_page_feedback-connection-options #adminmenuwrap,
+				body.toplevel_page_feedback-connection-options #wpadminbar,
+				body.surefeedback_page_feedback-connection-options #adminmenumain,
+				body.surefeedback_page_feedback-connection-options #adminmenuback,
+				body.surefeedback_page_feedback-connection-options #adminmenuwrap,
+				body.surefeedback_page_feedback-connection-options #wpadminbar,
+				body.surefeedback_page_feedback-widget-control #adminmenumain,
+				body.surefeedback_page_feedback-widget-control #adminmenuback,
+				body.surefeedback_page_feedback-widget-control #adminmenuwrap,
+				body.surefeedback_page_feedback-widget-control #wpadminbar,
+				body.surefeedback_page_feedback-settings #adminmenumain,
+				body.surefeedback_page_feedback-settings #adminmenuback,
+				body.surefeedback_page_feedback-settings #adminmenuwrap,
+				body.surefeedback_page_feedback-settings #wpadminbar {
 					display: none !important;
 				}
 				
-				body.settings_page_feedback-connection-options #wpcontent,
-				body.settings_page_feedback-connection-options #wpfooter {
+				body.toplevel_page_feedback-connection-options #wpcontent,
+				body.toplevel_page_feedback-connection-options #wpfooter,
+				body.surefeedback_page_feedback-connection-options #wpcontent,
+				body.surefeedback_page_feedback-connection-options #wpfooter,
+				body.surefeedback_page_feedback-widget-control #wpcontent,
+				body.surefeedback_page_feedback-widget-control #wpfooter,
+				body.surefeedback_page_feedback-settings #wpcontent,
+				body.surefeedback_page_feedback-settings #wpfooter {
 					margin-left: 0 !important;
 				}
 				
-				body.settings_page_feedback-connection-options #wpbody-content {
+				body.toplevel_page_feedback-connection-options #wpbody-content,
+				body.surefeedback_page_feedback-connection-options #wpbody-content,
+				body.surefeedback_page_feedback-widget-control #wpbody-content,
+				body.surefeedback_page_feedback-settings #wpbody-content {
 					padding: 0 !important;
 				}
 				
-				body.settings_page_feedback-connection-options .wrap {
+				body.toplevel_page_feedback-connection-options .wrap,
+				body.surefeedback_page_feedback-connection-options .wrap,
+				body.surefeedback_page_feedback-widget-control .wrap,
+				body.surefeedback_page_feedback-settings .wrap {
 					margin: 0 !important;
 					padding: 0 !important;
 				}
 				
-				body.settings_page_feedback-connection-options #wpfooter {
+				body.toplevel_page_feedback-connection-options #wpfooter,
+				body.surefeedback_page_feedback-connection-options #wpfooter,
+				body.surefeedback_page_feedback-widget-control #wpfooter,
+				body.surefeedback_page_feedback-settings #wpfooter {
 					display: none !important;
 				}
 			</style>
 			<?php
-			$this->render_react_app();
+			$this->render_react_app( $container_type );
+		}
+
+		/**
+		 * Widget Control page callback
+		 *
+		 * @return void
+		 */
+		public function widget_control_page() {
+			$this->options_page();
+		}
+
+		/**
+		 * Settings page callback
+		 *
+		 * @return void
+		 */
+		public function settings_page() {
+			$this->options_page();
 		}
 
 		/**

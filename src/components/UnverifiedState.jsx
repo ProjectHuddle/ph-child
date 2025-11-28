@@ -5,8 +5,6 @@ import { Card, CardContent } from "../components/ui/card";
 import { toast } from "../components/ui/toast";
 import { __ } from "@wordpress/i18n";
 import { useVerification } from "../hooks";
-import LoadingConnection from "../../../../assets/images/settings/connection-loading.svg";
-import VerifyConnection from "../../../../assets/images/settings/connections-verification.svg";
 
 const UnverifiedState = ({ showLoading = false, onRetryVerification = null, verificationResult = null }) => {
   const { verifyConnection, isLoading: verificationLoading } = useVerification();
@@ -14,6 +12,10 @@ const UnverifiedState = ({ showLoading = false, onRetryVerification = null, veri
   const verificationStatus = verificationResult?.status || dbVerificationStatus;
   const [isTestingConnection, setIsTestingConnection] = useState(false);
   const isLoading = isTestingConnection || verificationLoading || (showLoading && !verificationResult);
+  
+  // Images - using data from PHP localization
+  const LoadingConnection = window.sureFeedbackAdmin?.connection?.loading_image || '';
+  const VerifyConnection = window.sureFeedbackAdmin?.connection?.verification_image || '';
 
   // Automatically call verification on mount if onRetryVerification is provided and not already loading
   React.useEffect(() => {

@@ -13,7 +13,6 @@ const getApiBaseUrl = () => {
         return window.sureFeedbackAdmin.apiBaseUrl;
     }
     
-    // Default to SureFeedback API
     return 'https://api.surefeedback.com/api/v1';
 };
 

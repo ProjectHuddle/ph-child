@@ -6,6 +6,6 @@
  * @package SureFeedback
  */
 
-export { useConnection } from './useConnection.js';
-export { default as useConnection } from './useConnection.js';
+export { useConnection, default as useConnectionDefault } from './useConnection.js';
+export { useVerification } from './useVerification.js';
 

@@ -70,6 +70,21 @@ class ConnectionService {
             // Store bearer token
             if (response.data?.access_token) {
                 apiGateway.storeBearerToken(response.data.access_token);
+                
+                // Also store in WordPress options via REST API for persistence
+                // This allows PHP to detect SaaS connections
+                try {
+                    await apiGateway.post('connection/store-token', {
+                        access_token: response.data.access_token,
+                        connection_id: response.data.connection_id,
+                        organization_id: response.data.organization_id,
+                        project_id: response.data.project_id,
+                        site_id: response.data.site_id,
+                    });
+                } catch (e) {
+                    console.warn('Failed to store token in WordPress options:', e);
+                    // Continue even if storage fails - token is still in localStorage
+                }
             }
 
             return response.data;

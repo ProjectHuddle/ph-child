@@ -19,8 +19,9 @@ import {
 import { toast, Toaster } from '@/components/ui/toast';
 import { __, sprintf } from '@wordpress/i18n';
 import { apiGateway } from '../api/gateway.js';
-import SyncedMonitor from "../../../../assets/images/settings/sync_saved_locally.svg";
-import SyncedMonitorOff from "../../../../assets/images/settings/sync_saved_locally_off.svg";
+// Images - using data from PHP localization
+const SyncedMonitor = window.sureFeedbackAdmin?.connection?.sync_saved_locally_image || '';
+const SyncedMonitorOff = window.sureFeedbackAdmin?.connection?.sync_saved_locally_off_image || '';
 
 const WidgetControl = () => {
   const [pages, setPages] = useState([]);

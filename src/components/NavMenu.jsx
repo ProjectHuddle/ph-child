@@ -17,15 +17,22 @@ import { cn } from "@/lib/utils";
 import { CircleHelp, FileText, Headset, User } from "lucide-react";
 import { __ } from "@wordpress/i18n";
 import { NavLink, useRouter } from "@/utils/Router";
-import SFLogo from "../../../../assets/images/settings/surefeedback-logo-img.svg"
-import AutomationIcon from "../../../../assets/images/settings/automation.svg"
-import SettingsIcon from "../../../../assets/images/settings/settings.svg"
-import DashboardCustomizeIcon from "../../../../assets/images/settings/dashboard_customize.svg"
+
+// Get icon path from PHP localization or use default
+const getMenuIcon = () => {
+  return window.sureFeedbackAdmin?.pluginUrl + 'assets/images/settings/surefeedback-icon.svg';
+};
 
 // Create icon components that accept className prop
-const ConnectionIcon = ({ className }) => <img src={AutomationIcon} alt="" className={className} />;
-const SettingsIconComponent = ({ className }) => <img src={SettingsIcon} alt="" className={className} />;
-const WidgetControlIcon = ({ className }) => <img src={DashboardCustomizeIcon} alt="" className={className} />;
+const ConnectionIcon = ({ className }) => (
+  <img src={getMenuIcon()} alt="Connection" className={className} />
+);
+const SettingsIconComponent = ({ className }) => (
+  <img src={getMenuIcon()} alt="Settings" className={className} />
+);
+const WidgetControlIcon = ({ className }) => (
+  <img src={getMenuIcon()} alt="Widget Control" className={className} />
+);
 
 const NavMenu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -61,7 +68,7 @@ const NavMenu = () => {
       <div className="flex items-center justify-start min-w-0">
         <NavLink to="connections" className="focus:outline-none flex-shrink-0">
           <img
-            src={window.sureFeedbackAdmin?.surefeedback_icon || window.sureFeedbackAdmin?.pluginUrl + 'assets/images/settings/surefeedback-logo-img.svg'}
+            src={getMenuIcon()}
             alt="SureFeedback"
             className="h-[25px] w-auto cursor-pointer focus:outline-none"
           />

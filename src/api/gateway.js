@@ -17,13 +17,10 @@ const getDefaultHeaders = () => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     };
-
-    // Add nonce for WordPress REST API
     const nonce = window.sureFeedbackAdmin?.nonce || '';
     if (nonce) {
         headers['X-WP-Nonce'] = nonce;
     }
-
     return headers;
 };
 

@@ -5,11 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { __ } from "@wordpress/i18n";
 import { useConnection } from "../hooks/useConnection.js";
 import { APP_URLS } from "../api/apiurls.js";
-import defaultConnectionImg from "../../../../assets/images/settings/default-connection.svg";
 
 const NotConnected = () => {
   const { initiateConnection, isLoading, error } = useConnection();
   const [isConnecting, setIsConnecting] = useState(false);
+  
+  // Images - using data from PHP localization
+  const defaultConnectionImg = window.sureFeedbackAdmin?.connection?.default_connection_image || '';
 
   const handleConnect = () => {
     // Get project ID from localized data (optional)
