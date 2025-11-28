@@ -6,7 +6,23 @@
  * @package SureFeedback
  */
 
-import connectionService from '../services/connectionService.js';
+// Check for bearer token without importing connectionService to avoid circular dependencies
+const hasBearerToken = () => {
+    try {
+        // Check localStorage
+        if (typeof window !== 'undefined' && window.localStorage) {
+            const token = localStorage.getItem('surefeedback_bearer_token');
+            if (token) return true;
+        }
+        // Check window object
+        if (window.sureFeedbackAdmin?.bearerToken) {
+            return true;
+        }
+    } catch (e) {
+        // localStorage might not be available
+    }
+    return false;
+};
 
 /**
  * Check if connection is legacy (old plugin system)
@@ -18,6 +34,10 @@ import connectionService from '../services/connectionService.js';
  * @returns {boolean}
  */
 export const isLegacyConnection = () => {
+    if (typeof window === 'undefined' || !window.sureFeedbackAdmin) {
+        return false;
+    }
+    
     const connectionData = window.sureFeedbackAdmin?.connection;
     
     // Use the connection type from PHP if available
@@ -46,6 +66,10 @@ export const isLegacyConnection = () => {
  * @returns {boolean}
  */
 export const isSaaSConnection = () => {
+    if (typeof window === 'undefined' || !window.sureFeedbackAdmin) {
+        return false;
+    }
+    
     const connectionData = window.sureFeedbackAdmin?.connection;
     
     // Use the connection type from PHP if available
@@ -57,13 +81,15 @@ export const isSaaSConnection = () => {
         return true;
     }
     
-    // Check for bearer token
-    const hasBearerToken = connectionService.isAuthenticated();
+    // Check for bearer token (safely, without importing connectionService)
+    if (hasBearerToken()) {
+        return true;
+    }
     
     // Check for SaaS connection data
     const hasSaaSData = connectionData?.connection_id || connectionData?.access_token;
     
-    return hasBearerToken || hasSaaSData;
+    return hasSaaSData;
 };
 
 /**
@@ -72,6 +98,11 @@ export const isSaaSConnection = () => {
  * @returns {'legacy'|'saas'|'none'}
  */
 export const getConnectionType = () => {
+    // Safely check for window and sureFeedbackAdmin
+    if (typeof window === 'undefined' || !window.sureFeedbackAdmin) {
+        return 'none';
+    }
+    
     const connectionData = window.sureFeedbackAdmin?.connection;
     
     // Use type from PHP if available

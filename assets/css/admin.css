@@ -1,0 +1,21 @@
+/* WordPress Admin Menu Icon Alignment */
+#adminmenu .toplevel_page_feedback-connection-options .wp-menu-image img,
+#adminmenu .toplevel_page_feedback-connection-options .wp-menu-image svg {
+	opacity: 1 !important;
+	padding: 0 !important;
+	width: 20px !important;
+	height: 20px !important;
+	display: block !important;
+	margin: 0 auto !important;
+	vertical-align: middle !important;
+}
+
+#adminmenu .toplevel_page_feedback-connection-options .wp-menu-image {
+	width: 36px !important;
+	height: 34px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	padding: 0 !important;
+}
+

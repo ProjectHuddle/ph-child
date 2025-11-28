@@ -4,34 +4,41 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from "../ui/navigation-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { CircleHelp, FileText, Headset, User } from "lucide-react";
-import { __ } from "@wordpress/i18n";
-import { NavLink, useRouter } from "@/utils/Router";
+} from "../ui/dropdown-menu";
+import { Badge } from "../ui/badge";
+import { cn } from "../../lib/utils";
+import { HelpCircle, FileText, Headset, User, MessageSquare, Settings as SettingsIcon, LayoutGrid, Palette } from "lucide-react";
+import { NavLink, useRouter } from "../../utils/Router";
+
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 
 // Get icon path from PHP localization or use default
 const getMenuIcon = () => {
-  return window.sureFeedbackAdmin?.pluginUrl + 'assets/images/settings/surefeedback-icon.svg';
+  return window.sureFeedbackAdmin?.pluginUrl + 'assets/images/settings/surefeedback.svg';
 };
 
 // Create icon components that accept className prop
 const ConnectionIcon = ({ className }) => (
-  <img src={getMenuIcon()} alt="Connection" className={className} />
+  <MessageSquare className={className} />
 );
 const SettingsIconComponent = ({ className }) => (
-  <img src={getMenuIcon()} alt="Settings" className={className} />
+  <SettingsIcon className={className} />
 );
 const WidgetControlIcon = ({ className }) => (
-  <img src={getMenuIcon()} alt="Widget Control" className={className} />
+  <LayoutGrid className={className} />
 );
 
 const NavMenu = () => {
@@ -48,12 +55,32 @@ const NavMenu = () => {
   // Check if website is connected
   const isConnected = window.sureFeedbackAdmin?.connection?.connected || false;
 
-  // Filter nav items based on connection status
-  const allNavItems = [
-    { label: __("Connections", "surefeedback"), path: "connections", icon: ConnectionIcon, showWhenConnected: true },
-    { label: __("Widget Control", "surefeedback"), path: "widget-control", icon: WidgetControlIcon, showWhenConnected: true },
-    { label: __("Settings", "surefeedback"), path: "settings", icon: SettingsIconComponent, showWhenConnected: true },
-  ];
+  // Determine connection type preference to show correct nav items
+  const connectionTypePreference = window.sureFeedbackAdmin?.connectionTypePreference || '';
+  
+  // Filter nav items based on connection type
+  let allNavItems = [];
+  
+  // White Label Icon
+  const WhiteLabelIcon = ({ className }) => (
+    <Palette className={className} />
+  );
+
+  if (connectionTypePreference === 'plugin') {
+    // Plugin (Legacy) nav items - 3 tabs: Connection, Settings, White Label
+    allNavItems = [
+      { label: __("Connection", "surefeedback"), path: "plugin-connection", icon: ConnectionIcon, showWhenConnected: true },
+      { label: __("Settings", "surefeedback"), path: "settings", icon: SettingsIconComponent, showWhenConnected: true },
+      { label: __("White Label", "surefeedback"), path: "white-label", icon: WhiteLabelIcon, showWhenConnected: true },
+    ];
+  } else {
+    // SaaS nav items
+    allNavItems = [
+      { label: __("Connections", "surefeedback"), path: "connections", icon: ConnectionIcon, showWhenConnected: true },
+      { label: __("Widget Control", "surefeedback"), path: "widget-control", icon: WidgetControlIcon, showWhenConnected: true },
+      { label: __("Settings", "surefeedback"), path: "settings", icon: SettingsIconComponent, showWhenConnected: true },
+    ];
+  }
 
   const navItems = allNavItems.filter(item =>
     isConnected ? item.showWhenConnected : true
@@ -66,11 +93,18 @@ const NavMenu = () => {
     >
       {/* Left: Logo */}
       <div className="flex items-center justify-start min-w-0">
-        <NavLink to="connections" className="focus:outline-none flex-shrink-0">
+        <NavLink 
+          to={connectionTypePreference === 'plugin' ? 'plugin-connection' : 'connections'} 
+          className="focus:outline-none flex-shrink-0"
+        >
           <img
             src={getMenuIcon()}
             alt="SureFeedback"
             className="h-[25px] w-auto cursor-pointer focus:outline-none"
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.target.style.display = 'none';
+            }}
           />
         </NavLink>
       </div>
@@ -106,7 +140,7 @@ const NavMenu = () => {
         {/* Help Dropdown */}
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <CircleHelp className="cursor-pointer flex-shrink-0 w-5 h-5" />
+            <HelpCircle className="cursor-pointer flex-shrink-0 w-5 h-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 bg-white">
             <DropdownMenuLabel>

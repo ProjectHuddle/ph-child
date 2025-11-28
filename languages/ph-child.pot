@@ -1,0 +1,208 @@
+# Copyright (C) 2025 Brainstorm Force
+# This file is distributed under the same license as the SureFeedback Client Site package.
+msgid ""
+msgstr ""
+"Project-Id-Version: SureFeedback Client Site 1.2.10\n"
+"Report-Msgid-Bugs-To: "
+"https://wordpress.org/support/plugin/projecthuddle-child-site\n"
+"POT-Creation-Date: 2025-08-09 06:54:48+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: grunt-wp-i18n 1.0.4\n"
+
+#: includes/api/class-ph-child-rest-api.php:43
+msgid "Access token required"
+msgstr ""
+
+#: includes/api/class-ph-child-rest-api.php:46
+msgid "Invalid access token"
+msgstr ""
+
+#: includes/core/ph-child-functions.php:112
+msgid ""
+"Flywheel hosting detected!  You'll need to request a cache exclusion in "
+"order for project access links to work correctly."
+msgstr ""
+
+#: includes/core/ph-child-functions.php:138
+msgid ""
+"WPEngine hosting detected!  You'll need to request a cache exclusion in "
+"order for SureFeedback access links to work properly."
+msgstr ""
+
+#: ph-child.php:78
+msgid "Website project ID."
+msgstr ""
+
+#: ph-child.php:82
+msgid "Public API key for the script loader."
+msgstr ""
+
+#: ph-child.php:86
+msgid "Access token to verify access to be able to register and leave comments."
+msgstr ""
+
+#: ph-child.php:90
+msgid "Parent Site URL."
+msgstr ""
+
+#: ph-child.php:94
+msgid "Secret signature to verify identity."
+msgstr ""
+
+#: ph-child.php:98
+msgid "Is the plugin installed?"
+msgstr ""
+
+#: ph-child.php:204
+msgid ""
+"You have both the client site and SureFeedback core plugins activated. You "
+"must only activate the client site on a client site, and SureFeedback on "
+"your main site."
+msgstr ""
+
+#: ph-child.php:231
+msgid "Visit plugin site"
+msgstr ""
+
+#: ph-child.php:292
+msgid "Settings"
+msgstr ""
+
+#: ph-child.php:390
+msgid "Feedback Connection"
+msgstr ""
+
+#: ph-child.php:391
+msgid "SureFeedback"
+msgstr ""
+
+#: ph-child.php:406
+msgid "General Settings"
+msgstr ""
+
+#: ph-child.php:413
+msgid "Comments Visibility Access"
+msgstr ""
+
+#: ph-child.php:429
+msgid "Allow Site Visitors"
+msgstr ""
+
+#: ph-child.php:447
+msgid "Dashboard Commenting"
+msgstr ""
+
+#: ph-child.php:465
+msgid "Connection"
+msgstr ""
+
+#: ph-child.php:472
+msgid "Connection Status"
+msgstr ""
+
+#: ph-child.php:490
+msgid "Manual Connection Details"
+msgstr ""
+
+#: ph-child.php:509
+msgid "White Label"
+msgstr ""
+
+#: ph-child.php:516
+msgid "Plugin Name"
+msgstr ""
+
+#: ph-child.php:525
+msgid "Plugin Description"
+msgstr ""
+
+#: ph-child.php:534
+msgid "Plugin Author"
+msgstr ""
+
+#: ph-child.php:543
+msgid "Plugin Author URL"
+msgstr ""
+
+#: ph-child.php:552
+msgid "Plugin Link"
+msgstr ""
+
+#: ph-child.php:702
+msgid "Allow above user roles to view comments on your site without access token."
+msgstr ""
+
+#: ph-child.php:717
+msgid ""
+"Allow the site visitors to view and add comments on your site without "
+"access token."
+msgstr ""
+
+#: ph-child.php:729
+msgid "Allow commenting in your site's WordPress dashboard area."
+msgstr ""
+
+#: ph-child.php:774
+#. translators: %s: parent site URL
+msgid "Connected to %s"
+msgstr ""
+
+#: ph-child.php:784
+msgid "Disconnect"
+msgstr ""
+
+#: ph-child.php:786
+msgid "Visit Dashboard Site"
+msgstr ""
+
+#: ph-child.php:791
+msgid "Not Connected. Please connect this plugin to your Feedback installation."
+msgstr ""
+
+#: ph-child.php:816
+msgid "Need Help?"
+msgstr ""
+
+#: ph-child.php:830
+msgid ""
+"If you are having trouble connecting, you can manually connect by pasting "
+"the connection details below"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "SureFeedback Client Site"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://surefeedback.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Collect note-style feedback from your client’s websites and sync them with "
+"your SureFeedback parent project."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Brainstorm Force"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.brainstormforce.com"
+msgstr ""

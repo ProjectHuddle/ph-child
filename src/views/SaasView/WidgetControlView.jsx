@@ -1,8 +1,15 @@
 import React from 'react';
-import { __ } from '@wordpress/i18n';
 
 // Import the WidgetControl component
-import WidgetControl from '../components/WidgetControl';
+import WidgetControl from '../../components/SaaS/WidgetControl';
+
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 
 const WidgetControlView = () => {
     return (

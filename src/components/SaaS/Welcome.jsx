@@ -1,10 +1,17 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
-import { __ } from "@wordpress/i18n";
-import { authenticateRedirect } from "@/helpers/auth";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { authenticateRedirect } from "../../helpers/auth";
+import { Button } from "../../components/ui/button";
+import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "../../components/ui/card";
+import { Separator } from "../../components/ui/separator";
+
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 
 export const Welcome = ({ setCurrentStep }) => {
   const handleGetStarted = () => {

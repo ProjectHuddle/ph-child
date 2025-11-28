@@ -10,6 +10,7 @@ export default {
     filename: 'admin.js',
     path: path.resolve(__dirname, 'assets/js'),
   },
+  mode: 'production',
   devtool: 'source-map',
   module: {
     rules: [

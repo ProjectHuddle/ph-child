@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
-import { useConnection } from '../hooks/useConnection.js';
-import { getConnectionType } from '../utils/connectionType.js';
-import Connected from '../components/Connected';
-import NotConnected from '../components/NotConnected';
-import ConnectionFailed from '../components/ConnectionFailed';
-import UnverifiedState from '../components/UnverifiedState';
-import LegacyConnected from '../components/LegacyConnected';
+import { useConnection } from '../../hooks/useConnection.js';
+import { getConnectionType } from '../../utils/connectionType.js';
+// SaaS components
+import Connected from '../../components/SaaS/Connected.jsx';
+import NotConnected from '../../components/SaaS/NotConnected.jsx';
+import ConnectionFailed from '../../components/SaaS/ConnectionFailed.jsx';
+import UnverifiedState from '../../components/SaaS/UnverifiedState.jsx';
+// Plugin (Legacy) components
+import LegacyConnected from '../../components/Plugin/LegacyConnected.jsx';
 
 const ConnectionView = () => {
     const { 

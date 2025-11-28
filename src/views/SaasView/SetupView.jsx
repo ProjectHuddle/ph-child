@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Welcome from '../components/Welcome';
+import Welcome from '../../components/SaaS/Welcome';
 
 const SetupView = () => {
     useEffect(() => {

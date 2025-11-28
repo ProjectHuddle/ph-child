@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { AlertTriangle, CheckCircle, Loader2, RefreshCw, ExternalLink } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
-import { toast } from "../components/ui/toast";
-import { __ } from "@wordpress/i18n";
-import { useVerification } from "../hooks";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { toast } from "../../components/ui/toast";
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
+import { useVerification } from "../../hooks";
 
 const UnverifiedState = ({ showLoading = false, onRetryVerification = null, verificationResult = null }) => {
   const { verifyConnection, isLoading: verificationLoading } = useVerification();

@@ -11,7 +11,8 @@
     "watch:js": "webpack --watch --mode development",
     "watch:css": "tailwindcss -i ./assets/tailwind.css -o ./assets/css/tailwind.css --watch",
     "dev": "concurrently \"npm run watch:js\" \"npm run watch:css\"",
-    "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
+    "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'",
+    "shadcn": "npx shadcn@latest"
   },
   "repository": {
     "type": "git",
@@ -66,7 +67,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.0",
     "sonner": "^1.7.4",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

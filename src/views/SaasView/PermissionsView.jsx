@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Container } from '../components/ui/container';
-import { Title } from '../components/ui/title';
-import { Button } from '../components/ui/button';
-import { Switch } from '../components/ui/switch';
-import { Skeleton } from '../components/ui/skeleton';
-import { toast } from '../components/ui/toast';
-import { __ } from '@wordpress/i18n';
+import { Container } from '../../components/ui/container.jsx';
+import { Title } from '../../components/ui/title.jsx';
+import { Button } from '../../components/ui/button.jsx';
+import { Switch } from '../../components/ui/switch.jsx';
+import { Skeleton } from '../../components/ui/skeleton.jsx';
+import { toast } from '../../components/ui/toast.jsx';
 import { Shield, Users, Eye, Settings as SettingsIcon, Loader2 } from 'lucide-react';
-import { apiGateway } from '../api/gateway.js';
+import apiGateway from '../../api/gateway.js';
+
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 
 /**
  * Permissions View - Manages user permissions and access control

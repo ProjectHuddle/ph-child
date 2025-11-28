@@ -164,7 +164,7 @@ const request = async (url, options = {}) => {
 /**
  * API Gateway object
  */
-export const apiGateway = {
+const apiGateway = {
     /**
      * GET request
      */

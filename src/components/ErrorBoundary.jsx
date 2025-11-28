@@ -45,14 +45,16 @@ class ErrorBoundary extends React.Component {
                                 There was an error loading the SureFeedback interface.
                                 Please refresh the page or contact support if the problem persists.
                             </p>
-                            {window.sureFeedbackAdmin?.debug && this.state.error && (
-                                <details className="mt-4 text-left">
+                            {this.state.error && (
+                                <details className="mt-4 text-left" open>
                                     <summary className="cursor-pointer text-sm font-medium text-foreground">
-                                        Show error details
+                                        Error details
                                     </summary>
-                                    <pre className="mt-2 p-3 bg-muted text-xs text-foreground rounded-md overflow-auto">
-                                        {this.state.error.toString()}
-                                        {this.state.errorInfo.componentStack}
+                                    <pre className="mt-2 p-3 bg-muted text-xs text-foreground rounded-md overflow-auto max-h-64">
+                                        <strong>Error:</strong> {this.state.error.toString()}
+                                        {'\n\n'}
+                                        <strong>Stack:</strong>
+                                        {this.state.errorInfo?.componentStack || this.state.error.stack}
                                     </pre>
                                 </details>
                             )}

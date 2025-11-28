@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cva } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils.js"
 
 const titleVariants = cva(
   "scroll-m-20 tracking-tight",

@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { ChevronRight, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { __ } from "@wordpress/i18n";
-import { useConnection } from "../hooks/useConnection.js";
-import { APP_URLS } from "../api/apiurls.js";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
+
+import { useConnection } from "../../hooks/useConnection.js";
+import { APP_URLS } from "../../api/apiurls.js";
 
 const NotConnected = () => {
   const { initiateConnection, isLoading, error } = useConnection();

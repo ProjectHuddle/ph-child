@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { toast, Toaster } from "@/components/ui/toast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { __ } from "@wordpress/i18n";
+import { Button } from "../ui/button.jsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card.jsx";
+import { Switch } from "../ui/switch.jsx";
+import { Label } from "../ui/label.jsx";
+import { Separator } from "../ui/separator.jsx";
+import { toast, Toaster } from "../ui/toast.jsx";
+import { Skeleton } from "../ui/skeleton.jsx";
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 import { Loader2, Save, Shield, Trash2, AlertTriangle, Ban } from "lucide-react";
-import { apiGateway } from '../api/gateway.js';
+import apiGateway from '../../api/gateway.js';
 
 const ResetConnectionButton = () => {
   const [resetting, setResetting] = useState(false);

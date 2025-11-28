@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
-import { Separator } from "../components/ui/separator";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { Separator } from "../../components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,17 +11,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../components/ui/alert-dialog";
-import { toast } from "../components/ui/toast";
-import { __ } from "@wordpress/i18n";
+} from "../../components/ui/alert-dialog";
+import { toast } from "../../components/ui/toast";
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
 import {
   CheckCircle,
   Loader2,
   ExternalLink,
 } from "lucide-react";
-import { apiGateway } from '../api/gateway.js';
-import { useConnection } from '../hooks/useConnection.js';
-import { APP_URLS } from '../api/apiurls.js';
+import apiGateway from '../../api/gateway.js';
+import { useConnection } from '../../hooks/useConnection.js';
+import { APP_URLS } from '../../api/apiurls.js';
 
 /**
  * Connected Component (SaaS)

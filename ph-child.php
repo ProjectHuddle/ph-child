@@ -43,9 +43,8 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 	define( 'PH_CHILD_PLUGIN_FILE', __FILE__ );
 }
 
-// include child functions.
-require_once 'ph-child-functions.php';
-require_once 'ph-child-rest-api.php';
+// Load the plugin loader
+require_once 'includes/core/class-ph-child-loader.php';
 
 
 if ( ! class_exists( 'PH_Child' ) ) :
@@ -66,6 +65,22 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		protected $whitelist_option_names = array();
 
 		/**
+		 * Get option descriptions (translated)
+		 * 
+		 * @return array
+		 */
+		protected function get_option_descriptions() {
+			return array(
+				'ph_child_id'           => __( 'Website project ID.', 'ph-child' ),
+				'ph_child_api_key'      => __( 'Public API key for the script loader.', 'ph-child' ),
+				'ph_child_access_token' => __( 'Access token to verify access to be able to register and leave comments.', 'ph-child' ),
+				'ph_child_parent_url'   => __( 'Parent Site URL.', 'ph-child' ),
+				'ph_child_signature'    => __( 'Secret signature to verify identity.', 'ph-child' ),
+				'ph_child_installed'    => __( 'Is the plugin installed?', 'ph-child' ),
+			);
+		}
+
+		/**
 		 * Get things going
 		 */
 		public function __construct() {
@@ -74,29 +89,30 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
+			// Store option configuration without translations (translations loaded later)
 			$this->whitelist_option_names = array(
 				'ph_child_id'           => array(
-					'description'       => __( 'Website project ID.', 'project-huddle' ),
+					'description_key'   => 'ph_child_id',
 					'sanitize_callback' => 'intval',
 				),
 				'ph_child_api_key'      => array(
-					'description'       => __( 'Public API key for the script loader.', 'project-huddle' ),
+					'description_key'   => 'ph_child_api_key',
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_access_token' => array(
-					'description'       => __( 'Access token to verify access to be able to register and leave comments.', 'project-huddle' ),
+					'description_key'   => 'ph_child_access_token',
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_parent_url'   => array(
-					'description'       => __( 'Parent Site URL.', 'project-huddle' ),
+					'description_key'   => 'ph_child_parent_url',
 					'sanitize_callback' => 'esc_url',
 				),
 				'ph_child_signature'    => array(
-					'description'       => __( 'Secret signature to verify identity.', 'project-huddle' ),
+					'description_key'   => 'ph_child_signature',
 					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'ph_child_installed'    => array(
-					'description'       => __( 'Is the plugin installed?', 'project-huddle' ),
+					'description_key'   => 'ph_child_installed',
 					'sanitize_callback' => 'boolval',
 				),
 			);
@@ -202,7 +218,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function parent_plugin_activated_error_notice() {
-			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'project-huddle' );
+			$message = __( 'You have both the client site and SureFeedback core plugins activated. You must only activate the client site on a client site, and SureFeedback on your main site.', 'ph-child' );
 			echo '<div class="error"> <p>' . esc_html( $message ) . '</p></div>';
 		}
 
@@ -369,9 +385,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return array
 		 */
 		public function whitelist_option( $options ) {
+			$descriptions = $this->get_option_descriptions();
 			foreach ( $this->whitelist_option_names as $name => $item ) {
+				$description = isset( $descriptions[ $name ] ) ? $descriptions[ $name ] : '';
 				$options[ $name ] = array(
-					'desc'     => esc_html( $item['description'] ),
+					'desc'     => esc_html( $description ),
 					'readonly' => false,
 					'option'   => $name,
 				);
@@ -390,6 +408,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$menu_title = $plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' );
 			$menu_icon = PH_CHILD_PLUGIN_URL . 'assets/images/settings/surefeedback-icon.svg';
 
+			// Get connection type preference
+			$connection_type = get_option( 'ph_child_connection_type_preference', 'none' );
+
 			// Add main menu page
 			add_menu_page(
 				__( 'SureFeedback', 'ph-child' ),
@@ -401,7 +422,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				30
 			);
 
-			// Add Connection submenu
+			// Add Connection submenu (always visible)
 			add_submenu_page(
 				'feedback-connection-options',
 				__( 'Connection', 'ph-child' ),
@@ -411,25 +432,46 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				array( $this, 'options_page' )
 			);
 
-			// Add Widget Control submenu
-			add_submenu_page(
-				'feedback-connection-options',
-				__( 'Widget Control', 'ph-child' ),
-				__( 'Widget Control', 'ph-child' ),
-				'manage_options',
-				'feedback-widget-control',
-				array( $this, 'widget_control_page' )
-			);
+			// Show different menus based on connection type
+			if ( $connection_type === 'plugin' ) {
+				// Plugin (Legacy) connection - show Settings and White Label
+				add_submenu_page(
+					'feedback-connection-options',
+					__( 'Settings', 'ph-child' ),
+					__( 'Settings', 'ph-child' ),
+					'manage_options',
+					'feedback-settings',
+					array( $this, 'settings_page' )
+				);
 
-			// Add Settings submenu
-			add_submenu_page(
-				'feedback-connection-options',
-				__( 'Settings', 'ph-child' ),
-				__( 'Settings', 'ph-child' ),
-				'manage_options',
-				'feedback-settings',
-				array( $this, 'settings_page' )
-			);
+				add_submenu_page(
+					'feedback-connection-options',
+					__( 'White Label', 'ph-child' ),
+					__( 'White Label', 'ph-child' ),
+					'manage_options',
+					'feedback-white-label',
+					array( $this, 'white_label_page' )
+				);
+			} else {
+				// SaaS connection - show Widget Control and Settings
+				add_submenu_page(
+					'feedback-connection-options',
+					__( 'Widget Control', 'ph-child' ),
+					__( 'Widget Control', 'ph-child' ),
+					'manage_options',
+					'feedback-widget-control',
+					array( $this, 'widget_control_page' )
+				);
+
+				add_submenu_page(
+					'feedback-connection-options',
+					__( 'Settings', 'ph-child' ),
+					__( 'Settings', 'ph-child' ),
+					'manage_options',
+					'feedback-settings',
+					array( $this, 'settings_page' )
+				);
+			}
 
 			// Enqueue admin assets
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ), 100 );
@@ -449,6 +491,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'surefeedback_page_feedback-connection-options',
 				'surefeedback_page_feedback-widget-control',
 				'surefeedback_page_feedback-settings',
+				'surefeedback_page_feedback-white-label',
 			);
 
 			if ( ! in_array( $hook, $plugin_pages, true ) ) {
@@ -476,6 +519,17 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				);
 			}
 
+			// Enqueue admin CSS for menu icon alignment
+			$admin_css = PH_CHILD_PLUGIN_URL . 'assets/css/admin.css';
+			if ( file_exists( PH_CHILD_PLUGIN_DIR . 'assets/css/admin.css' ) ) {
+				wp_enqueue_style(
+					'ph-child-admin',
+					$admin_css,
+					array(),
+					$plugin_version
+				);
+			}
+
 			// Enqueue React app
 			wp_enqueue_script(
 				'ph-child-admin',
@@ -494,9 +548,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$is_saas_connection   = $this->is_saas_connection();
 
 			// Localize script with data
+			// Get connection type preference
+			$connection_type_preference = get_option( 'ph_child_connection_type_preference', '' );
+
 			$localized_data = array(
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-				'restUrl'      => rest_url( 'ph-child/v1/' ),
+				'restUrl'      => rest_url( 'ph-child/v1' ),
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'adminUrl'     => admin_url( 'admin.php' ),
 				'siteUrl'      => home_url(),
@@ -505,6 +562,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'apiBaseUrl'   => $api_base_url,
 				'appBaseUrl'   => $app_base_url,
 				'projectId'    => get_option( 'ph_child_project_id', '' ),
+				'connectionTypePreference' => $connection_type_preference,
 				'connection'   => array(
 					'type'      => $is_legacy_connection ? 'legacy' : ( $is_saas_connection ? 'saas' : 'none' ),
 					'is_legacy' => $is_legacy_connection,
@@ -939,9 +997,9 @@ if ( ! class_exists( 'PH_Child' ) ) :
 								),
 								remove_query_arg( 'settings-updated' )
 							)
-						) . '">' . esc_html__( 'Disconnect', 'project-huddle' ) . '</a>';
+						) . '">' . esc_html__( 'Disconnect', 'ph-child' ) . '</a>';
 					if ( ! $whitelabeld_plugin_name ) {
-						echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'project-huddle' ) . '</a>';
+						echo '<a class="button button-secondary ph-admin-link" target="_blank" href="' . esc_url( $dashboard_url ) . '">' . esc_html__( 'Visit Dashboard Site', 'ph-child' ) . '</a>';
 					}
 					echo '</p>';
 				} else {
@@ -1033,121 +1091,18 @@ if ( ! class_exists( 'PH_Child' ) ) :
 
 		/**
 		 * Feedback page - custom settings page content.
-		 *
-		 * @return void
-		 */
-		/**
-		 * Render React app container
-		 *
-		 * @since 1.2.10
-		 */
-		private function render_react_app( $container_type = null ) {
-			// Determine container type from parameter or URL
-			if ( null === $container_type ) {
-				$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';
-				$container_type = 'dashboard';
-
-				if ( 'connection' === $active_tab ) {
-					$container_type = 'connection';
-				} elseif ( 'settings' === $active_tab || 'general' === $active_tab ) {
-					$container_type = 'settings';
-				} elseif ( 'widget-control' === $active_tab ) {
-					$container_type = 'widget-control';
-				}
-			}
-
-			echo '<div id="ph-child-app" data-container-type="' . esc_attr( $container_type ) . '"></div>';
-		}
-
-		/**
-		 * Render options page
-		 *
-		 * @since 1.0.0
+		 * Now loads React admin interface
 		 *
 		 * @return void
 		 */
 		public function options_page() {
-			// Determine container type based on current page
-			$container_type = 'connection';
-			if ( isset( $_GET['page'] ) ) {
-				$page = sanitize_text_field( $_GET['page'] );
-				if ( 'feedback-widget-control' === $page ) {
-					$container_type = 'widget-control';
-				} elseif ( 'feedback-settings' === $page ) {
-					$container_type = 'settings';
-				} elseif ( 'feedback-connection-options' === $page ) {
-					$container_type = 'connection';
-				}
-			}
+			// Enqueue admin scripts and styles
+			$this->enqueue_admin_scripts();
 
-			// Get page hook for CSS targeting
-			$page_hook = 'toplevel_page_feedback-connection-options';
-			if ( isset( $_GET['page'] ) ) {
-				$page_slug = sanitize_text_field( $_GET['page'] );
-				if ( 'feedback-widget-control' === $page_slug ) {
-					$page_hook = 'surefeedback_page_feedback-widget-control';
-				} elseif ( 'feedback-settings' === $page_slug ) {
-					$page_hook = 'surefeedback_page_feedback-settings';
-				}
-			}
-
-			// Hide WordPress admin elements for better React app experience
+			// Render React app container
 			?>
-			<style>
-				body.toplevel_page_feedback-connection-options #adminmenumain,
-				body.toplevel_page_feedback-connection-options #adminmenuback,
-				body.toplevel_page_feedback-connection-options #adminmenuwrap,
-				body.toplevel_page_feedback-connection-options #wpadminbar,
-				body.surefeedback_page_feedback-connection-options #adminmenumain,
-				body.surefeedback_page_feedback-connection-options #adminmenuback,
-				body.surefeedback_page_feedback-connection-options #adminmenuwrap,
-				body.surefeedback_page_feedback-connection-options #wpadminbar,
-				body.surefeedback_page_feedback-widget-control #adminmenumain,
-				body.surefeedback_page_feedback-widget-control #adminmenuback,
-				body.surefeedback_page_feedback-widget-control #adminmenuwrap,
-				body.surefeedback_page_feedback-widget-control #wpadminbar,
-				body.surefeedback_page_feedback-settings #adminmenumain,
-				body.surefeedback_page_feedback-settings #adminmenuback,
-				body.surefeedback_page_feedback-settings #adminmenuwrap,
-				body.surefeedback_page_feedback-settings #wpadminbar {
-					display: none !important;
-				}
-				
-				body.toplevel_page_feedback-connection-options #wpcontent,
-				body.toplevel_page_feedback-connection-options #wpfooter,
-				body.surefeedback_page_feedback-connection-options #wpcontent,
-				body.surefeedback_page_feedback-connection-options #wpfooter,
-				body.surefeedback_page_feedback-widget-control #wpcontent,
-				body.surefeedback_page_feedback-widget-control #wpfooter,
-				body.surefeedback_page_feedback-settings #wpcontent,
-				body.surefeedback_page_feedback-settings #wpfooter {
-					margin-left: 0 !important;
-				}
-				
-				body.toplevel_page_feedback-connection-options #wpbody-content,
-				body.surefeedback_page_feedback-connection-options #wpbody-content,
-				body.surefeedback_page_feedback-widget-control #wpbody-content,
-				body.surefeedback_page_feedback-settings #wpbody-content {
-					padding: 0 !important;
-				}
-				
-				body.toplevel_page_feedback-connection-options .wrap,
-				body.surefeedback_page_feedback-connection-options .wrap,
-				body.surefeedback_page_feedback-widget-control .wrap,
-				body.surefeedback_page_feedback-settings .wrap {
-					margin: 0 !important;
-					padding: 0 !important;
-				}
-				
-				body.toplevel_page_feedback-connection-options #wpfooter,
-				body.surefeedback_page_feedback-connection-options #wpfooter,
-				body.surefeedback_page_feedback-widget-control #wpfooter,
-				body.surefeedback_page_feedback-settings #wpfooter {
-					display: none !important;
-				}
-			</style>
+			<div id="ph-child-app" data-container-type="connection"></div>
 			<?php
-			$this->render_react_app( $container_type );
 		}
 
 		/**
@@ -1156,7 +1111,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function widget_control_page() {
-			$this->options_page();
+			// Enqueue admin scripts and styles
+			$this->enqueue_admin_scripts();
+
+			// Render React app container
+			?>
+			<div id="ph-child-app" data-container-type="widget-control"></div>
+			<?php
 		}
 
 		/**
@@ -1165,7 +1126,42 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function settings_page() {
-			$this->options_page();
+			// Enqueue admin scripts and styles
+			$this->enqueue_admin_scripts();
+
+			// Render React app container
+			?>
+			<div id="ph-child-app" data-container-type="settings"></div>
+			<?php
+		}
+
+		/**
+		 * White Label page callback
+		 *
+		 * @return void
+		 */
+		public function white_label_page() {
+			// Enqueue admin scripts and styles
+			$this->enqueue_admin_scripts();
+
+			// Render React app container
+			?>
+			<div id="ph-child-app" data-container-type="white-label"></div>
+			<?php
+		}
+
+		/**
+		 * Enqueue admin scripts and styles for React app
+		 * Called from page callbacks to ensure assets are loaded
+		 * 
+		 * Note: Actual asset enqueuing is handled by enqueue_assets() method
+		 * which is hooked to admin_enqueue_scripts
+		 *
+		 * @return void
+		 */
+		public function enqueue_admin_scripts() {
+			// Assets are already enqueued via enqueue_assets() method
+			// This method exists for compatibility and can be used for page-specific logic if needed
 		}
 
 		/**
@@ -1275,5 +1271,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		}
 	}
 
+	// Initialize the plugin loader
+	PH_Child_Loader::get_instance();
+	
 	$plugin = new PH_Child();
 endif;

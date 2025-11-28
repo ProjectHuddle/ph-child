@@ -7,7 +7,17 @@ const RouterContext = createContext();
 export const useRouter = () => {
     const context = useContext(RouterContext);
     if (!context) {
-        throw new Error('useRouter must be used within a RouterProvider');
+        // Return a default router object instead of throwing to prevent crashes
+        // This allows components to render even if router context is missing
+        console.warn('useRouter called outside RouterProvider, using default router');
+        return {
+            currentRoute: 'connection-choice',
+            navigate: (route) => {
+                console.warn('Navigate called but router not available:', route);
+                window.location.hash = route;
+            },
+            getCurrentRoute: () => 'connection-choice',
+        };
     }
     return context;
 };
@@ -26,8 +36,19 @@ export const RouterProvider = ({ children, defaultRoute = 'setup' }) => {
         };
         
         // Set initial route from URL hash
+        // BUT: If no connection type preference is saved, force connection-choice route
+        const connectionTypePreference = window.sureFeedbackAdmin?.connectionTypePreference || '';
         const initialHash = window.location.hash.replace('#', '');
-        if (initialHash) {
+        
+        // If no preference is saved, always show choice screen regardless of hash
+        if (!connectionTypePreference || connectionTypePreference === '') {
+            if (initialHash !== 'connection-choice') {
+                setCurrentRoute('connection-choice');
+                window.location.hash = 'connection-choice';
+            } else {
+                setCurrentRoute(initialHash);
+            }
+        } else if (initialHash) {
             setCurrentRoute(initialHash);
         }
         
@@ -65,7 +86,33 @@ export const Route = ({ path, children, exact = false }) => {
         ? currentRoute === path 
         : currentRoute.startsWith(path);
     
-    return isMatch ? children : null;
+    if (!isMatch) {
+        return null;
+    }
+    
+    // Ensure children is valid and is a valid React element
+    if (!children) {
+        console.warn(`Route "${path}" has no children`);
+        return null;
+    }
+    
+    // Check if children is a valid React element
+    if (typeof children === 'undefined') {
+        console.error(`Route "${path}" has undefined children`);
+        return null;
+    }
+    
+    // If children is an array, filter out undefined/null values
+    if (Array.isArray(children)) {
+        const validChildren = children.filter(child => child != null);
+        if (validChildren.length === 0) {
+            console.warn(`Route "${path}" has no valid children`);
+            return null;
+        }
+        return <>{validChildren}</>;
+    }
+    
+    return <>{children}</>;
 };
 
 // Navigation Link Component

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card.jsx';
+import { Button } from '../ui/button.jsx';
+import { Switch } from '../ui/switch.jsx';
+import { Input } from '../ui/input.jsx';
+import { Badge } from '../ui/badge.jsx';
+import { Skeleton } from '../ui/skeleton.jsx';
 import { Loader2, Search, CheckCircle2, XCircle, Globe, FileText, Archive, AlertCircle, CheckCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   AlertDialog,
@@ -15,10 +15,28 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { toast, Toaster } from '@/components/ui/toast';
-import { __, sprintf } from '@wordpress/i18n';
-import { apiGateway } from '../api/gateway.js';
+} from '../ui/alert-dialog.jsx';
+import { toast, Toaster } from '../ui/toast.jsx';
+// WordPress i18n fallback
+const __ = (text, domain) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
+
+const sprintf = (format, ...args) => {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n && window.wp.i18n.sprintf) {
+    return window.wp.i18n.sprintf(format, ...args);
+  }
+  // Simple sprintf fallback
+  return format.replace(/%[sdj%]/g, (match) => {
+    if (match === '%%') return '%';
+    const arg = args.shift();
+    return match === '%s' ? String(arg) : match === '%d' ? Number(arg) : JSON.stringify(arg);
+  });
+};
+import apiGateway from '../../api/gateway.js';
 // Images - using data from PHP localization
 const SyncedMonitor = window.sureFeedbackAdmin?.connection?.sync_saved_locally_image || '';
 const SyncedMonitorOff = window.sureFeedbackAdmin?.connection?.sync_saved_locally_off_image || '';
