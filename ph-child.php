@@ -43,8 +43,11 @@ if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 	define( 'PH_CHILD_PLUGIN_FILE', __FILE__ );
 }
 
-// Load the plugin loader
-require_once 'includes/core/class-ph-child-loader.php';
+		// Load the plugin loader
+		require_once 'includes/core/class-ph-child-loader.php';
+		
+		// Include dashboard API
+		require_once PH_CHILD_PLUGIN_DIR . 'includes/api/dashboard-api.php';
 
 
 if ( ! class_exists( 'PH_Child' ) ) :
@@ -508,6 +511,14 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				$plugin_version = $plugin_data['Version'];
 			}
 
+			// Enqueue Figtree font from Google Fonts (same as SureForms)
+			wp_enqueue_style(
+				'ph-child-figtree-font',
+				'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap',
+				array(),
+				null
+			);
+
 			// Enqueue Tailwind CSS if it exists
 			$tailwind_css = PH_CHILD_PLUGIN_URL . 'assets/css/tailwind.css';
 			if ( file_exists( PH_CHILD_PLUGIN_DIR . 'assets/css/tailwind.css' ) ) {
@@ -562,6 +573,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'apiBaseUrl'   => $api_base_url,
 				'appBaseUrl'   => $app_base_url,
 				'projectId'    => get_option( 'ph_child_project_id', '' ),
+				'version'      => $plugin_version,
 				'connectionTypePreference' => $connection_type_preference,
 				'connection'   => array(
 					'type'      => $is_legacy_connection ? 'legacy' : ( $is_saas_connection ? 'saas' : 'none' ),

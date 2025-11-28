@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils.js"
 
 const Topbar = React.forwardRef(({ className, ...props }, ref) => (
   <nav
@@ -13,7 +13,7 @@ Topbar.displayName = "Topbar"
 const TopbarLeft = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center space-x-4", className)}
+    className={cn("flex items-center gap-3", className)}
     {...props}
   />
 ))
@@ -37,7 +37,7 @@ TopbarMiddle.displayName = "TopbarMiddle"
 const TopbarRight = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center space-x-4", className)}
+    className={cn("flex items-center gap-3", className)}
     {...props}
   />
 ))

@@ -26,30 +26,42 @@ export const useRouter = () => {
 export const RouterProvider = ({ children, defaultRoute = 'setup' }) => {
     const [currentRoute, setCurrentRoute] = useState(defaultRoute);
     
+    // Helper function to extract base route from hash (before ? or #)
+    const getBaseRoute = (hash) => {
+        if (!hash) return '';
+        // Remove # if present
+        const cleanHash = hash.replace('#', '');
+        // Extract base route before ? or any query params
+        const baseRoute = cleanHash.split('?')[0].split('#')[0];
+        return baseRoute;
+    };
+    
     // Listen for hash changes
     useEffect(() => {
         const handleHashChange = () => {
-            const hash = window.location.hash.replace('#', '');
-            if (hash && hash !== currentRoute) {
-                setCurrentRoute(hash);
+            const hash = window.location.hash || '';
+            const baseRoute = getBaseRoute(hash);
+            if (baseRoute && baseRoute !== currentRoute) {
+                setCurrentRoute(baseRoute);
             }
         };
         
         // Set initial route from URL hash
         // BUT: If no connection type preference is saved, force connection-choice route
         const connectionTypePreference = window.sureFeedbackAdmin?.connectionTypePreference || '';
-        const initialHash = window.location.hash.replace('#', '');
+        const initialHash = window.location.hash || '';
+        const initialBaseRoute = getBaseRoute(initialHash);
         
         // If no preference is saved, always show choice screen regardless of hash
         if (!connectionTypePreference || connectionTypePreference === '') {
-            if (initialHash !== 'connection-choice') {
+            if (initialBaseRoute !== 'connection-choice') {
                 setCurrentRoute('connection-choice');
                 window.location.hash = 'connection-choice';
             } else {
-                setCurrentRoute(initialHash);
+                setCurrentRoute(initialBaseRoute);
             }
-        } else if (initialHash) {
-            setCurrentRoute(initialHash);
+        } else if (initialBaseRoute) {
+            setCurrentRoute(initialBaseRoute);
         }
         
         window.addEventListener('hashchange', handleHashChange);

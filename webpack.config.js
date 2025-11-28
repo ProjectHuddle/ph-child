@@ -15,6 +15,14 @@ export default {
   module: {
     rules: [
       {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
@@ -38,9 +46,13 @@ export default {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.mjs'],
     alias: {
       '@': path.resolve(__dirname, 'src')
-    }
+    },
+    fullySpecified: false
+  },
+  resolveLoader: {
+    fullySpecified: false
   }
 };

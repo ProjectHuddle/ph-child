@@ -9,6 +9,8 @@
 @import "tailwindcss/theme";
 @import "tailwindcss/utilities";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
     --background: 255 255 255;
     --foreground: 10 10 10;
@@ -31,6 +33,14 @@
     --ring: 161 161 161;
     --radius: 0.4rem;
     --font-sans: ui-sans-serif, system-ui, sans-serif;
+    --sidebar: hsl(0 0% 98%);
+    --sidebar-foreground: hsl(240 5.3% 26.1%);
+    --sidebar-primary: hsl(240 5.9% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(240 4.8% 95.9%);
+    --sidebar-accent-foreground: hsl(240 5.9% 10%);
+    --sidebar-border: hsl(220 13% 91%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 .dark {
@@ -53,6 +63,14 @@
     --border: #282828;
     --input: #343434;
     --ring: #737373;
+    --sidebar: hsl(240 5.9% 10%);
+    --sidebar-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-primary: hsl(224.3 76.3% 48%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(240 3.7% 15.9%);
+    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-border: hsl(240 3.7% 15.9%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 @theme inline {
@@ -77,13 +95,56 @@
     --color-popover-foreground: rgb(var(--popover-foreground));
     --radius: var(--radius);
     --font-sans: var(--font-sans);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+        }
+    to {
+      height: var(--radix-accordion-content-height);
+        }
+    }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+        }
+    to {
+      height: 0;
+        }
+    }
 }
 
 a {
     text-decoration: none !important;
 }
 
-
 #wpcontent, #wpfooter {
     margin-left: 140px;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Don't apply border to all elements - let components control their own borders */
+  input, textarea, select {
+    @apply border-border;
+  }
+  
+  /* Reset margin for p and wp-die-message */
+  p, .wp-die-message {
+    margin: 0px !important;
+  }
 }

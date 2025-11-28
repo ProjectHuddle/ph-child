@@ -10,9 +10,9 @@ import React from 'react';
 import { RouterProvider, Route, useRouter } from '../../utils/Router.jsx';
 
 // Import Plugin views
+import PluginDashboardView from './DashboardView.jsx';
 import PluginConnectionView from './PluginConnectionView.jsx';
 import SettingsView from './SettingsView.jsx';
-import WhiteLabelSettingsView from './WhiteLabelSettingsView.jsx';
 
 // Import shared components
 import NavMenu from '../../components/SaaS/NavMenu.jsx';
@@ -24,7 +24,7 @@ const PluginDashboardContent = () => {
     const { currentRoute } = useRouter();
     
     const isConnectionRoute = currentRoute === 'plugin-connection';
-    const isSettingsRoute = currentRoute === 'settings' || currentRoute === 'white-label';
+    const isSettingsRoute = currentRoute === 'settings';
 
     return (
         <div className="surefeedback-dashboard flex flex-col bg-gray-50 w-full overflow-x-hidden" style={{ margin: 0, padding: 0, width: "100%", maxWidth: "100vw" }}>
@@ -33,20 +33,20 @@ const PluginDashboardContent = () => {
                 <NavMenu />
             </div>
 
-            {/* Main Content Area */}
-            <div className={`flex-1 ${isConnectionRoute ? '' : 'bg-white'}`}>
-                <main className={isConnectionRoute ? '' : 'p-2'}>
-                    <Route path="plugin-connection" exact>
-                        <PluginConnectionView />
-                    </Route>
-                    <Route path="settings" exact>
-                        <SettingsView />
-                    </Route>
-                    <Route path="white-label" exact>
-                        <WhiteLabelSettingsView />
-                    </Route>
-                </main>
-            </div>
+                {/* Main Content Area */}
+                <div className="flex-1">
+                    <main>
+                        <Route path="plugin-dashboard" exact>
+                            <PluginDashboardView />
+                        </Route>
+                        <Route path="plugin-connection" exact>
+                            <PluginConnectionView />
+                        </Route>
+                        <Route path="settings" exact>
+                            <SettingsView />
+                        </Route>
+                    </main>
+                </div>
         </div>
     );
 };
@@ -55,14 +55,14 @@ const PluginDashboardContent = () => {
  * Plugin Dashboard Component
  */
 const PluginDashboard = ({ containerType = 'dashboard' }) => {
-    const getDefaultRoute = () => {
-        if (containerType === 'settings') return 'settings';
-        if (containerType === 'white-label') return 'white-label';
-        if (containerType === 'connection') return 'plugin-connection';
-        
-        // Default to connection view for plugin
-        return 'plugin-connection';
-    };
+        const getDefaultRoute = () => {
+            if (containerType === 'settings') return 'settings';
+            if (containerType === 'connection') return 'plugin-connection';
+            if (containerType === 'dashboard') return 'plugin-dashboard';
+            
+            // Default to dashboard view for plugin
+            return 'plugin-dashboard';
+        };
 
     return (
         <RouterProvider defaultRoute={getDefaultRoute()}>
