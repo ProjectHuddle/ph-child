@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card.jsx';
 import { Button } from '../../components/ui/button.jsx';
 import { Badge } from '../../components/ui/badge.jsx';
-import { CheckCircle, AlertTriangle, ExternalLink, Users, MessageSquare, Settings as SettingsIcon, Palette, BarChart3, Shield, Check, Ticket, HelpCircle, Star, Plus, X } from 'lucide-react';
+import { Alert, AlertDescription } from '../../components/ui/alert.jsx';
+import { CheckCircle, AlertTriangle, ExternalLink, Users, MessageSquare, Settings as SettingsIcon, Palette, BarChart3, Shield, Check, Ticket, HelpCircle, Star, Plus, X, Sparkles, RefreshCw, LogOut } from 'lucide-react';
 import { getConnectionType } from '../../utils/connectionType.js';
-import { NavLink } from '../../utils/Router.jsx';
+import { NavLink, useRouter } from '../../utils/Router.jsx';
 import { toast } from '../../components/ui/toast.jsx';
 import apiGateway from '../../api/gateway.js';
 import { WORDPRESS_API } from '../../api/apiurls.js';
@@ -25,6 +26,7 @@ const PluginDashboardView = () => {
   const [connectionStatus, setConnectionStatus] = useState('none');
   const [isLoading, setIsLoading] = useState(true);
   const [popupVideo, setPopupVideo] = useState(null);
+  const [showSaaSNotice, setShowSaaSNotice] = useState(true);
   const [pluginStatuses, setPluginStatuses] = useState({
     suremail: 'activated',
     ottokit: 'activated',
@@ -175,6 +177,21 @@ const PluginDashboardView = () => {
 
   const isConnected = connectionStatus !== 'none';
   const connectionData = window.sureFeedbackAdmin?.connection || {};
+  const router = useRouter();
+
+  const handleDisconnect = () => {
+    if (confirm(__('Are you sure you want to disconnect? This will remove all connection settings.', 'surefeedback'))) {
+      const disconnectUrl = window.sureFeedbackAdmin?.adminUrl + 
+        '?page=feedback-connection-options&ph-child-site-disconnect=1&ph-child-site-disconnect-nonce=' +
+        (window.sureFeedbackAdmin?.disconnect_nonce || '');
+      window.location.href = disconnectUrl;
+    }
+  };
+
+  const handleReconnect = () => {
+    router.navigate('plugin-connection');
+    window.location.hash = 'plugin-connection';
+  };
 
   const getStatusInfo = () => {
     if (connectionStatus === 'legacy') {
@@ -311,38 +328,59 @@ const PluginDashboardView = () => {
       )}
 
       {/* Connection Status */}
-      <Card className={`${statusInfo.borderColor} ${statusInfo.bgColor} border-2`}>
+      <Card className="bg-white border-2 border-gray-200 rounded-xl shadow-sm">
         <CardHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${statusInfo.bgColor} rounded-full flex items-center justify-center`}>
-              <StatusIcon className={`w-5 h-5 ${statusInfo.color}`} />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-200">
+              <StatusIcon className="w-6 h-6 text-green-600" />
             </div>
-            <div>
-              <CardTitle className="text-lg font-semibold text-gray-900">
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg font-semibold text-gray-900 mb-1.5">
                 {statusInfo.title}
               </CardTitle>
-              <CardDescription className="text-sm text-gray-600 mt-1">
+              <CardDescription className="text-sm text-gray-600 leading-relaxed">
                 {statusInfo.description}
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         {isConnected && (
-          <CardContent className="pt-0">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{__('Parent Site URL:', 'surefeedback')}</span>
-                <span className="font-mono text-gray-900 break-all">{connectionData.site_data?.site_url || '--'}</span>
+          <CardContent className="pt-0 pb-4 px-6">
+            <div className="space-y-3.5">
+              <div className="flex items-start justify-between gap-4 text-sm">
+                <span className="text-gray-600 font-medium flex-shrink-0">{__('Parent Site URL:', 'surefeedback')}</span>
+                <span className="font-mono text-gray-900 break-all text-right">{connectionData.site_data?.site_url || '--'}</span>
               </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{__('Project ID:', 'surefeedback')}</span>
+              <div className="flex items-center justify-between gap-4 text-sm">
+                <span className="text-gray-600 font-medium">{__('Project ID:', 'surefeedback')}</span>
                 <span className="font-mono text-gray-900">{connectionData.site_id || '--'}</span>
               </div>
-              <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                <span className="text-sm text-gray-600">{__('Last verified:', 'surefeedback')}</span>
-                <Badge variant="secondary" className="text-xs">
+              <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                <span className="text-sm text-gray-600 font-medium">{__('Last verified:', 'surefeedback')}</span>
+                <Badge className="bg-[#4253ff] text-white border-0 text-xs font-medium px-2.5 py-0.5">
                   {__('Active', 'surefeedback')}
                 </Badge>
+              </div>
+              {/* Action Buttons */}
+              <div className="flex items-center justify-center gap-4 pt-4">
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={handleReconnect}
+                  className="h-10 px-6 border-[#4253ff] text-[#4253ff] hover:bg-[#4253ff]/10"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  {__('Reconnect', 'surefeedback')}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={handleDisconnect}
+                  className="h-10 px-6 border-red-300 text-red-600 hover:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  {__('Disconnect', 'surefeedback')}
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -538,42 +576,47 @@ const PluginDashboardView = () => {
         </div>
       </div>
 
-      {/* 3. Plugin Information - Similar to SureForms version display */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-3 gap-2 shadow-sm">
-        <div className="p-1 gap-2">
-          <div className="text-sm font-semibold text-gray-900">
-            {__('Plugin Information', 'surefeedback')}
-          </div>
-        </div>
-        <div className="space-y-3 p-1">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">{__('Version:', 'surefeedback')}</span>
-            <Badge variant="secondary" className="text-xs text-gray-600">
-              {window.sureFeedbackAdmin?.version || '1.2.10'}
-            </Badge>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">{__('Type:', 'surefeedback')}</span>
-            <Badge variant="outline" className="text-xs">
-              {__('Core', 'surefeedback')}
-            </Badge>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">{__('Status:', 'surefeedback')}</span>
-            <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-orange-400'}`}></div>
-              <span className={`text-xs font-medium ${isConnected ? 'text-green-600' : 'text-orange-600'}`}>
-                {isConnected ? __('Connected', 'surefeedback') : __('Not Connected', 'surefeedback')}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 
   return (
     <div className="p-5 pb-8 xl:p-8 w-full bg-gray-50 min-h-screen">
+      {/* SaaS Platform Launch Notice */}
+      {showSaaSNotice && (
+        <div className="max-w-7xl mx-auto mb-6">
+          <Alert className="bg-gradient-to-r from-[#4253ff] to-[#3142ef] border-[#4253ff] text-white shadow-lg">
+            <Sparkles className="h-5 w-5 text-white" />
+            <AlertDescription className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex-1">
+                <p className="font-semibold text-base mb-1">
+                  {__('🎉 Exciting News: We\'ve Launched Our SaaS Platform!', 'surefeedback')}
+                </p>
+                <p className="text-sm text-white/90">
+                  {__('Experience enhanced features, better performance, and seamless collaboration with our new SaaS platform.', 'surefeedback')}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => window.open('https://surefeedback.com/saas', '_blank', 'noopener noreferrer')}
+                  className="bg-white text-[#4253ff] hover:bg-gray-100 font-medium px-4 py-2 h-auto"
+                  size="sm"
+                >
+                  {__('Learn More', 'surefeedback')}
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+                <button
+                  onClick={() => setShowSaaSNotice(false)}
+                  className="text-white/80 hover:text-white focus:outline-none p-1"
+                  aria-label={__('Dismiss notice', 'surefeedback')}
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
       {/* Two-column grid layout similar to SureForms */}
       <div className="grid grid-cols-12 gap-8 max-w-7xl mx-auto">
         {/* Left Column - Main Content (8/12) */}

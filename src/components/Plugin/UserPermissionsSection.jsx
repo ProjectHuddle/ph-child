@@ -22,7 +22,7 @@ const UserPermissionsSection = ({ roles = [], selectedRoles = [], onRoleChange, 
       {roles.map((role) => (
         <div
           key={role.name}
-          className="role-card flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 cursor-pointer"
+          className="role-card flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-[#4253ff] hover:bg-[#4253ff]/10 transition-all duration-200 cursor-pointer"
           onClick={() => onRoleToggle && onRoleToggle(role.name)}
         >
           <Checkbox

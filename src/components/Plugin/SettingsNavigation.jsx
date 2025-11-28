@@ -54,13 +54,13 @@ const NavLink = ({ label, path, icon: Icon, isActive }) => {
     <a
       href={getHref()}
       onClick={handleClick}
-      className={`flex items-start gap-3.5 px-2.5 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-blue-500 w-full ${
-        isActive ? 'bg-gray-50 text-gray-900' : ''
+      className={`flex items-start gap-3.5 px-2.5 py-2 rounded-md transition-colors text-gray-600 hover:bg-[#4253ff]/10 no-underline hover:no-underline focus:outline-none focus:ring-1 focus:ring-[#4253ff] w-full ${
+        isActive ? 'bg-[#4253ff]/10 text-gray-900' : ''
       }`}
     >
       <span
         className={`flex-shrink-0 mt-0.5 ${
-          isActive ? 'text-blue-600' : 'text-gray-500'
+          isActive ? 'text-[#4253ff]' : 'text-gray-500'
         }`}
       >
         {Icon}

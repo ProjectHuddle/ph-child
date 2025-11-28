@@ -12,7 +12,6 @@ import { RouterProvider, Route, useRouter } from '../../utils/Router.jsx';
 // Import SaaS views
 import SetupView from './SetupView.jsx';
 import ConnectionView from './ConnectionView.jsx';
-import PermissionsView from './PermissionsView.jsx';
 import SettingsView from './SettingsView.jsx';
 import WidgetControlView from './WidgetControlView.jsx';
 
@@ -45,9 +44,6 @@ const SaasDashboardContent = () => {
                     </Route>
                     <Route path="connections" exact>
                         <ConnectionView />
-                    </Route>
-                    <Route path="permissions" exact>
-                        <PermissionsView />
                     </Route>
                     <Route path="settings" exact>
                         <SettingsView />
