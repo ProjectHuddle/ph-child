@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="tests/phpunit/bootstrap.php"
+    backupGlobals="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    verbose="true"
+    >
+    <testsuites>
+        <testsuite name="Sigmize Testing">
+            <file>./tests/phpunit/tests/test-url-matcher.php</file>
+            <file>./tests/phpunit/tests/test-comprehensive-url-matcher.php</file>
+            <file>./tests/phpunit/tests/test-database-manager.php</file>
+            <file>./tests/phpunit/tests/test-rest-api-integration.php</file>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./includes</directory>
+        </include>
+        <exclude>
+            <directory>./node_modules</directory>
+            <directory>./tests</directory>
+            <directory>./vendor</directory>
+        </exclude>
+    </coverage>
+</phpunit>

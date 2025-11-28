@@ -1,9 +1,16 @@
 {
   "name": "projecthuddle-child",
   "version": "1.2.6",
-  "description": "Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project",
+  "description": "Collect note-style feedback from your client's websites and sync them with your SureFeedback parent project",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "webpack --mode production",
+    "build:css": "tailwindcss -i ./assets/tailwind.css -o ./assets/css/tailwind.css --minify",
+    "watch:js": "webpack --watch --mode development",
+    "watch:css": "tailwindcss -i ./assets/tailwind.css -o ./assets/css/tailwind.css --watch",
+    "dev": "concurrently \"npm run watch:js\" \"npm run watch:css\"",
     "release": "sudo ./sync.sh --plugin-name='projecthuddle-child-site' --git-repo='https://github.com/ProjectHuddle/ph-child.git' --svn-user=2winfactor --assets-dir='screenshots'"
   },
   "repository": {
@@ -22,8 +29,37 @@
     "url": "https://github.com/ProjectHuddle/ph-child/issues"
   },
   "homepage": "https://github.com/ProjectHuddle/ph-child#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "@tailwindcss/cli": "^4.1.12",
+    "@tailwindcss/postcss": "^4.1.12",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^9.1.2",
+    "concurrently": "^8.2.0",
+    "css-loader": "^6.8.1",
     "grunt": "^1.6.1",
-    "grunt-contrib-compress": "^2.0.0"
+    "grunt-contrib-compress": "^2.0.0",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^7.3.3",
+    "style-loader": "^3.3.3",
+    "tailwindcss": "^4.1.12",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "overrides": {
+    "inflight": "^2.0.0",
+    "glob": "^10.3.10",
+    "rimraf": "^5.0.5",
+    "@humanwhocodes/config-array": "npm:@eslint/config-array@latest",
+    "@humanwhocodes/object-schema": "npm:@eslint/object-schema@latest",
+    "@types/react": "18.3.23",
+    "@types/react-dom": "18.2.19"
   }
 }

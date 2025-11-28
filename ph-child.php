@@ -394,6 +394,82 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'feedback-connection-options',
 				array( $this, 'options_page' )
 			);
+
+			// Enqueue admin assets
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ), 100 );
+		}
+
+		/**
+		 * Enqueue admin assets
+		 *
+		 * @since 1.2.10
+		 *
+		 * @param string $hook Current admin page hook.
+		 */
+		public function enqueue_assets( $hook ) {
+			// Only load on our plugin page
+			if ( 'settings_page_feedback-connection-options' !== $hook ) {
+				return;
+			}
+
+			// Get plugin version
+			$plugin_version = '1.2.10';
+			if ( ! function_exists( 'get_plugin_data' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			$plugin_data = get_plugin_data( PH_CHILD_PLUGIN_FILE );
+			if ( ! empty( $plugin_data['Version'] ) ) {
+				$plugin_version = $plugin_data['Version'];
+			}
+
+			// Enqueue Tailwind CSS if it exists
+			$tailwind_css = PH_CHILD_PLUGIN_URL . 'assets/css/tailwind.css';
+			if ( file_exists( PH_CHILD_PLUGIN_DIR . 'assets/css/tailwind.css' ) ) {
+				wp_enqueue_style(
+					'ph-child-tailwind',
+					$tailwind_css,
+					array(),
+					$plugin_version
+				);
+			}
+
+			// Enqueue React app
+			wp_enqueue_script(
+				'ph-child-admin',
+				PH_CHILD_PLUGIN_URL . 'assets/js/admin.js',
+				array(),
+				$plugin_version,
+				true
+			);
+
+			// Get API base URL from constant or default
+			$api_base_url = defined( 'PH_CHILD_API_BASE_URL' ) ? PH_CHILD_API_BASE_URL : 'https://api.surefeedback.com/api/v1';
+			$app_base_url = defined( 'PH_CHILD_APP_BASE_URL' ) ? PH_CHILD_APP_BASE_URL : 'https://app.surefeedback.com';
+
+			// Localize script with data
+			$localized_data = array(
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'restUrl'      => rest_url( 'ph-child/v1/' ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'adminUrl'     => admin_url( 'admin.php' ),
+				'siteUrl'      => home_url(),
+				'pluginUrl'    => PH_CHILD_PLUGIN_URL,
+				'currentPage'  => $hook,
+				'apiBaseUrl'   => $api_base_url,
+				'appBaseUrl'   => $app_base_url,
+				'projectId'    => get_option( 'ph_child_project_id', '' ),
+				'connection'   => array(
+					'site_data' => array(
+						'site_url' => get_option( 'ph_child_parent_url', '' ),
+					),
+				),
+			);
+
+			wp_localize_script(
+				'ph-child-admin',
+				'sureFeedbackAdmin',
+				$localized_data
+			);
 		}
 
 		/**
@@ -879,81 +955,65 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 *
 		 * @return void
 		 */
+		/**
+		 * Render React app container
+		 *
+		 * @since 1.2.10
+		 */
+		private function render_react_app() {
+			// Determine container type based on URL parameters
+			$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';
+			$container_type = 'dashboard';
+
+			if ( 'connection' === $active_tab ) {
+				$container_type = 'connection';
+			} elseif ( 'settings' === $active_tab || 'general' === $active_tab ) {
+				$container_type = 'settings';
+			} elseif ( 'widget-control' === $active_tab ) {
+				$container_type = 'widget-control';
+			}
+
+			echo '<div id="ph-child-app" data-container-type="' . esc_attr( $container_type ) . '"></div>';
+		}
+
+		/**
+		 * Render options page
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return void
+		 */
 		public function options_page() {
+			// Hide WordPress admin elements for better React app experience
 			?>
-				<div class="wrap">
-					<h1>
-					<?php
-						$plugin_name = get_option( 'ph_child_plugin_name', false );
-						echo $plugin_name ? esc_html( $plugin_name . ' Options' ) : esc_html__( 'SureFeedback Options', 'ph-child' );
-					?>
-						</h1>
-
-					<?php $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general'; ?>
-
-					<h2 class="nav-tab-wrapper">
-						<a href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								'tab',
-								'general',
-								remove_query_arg( 'settings-updated' )
-							)
-						);
-						?>
-						" class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e( 'General', 'ph-child' ); ?>
-						</a>
-
-						<a href="
-						<?php
-						echo esc_url(
-							add_query_arg(
-								'tab',
-								'connection',
-								remove_query_arg( 'settings-updated' )
-							)
-						);
-						?>
-						" class="nav-tab <?php echo 'connection' === $active_tab ? 'nav-tab-active' : ''; ?>">
-							<?php esc_html_e( 'Connection', 'ph-child' ); ?>
-						</a>
-
-						<?php if ( ! defined( 'PH_HIDE_WHITE_LABEL' ) || true !== PH_HIDE_WHITE_LABEL ) : ?>
-							<a href="
-							<?php
-							echo esc_url(
-								add_query_arg(
-									'tab',
-									'white_label',
-									remove_query_arg( 'settings-updated' )
-								)
-							);
-							?>
-							" class="nav-tab <?php echo 'white_label' === $active_tab ? 'nav-tab-active' : ''; ?>">
-								<?php esc_html_e( 'White Label', 'ph-child' ); ?>
-							</a>
-						<?php endif; ?>
-				</h2>
-
-				<form method="post" action="options.php">
-					<?php
-					if ( 'general' === $active_tab ) {
-								settings_fields( 'ph_child_general_options' );
-								do_settings_sections( 'ph_child_general_options' );
-					} elseif ( 'connection' === $active_tab ) {
-						settings_fields( 'ph_child_connection_options' );
-						do_settings_sections( 'ph_child_connection_options' );
-					} elseif ( 'white_label' === $active_tab ) {
-						settings_fields( 'ph_child_white_label_options' );
-						do_settings_sections( 'ph_child_white_label_options' );
-					}
-					submit_button();
-					?>
-				</form>
-			</div>
+			<style>
+				body.settings_page_feedback-connection-options #adminmenumain,
+				body.settings_page_feedback-connection-options #adminmenuback,
+				body.settings_page_feedback-connection-options #adminmenuwrap,
+				body.settings_page_feedback-connection-options #wpadminbar {
+					display: none !important;
+				}
+				
+				body.settings_page_feedback-connection-options #wpcontent,
+				body.settings_page_feedback-connection-options #wpfooter {
+					margin-left: 0 !important;
+				}
+				
+				body.settings_page_feedback-connection-options #wpbody-content {
+					padding: 0 !important;
+				}
+				
+				body.settings_page_feedback-connection-options .wrap {
+					margin: 0 !important;
+					padding: 0 !important;
+				}
+				
+				body.settings_page_feedback-connection-options #wpfooter {
+					display: none !important;
+				}
+			</style>
 			<?php
+			$this->render_react_app();
 		}
 
 		/**

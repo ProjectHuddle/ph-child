@@ -1,0 +1,70 @@
+/**
+ * API Constants
+ * 
+ * Constants for API configuration, error codes, and HTTP status codes
+ * 
+ * @package SureFeedback
+ */
+
+/**
+ * HTTP Status Codes
+ */
+export const HTTP_STATUS = {
+    OK: 200,
+    CREATED: 201,
+    NO_CONTENT: 204,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    UNPROCESSABLE_ENTITY: 422,
+    TOO_MANY_REQUESTS: 429,
+    INTERNAL_SERVER_ERROR: 500,
+    BAD_GATEWAY: 502,
+    SERVICE_UNAVAILABLE: 503,
+    GATEWAY_TIMEOUT: 504,
+};
+
+/**
+ * Error Codes
+ */
+export const ERROR_CODES = {
+    NETWORK_ERROR: 'NETWORK_ERROR',
+    INVALID_TOKEN: 'INVALID_TOKEN',
+    INVALID_NONCE: 'INVALID_NONCE',
+    INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    MISSING_PARAMETER: 'MISSING_PARAMETER',
+    CONNECTION_FAILED: 'CONNECTION_FAILED',
+    TOKEN_EXPIRED: 'TOKEN_EXPIRED',
+    TOKEN_EXCHANGE_FAILED: 'TOKEN_EXCHANGE_FAILED',
+    CONNECTION_INITIATION_FAILED: 'CONNECTION_INITIATION_FAILED',
+    EMAIL_VERIFICATION_REQUIRED: 'EMAIL_VERIFICATION_REQUIRED',
+    CONNECTION_LIMIT_EXCEEDED: 'CONNECTION_LIMIT_EXCEEDED',
+};
+
+/**
+ * Cache Configuration
+ */
+export const CACHE_CONFIG = {
+    DEFAULT_TTL: 5 * 60 * 1000, // 5 minutes
+    LONG_TTL: 30 * 60 * 1000, // 30 minutes
+    SHORT_TTL: 1 * 60 * 1000, // 1 minute
+};
+
+/**
+ * Environment
+ */
+export const ENVIRONMENT = {
+    DEVELOPMENT: 'development',
+    PRODUCTION: 'production',
+    STAGING: 'staging',
+};
+
+export default {
+    HTTP_STATUS,
+    ERROR_CODES,
+    CACHE_CONFIG,
+    ENVIRONMENT,
+};
+

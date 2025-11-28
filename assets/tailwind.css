@@ -1,0 +1,83 @@
+/* Tailwind v4 @source lines (one per pattern) */
+@source "../src/**/*.{js,jsx}";
+@source "./js/**/*.js";
+@source "../includes/**/*.php";
+@source "../ph-child.php";
+
+/* Import individually: preflight + theme + utilities */
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+:root {
+    --background: #FFFFFF;
+    --foreground: #0A0A0A;
+    --card: #FFFFFF;
+    --card-foreground: #0A0A0A;
+    --popover: #FFFFFF;
+    --popover-foreground: #0A0A0A;
+    --primary: #005F5A;
+    --primary-foreground: #FFFFFF;
+    --secondary: #FF5B04;
+    --secondary-foreground: #FFFFFF;
+    --muted: #FAFAFA;
+    --muted-foreground: #737373;
+    --accent: #F5F5F5;
+    --accent-foreground: #171717;
+    --destructive: #E7000B;
+    --destructive-foreground: #FFFFFF;
+    --border: #E5E5E5;
+    --input: #E5E5E5;
+    --ring: #A1A1A1;
+    --radius: 0.4rem;
+}
+
+.dark {
+    --background: #0A0A0A;
+    --foreground: #FAFAFA;
+    --card: #171717;
+    --card-foreground: #FAFAFA;
+    --popover: #262626;
+    --popover-foreground: #FAFAFA;
+    --primary: #E5E5E5;
+    --primary-foreground: #171717;
+    --secondary: #262626;
+    --secondary-foreground: #FAFAFA;
+    --muted: #262626;
+    --muted-foreground: #A1A1A1;
+    --accent: #404040;
+    --accent-foreground: #FAFAFA;
+    --destructive: #FF6467;
+    --destructive-foreground: #FAFAFA;
+    --border: #282828;
+    --input: #343434;
+    --ring: #737373;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --radius: var(--radius);
+}
+
+a {
+    text-decoration: none !important;
+}
+
