@@ -52,9 +52,6 @@ class ConnectionService {
                 {
                     oauth_token: oauthToken,
                     site_url: siteUrl,
-                },
-                {
-                    requireAuth: false,
                 }
             );
 
@@ -142,12 +139,15 @@ class ConnectionService {
     }
 
     /**
-     * Check if user is authenticated (has bearer token)
+     * Check if user is authenticated
+     * Note: Authentication is now handled via nonce, not bearer token
      * 
      * @returns {boolean}
      */
     isAuthenticated() {
-        return !!apiGateway.getBearerToken();
+        // Check for connection data instead of bearer token
+        const connectionData = window.sureFeedbackAdmin?.connection;
+        return !!(connectionData?.type === 'saas' || connectionData?.is_saas || connectionData?.connection_id);
     }
 
     /**
@@ -168,20 +168,29 @@ class ConnectionService {
 
     /**
      * Get connection status
+     * Calls WordPress REST API endpoint which proxies to external API
      * 
-     * @returns {Promise<Object>} Connection status
+     * @returns {Promise<Object>} Connection status or null if not connected
      */
     async getConnectionStatus() {
         try {
+            // Call WordPress REST API endpoint instead of external API directly
             const response = await apiGateway.get(
-                CONNECTION_API.STATUS(),
-                {
-                    requireAuth: true,
-                }
+                'connection/status'
             );
+
+            // If response indicates not connected, return null
+            if (response && response.success === false) {
+                return null;
+            }
 
             return response.data || response;
         } catch (error) {
+            // If it's a 404 or connection error, return null to show not connected state
+            if (error instanceof ApiError && (error.status === 404 || error.status === 0)) {
+                return null;
+            }
+            
             if (error instanceof ApiError) {
                 throw error;
             }

@@ -157,23 +157,23 @@ const WidgetControl = () => {
     switch (type) {
       case 'home':
       case 'blog':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4 text-primary" />;
       case 'page':
       case 'post':
-        return <FileText className="h-4 w-4" />;
+        return <FileText className="h-4 w-4 text-primary" />;
       case 'archive':
       case 'search':
       case '404':
-        return <Archive className="h-4 w-4" />;
+        return <Archive className="h-4 w-4 text-primary" />;
       default:
-        return <FileText className="h-4 w-4" />;
+        return <FileText className="h-4 w-4 text-primary" />;
     }
   };
 
   // Get page type badge color
   const getPageTypeBadge = (type, typeLabel) => {
     return (
-      <Badge className="bg-[#F9FAFB] text-[#374151] border-[0.5px] border-[#E5E7EB] rounded-full shadow-none px-2.5 py-0.5 text-xs font-medium">
+      <Badge variant="outline" className="text-xs font-medium">
         {typeLabel || type}
       </Badge>
     );
@@ -296,284 +296,284 @@ const WidgetControl = () => {
   }
 
   return (
-    <div className="flex justify-center items-start bg-background p-4 pt-8">
-      <Card className="shadow-sm w-full rounded-lg border border-border max-w-4xl">
-        <CardContent className="flex flex-col space-y-6 py-8 w-full">
-          <div className="space-y-4 sm:space-y-6">
-            {/* Header */}
-            <div>
-              <h2 className="text-xl font-semibold text-foreground">{__('Widget Control', 'surefeedback')}</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {__('Control which pages display the SureFeedback widget', 'surefeedback')}
-              </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900">{__('Widget Control', 'surefeedback')}</h2>
+        <p className="text-sm text-gray-600 mt-1.5">
+          {__('Control which pages display the SureFeedback widget', 'surefeedback')}
+        </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <CardDescription className="text-xs font-medium text-gray-600">{__('Total Pages', 'surefeedback')}</CardDescription>
+                <div className="text-2xl font-bold text-gray-900">{pages.length}</div>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Globe className="h-6 w-6 text-primary" />
+              </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-              <Card className="overflow-hidden rounded-lg bg-[#F9FAFBF9] shadow-none">
-                <CardContent className="p-3 sm:p-4 flex items-center gap-4 h-full">
-                  <div className="flex-1">
-                    <CardTitle className="text-xs sm:text-sm text-[#475569] font-normal mb-2">{__('Total Pages', 'surefeedback')}</CardTitle>
-                    <div className="text-xl sm:text-2xl font-semibold">{pages.length}</div>
-                  </div>
-                  <div className="flex items-center justify-center flex-shrink-0">
-                    <Globe className="h-8 w-8 text-[#9CA3AF]" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-hidden rounded-lg bg-[#F9FAFBF9] shadow-none">
-                <CardContent className="p-3 sm:p-4 flex items-center gap-4 h-full">
-                  <div className="flex-1">
-                    <CardTitle className="text-xs sm:text-sm text-[#475569] font-normal mb-2">{__('Enabled Pages', 'surefeedback')}</CardTitle>
-                    <div className="text-xl sm:text-2xl font-semibold">{enabledCount}</div>
-                  </div>
-                  <div className="flex items-center justify-center flex-shrink-0">
-                    <img src={SyncedMonitor} alt={__('synced', 'surefeedback')} className="w-8 h-8" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-hidden rounded-lg bg-[#F9FAFBF9] shadow-none">
-                <CardContent className="p-3 sm:p-4 flex items-center gap-4 h-full">
-                  <div className="flex-1">
-                    <CardTitle className="text-xs sm:text-sm text-[#475569] font-normal mb-2">{__('Disabled Pages', 'surefeedback')}</CardTitle>
-                    <div className="text-xl sm:text-2xl font-semibold">{disabledCount}</div>
-                  </div>
-                  <div className="flex items-center justify-center flex-shrink-0">
-                    <img src={SyncedMonitorOff} alt={__('off - synced', 'surefeedback')} className="w-8 h-8" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Bulk Actions */}
-            <Card className="w-full rounded-lg border border-border shadow-none">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 !pb-0">
-                <div className="flex-1">
-                  <CardTitle className="text-base sm:text-lg">{__('Page List', 'surefeedback')}</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm mt-1">{__('Toggle widget visibility for individual pages', 'surefeedback')}</CardDescription>
-                </div>
-                <div className="flex gap-2 w-full sm:w-auto">
-                  {enabledCount === pages.length ? (
-                    <Button
-                      onClick={handleDisableAllClick}
-                      disabled={saving}
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 sm:flex-initial text-xs sm:text-sm"
-                    >
-                      {saving ? (
-                        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                      ) : (
-                        <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                      )}
-                      <span className="hidden sm:inline">{__('Disable All Pages', 'surefeedback')}</span>
-                      <span className="sm:hidden">{__('Disable All', 'surefeedback')}</span>
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleEnableAllClick}
-                      disabled={saving}
-                      size="sm"
-                      className="flex-1 sm:flex-initial text-xs sm:text-sm"
-                    >
-                      {saving ? (
-                        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
-                      ) : (
-                        <CheckCheck className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                      )}
-                      <span className="hidden sm:inline">{__('Enable All Pages', 'surefeedback')}</span>
-                      <span className="sm:hidden">{__('Enable All', 'surefeedback')}</span>
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="px-6 !pt-4">
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-                    <Input
-                      placeholder={__('Search pages...', 'surefeedback')}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-8 sm:pl-10 text-sm h-9 sm:h-10"
-                    />
-                  </div>
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className="px-4 text-sm border rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary h-10"
-                  >
-                    <option value="all">{__('All Types', 'surefeedback')}</option>
-                    <option value="enabled">{__('Enabled Only', 'surefeedback')}</option>
-                    <option value="disabled">{__('Disabled Only', 'surefeedback')}</option>
-                    <option value="home">{__('Homepage', 'surefeedback')}</option>
-                    <option value="page">{__('Pages', 'surefeedback')}</option>
-                    <option value="post">{__('Posts', 'surefeedback')}</option>
-                    <option value="archive">{__('Archives', 'surefeedback')}</option>
-                  </select>
-                </div>
-
-                {/* Pages List */}
-                <div className="space-y-2 mb-4">
-                  {paginatedPages.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2" />
-                      <p className="text-sm">{__('No pages found', 'surefeedback')}</p>
-                    </div>
-                  ) : (
-                    paginatedPages.map((page) => (
-                      <div
-                        key={page.id}
-                        className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 border-[0.5px] border-[#E5E7EB] rounded-lg transition-colors duration-150 h-auto sm:h-[72px]"
-                      >
-                        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-gray-900 truncate text-sm sm:text-base">{page.title}</div>
-                            {page.url && (
-                              <div className="text-xs sm:text-sm text-[#6B7280] truncate mt-0.5">
-                                {page.url}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
-                          <div className="flex-shrink-0">
-                            {getPageTypeBadge(page.type, page.type_label)}
-                          </div>
-                          <div className="flex-shrink-0">
-                            <Switch
-                              checked={isPageEnabled(page.id)}
-                              onCheckedChange={(checked) => handleToggleChange(page.id, checked)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                {/* Pagination - only show when not searching */}
-                {!searchTerm && totalPages > 1 && (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t pt-4 mb-4">
-                    <div className="text-xs sm:text-sm text-muted-foreground">
-                      {sprintf(__('Showing %1$d-%2$d of %3$d pages', 'surefeedback'), startIndex + 1, Math.min(endIndex, filteredPages.length), filteredPages.length)}
-                    </div>
-                    <div className="flex gap-1 sm:gap-2 w-full sm:w-auto justify-end">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                        className="text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9"
-                      >
-                        <span className="hidden sm:inline">{__('Previous', 'surefeedback')}</span>
-                        <ChevronLeft className="h-4 w-4 sm:hidden" />
-                      </Button>
-                      <div className="hidden sm:flex items-center gap-1">
-                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                          let pageNum;
-                          if (totalPages <= 5) {
-                            pageNum = i + 1;
-                          } else if (currentPage <= 3) {
-                            pageNum = i + 1;
-                          } else if (currentPage >= totalPages - 2) {
-                            pageNum = totalPages - 4 + i;
-                          } else {
-                            pageNum = currentPage - 2 + i;
-                          }
-                          return (
-                            <Button
-                              key={pageNum}
-                              variant={currentPage === pageNum ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => setCurrentPage(pageNum)}
-                              className="w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm"
-                            >
-                              {pageNum}
-                            </Button>
-                          );
-                        })}
-                      </div>
-                      <div className="flex sm:hidden items-center gap-1 text-xs">
-                        <span className="px-2">{currentPage} / {totalPages}</span>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        disabled={currentPage === totalPages}
-                        className="text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9"
-                      >
-                        <span className="hidden sm:inline">{__('Next', 'surefeedback')}</span>
-                        <ChevronRight className="h-4 w-4 sm:hidden" />
-                      </Button>
-                    </div>
-                  </div>
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <CardDescription className="text-xs font-medium text-gray-600">{__('Enabled Pages', 'surefeedback')}</CardDescription>
+                <div className="text-2xl font-bold text-primary">{enabledCount}</div>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                {SyncedMonitor ? (
+                  <img src={SyncedMonitor} alt={__('synced', 'surefeedback')} className="w-6 h-6" />
+                ) : (
+                  <CheckCircle2 className="h-6 w-6 text-primary" />
                 )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-                {/* Save Actions Bar - Integrated */}
-                <div className="border-t pt-3 sm:pt-4 mt-4 bg-gray-50 -mx-4 sm:-mx-6 px-4 sm:px-6 -mb-4 sm:-mb-6 pb-4 sm:pb-6 rounded-b-lg">
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      {hasUnsavedChanges && (
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-orange-600 bg-orange-50 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md border border-orange-200">
-                          <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                          <span className="font-medium">{__('Unsaved changes', 'surefeedback')}</span>
-                        </div>
-                      )}
-                      {!hasUnsavedChanges && (
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                          <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
-                          <span>{__('All changes saved', 'surefeedback')}</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 sm:gap-3">
-                      <Button
-                        variant="outline"
-                        onClick={loadPagesSettings}
-                        disabled={saving || !hasUnsavedChanges}
-                        className="flex-1 sm:flex-initial sm:min-w-[100px] text-xs sm:text-sm h-9"
-                      >
-                        {__('Cancel', 'surefeedback')}
-                      </Button>
-                      <Button
-                        onClick={saveSettings}
-                        disabled={saving || !hasUnsavedChanges}
-                        className="flex-1 sm:flex-initial sm:min-w-[140px] text-xs sm:text-sm h-9"
-                      >
-                        {saving ? (
-                          <>
-                            <Loader2 className=" h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                            <span className="hidden sm:inline">{__('Saving...', 'surefeedback')}</span>
-                            <span className="sm:hidden">{__('Saving...', 'surefeedback')}</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="hidden sm:inline">{__('Save Changes', 'surefeedback')}</span>
-                            <span className="sm:hidden">{__('Save', 'surefeedback')}</span>
-                          </>
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <CardDescription className="text-xs font-medium text-gray-600">{__('Disabled Pages', 'surefeedback')}</CardDescription>
+                <div className="text-2xl font-bold text-gray-600">{disabledCount}</div>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+                {SyncedMonitorOff ? (
+                  <img src={SyncedMonitorOff} alt={__('off - synced', 'surefeedback')} className="w-6 h-6" />
+                ) : (
+                  <XCircle className="h-6 w-6 text-gray-500" />
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Page List Card */}
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <CardTitle className="font-semibold text-gray-900">{__('Page List', 'surefeedback')}</CardTitle>
+              <CardDescription className="mt-1 text-gray-600">
+                {__('Toggle widget visibility for individual pages', 'surefeedback')}
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              {enabledCount === pages.length ? (
+                <Button
+                  onClick={handleDisableAllClick}
+                  disabled={saving}
+                  variant="outline"
+                  size="sm"
+                >
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <XCircle className="h-4 w-4 mr-2" />
+                  )}
+                  {__('Disable All', 'surefeedback')}
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleEnableAllClick}
+                  disabled={saving}
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <CheckCheck className="h-4 w-4 mr-2" />
+                  )}
+                  {__('Enable All', 'surefeedback')}
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={__('Search pages...', 'surefeedback')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-2 text-sm border rounded-md bg-background hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 h-10"
+            >
+              <option value="all">{__('All Types', 'surefeedback')}</option>
+              <option value="enabled">{__('Enabled Only', 'surefeedback')}</option>
+              <option value="disabled">{__('Disabled Only', 'surefeedback')}</option>
+              <option value="home">{__('Homepage', 'surefeedback')}</option>
+              <option value="page">{__('Pages', 'surefeedback')}</option>
+              <option value="post">{__('Posts', 'surefeedback')}</option>
+              <option value="archive">{__('Archives', 'surefeedback')}</option>
+            </select>
+          </div>
+
+          {/* Pages List */}
+          <div className="space-y-2">
+            {paginatedPages.length === 0 ? (
+              <div className="text-center py-12">
+                <AlertCircle className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">{__('No pages found', 'surefeedback')}</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                {paginatedPages.map((page) => (
+                  <div
+                    key={page.id}
+                    className="flex items-center justify-between gap-4 p-4 hover:bg-gray-50/50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
+                        {getPageIcon(page.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-gray-900 truncate">{page.title}</div>
+                        {page.url && (
+                          <div className="text-xs text-gray-600 truncate mt-0.5">
+                            {page.url}
+                          </div>
                         )}
-                      </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      {getPageTypeBadge(page.type, page.type_label)}
+                      <Switch
+                        checked={isPageEnabled(page.id)}
+                        onCheckedChange={(checked) => handleToggleChange(page.id, checked)}
+                      />
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Pagination - only show when not searching */}
+          {!searchTerm && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+              <div className="text-sm text-gray-600">
+                {sprintf(__('Showing %1$d-%2$d of %3$d pages', 'surefeedback'), startIndex + 1, Math.min(endIndex, filteredPages.length), filteredPages.length)}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  {__('Previous', 'surefeedback')}
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={currentPage === pageNum ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`w-9 h-9 ${currentPage === pageNum ? 'bg-primary hover:bg-primary/90' : ''}`}
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
                 </div>
-              </CardContent>
-            </Card>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  {__('Next', 'surefeedback')}
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </div>
+          )}
 
-            {/* Toast Notifications */}
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                className: 'surefeedback-toast',
-                duration: 3000,
-              }}
-            />
+          {/* Save Actions Bar */}
+          <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-6">
+            <div className="flex items-center gap-2">
+              {hasUnsavedChanges ? (
+                <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-200">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="font-medium">{__('Unsaved changes', 'surefeedback')}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>{__('All changes saved', 'surefeedback')}</span>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={loadPagesSettings}
+                disabled={saving || !hasUnsavedChanges}
+              >
+                {__('Cancel', 'surefeedback')}
+              </Button>
+              <Button
+                onClick={saveSettings}
+                disabled={saving || !hasUnsavedChanges}
+                className="bg-primary hover:bg-primary/90"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {__('Saving...', 'surefeedback')}
+                  </>
+                ) : (
+                  __('Save Changes', 'surefeedback')
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* Enable All Confirmation Dialog */}
-            <AlertDialog open={showEnableAllDialog} onOpenChange={setShowEnableAllDialog}>
+      {/* Toast Notifications */}
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          className: 'surefeedback-toast',
+          duration: 3000,
+        }}
+      />
+
+      {/* Enable All Confirmation Dialog */}
+      <AlertDialog open={showEnableAllDialog} onOpenChange={setShowEnableAllDialog}>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>{__('Enable Widget for All Pages?', 'surefeedback')}</AlertDialogTitle>
@@ -597,8 +597,8 @@ const WidgetControl = () => {
               </AlertDialogContent>
             </AlertDialog>
 
-            {/* Disable All Confirmation Dialog */}
-            <AlertDialog open={showDisableAllDialog} onOpenChange={setShowDisableAllDialog}>
+      {/* Disable All Confirmation Dialog */}
+      <AlertDialog open={showDisableAllDialog} onOpenChange={setShowDisableAllDialog}>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>{__('Disable Widget for All Pages?', 'surefeedback')}</AlertDialogTitle>
@@ -621,9 +621,6 @@ const WidgetControl = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

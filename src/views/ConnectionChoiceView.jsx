@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Plug, Cloud, Loader2 } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Plug, Cloud, Loader2, CheckCircle2 } from 'lucide-react';
 import { useRouter } from '../utils/Router';
 import apiGateway from '../api/gateway.js';
 import { toast } from '../components/ui/toast';
@@ -24,8 +25,8 @@ const ConnectionChoiceView = () => {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
 
-  const getMenuIcon = () => {
-    return (window.sureFeedbackAdmin?.pluginUrl || '') + 'assets/images/settings/surefeedback-icon.svg';
+  const getLogoPath = () => {
+    return (window.sureFeedbackAdmin?.pluginUrl || '') + 'assets/images/settings/surefeedback-logo-img.svg';
   };
 
   const saveConnectionType = async (type) => {
@@ -78,106 +79,73 @@ const ConnectionChoiceView = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
-      <div className="w-full max-w-4xl">
+    <div className="flex justify-center min-h-screen bg-gray-50 p-6 md:p-8">
+      <div className="w-full max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <img
-            src={getMenuIcon()}
-            alt="SureFeedback"
-            className="h-12 w-auto mx-auto mb-4"
-          />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-4">
+            <img
+              src={getLogoPath()}
+              alt="SureFeedback"
+              className="h-8 w-auto"
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-0 leading-tight text-center" style={{ fontFamily: "'Figtree', sans-serif" }}>
             {__('Welcome to SureFeedback', 'surefeedback')}
           </h1>
-          <p className="text-lg text-gray-600">
-            {__('Choose how you want to connect your site', 'surefeedback')}
+        </div>
+
+        {/* Description */}
+        <div className="text-center mb-8">
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed text-center" style={{ fontFamily: "'Figtree', sans-serif" }}>
+            {__('Choose how you want to connect your site to SureFeedback', 'surefeedback')}
           </p>
         </div>
 
         {/* Connection Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Plugin Connection Option */}
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-500">
-            <CardHeader>
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Plug className="w-8 h-8 text-blue-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 mx-auto">
+          {/* SaaS Connection Option - First (Left Side) */}
+          <Card className="cursor-pointer hover:shadow-xl transition-all duration-200 border-2 border-gray-200 hover:border-[#4253ff] relative overflow-hidden bg-white">
+            <div className="absolute top-3 right-3 z-10">
+              <Badge className="bg-[#4253ff] text-white border-0 text-xs font-semibold px-2.5 py-1 shadow-sm">
+                {__('Preferred', 'surefeedback')}
+              </Badge>
+            </div>
+            <CardHeader className="pb-3 pt-6">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-16 h-16 bg-[#4253ff]/10 rounded-full flex items-center justify-center">
+                  <Cloud className="w-8 h-8 text-[#4253ff]" />
                 </div>
               </div>
-              <CardTitle className="text-center text-xl">
-                {__('Connect with Plugin', 'surefeedback')}
-              </CardTitle>
-              <CardDescription className="text-center">
-                {__('Use the legacy SureFeedback plugin connection method', 'surefeedback')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <span>{__('Manual connection setup', 'surefeedback')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <span>{__('Direct plugin-to-plugin connection', 'surefeedback')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <span>{__('Traditional setup method', 'surefeedback')}</span>
-                </li>
-              </ul>
-              <Button
-                onClick={handlePluginChoice}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-                size="lg"
-                disabled={saving}
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {__('Saving...', 'surefeedback')}
-                  </>
-                ) : (
-                  __('Connect with Plugin', 'surefeedback')
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* SaaS Connection Option */}
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-500">
-            <CardHeader>
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <Cloud className="w-8 h-8 text-green-600" />
-                </div>
-              </div>
-              <CardTitle className="text-center text-xl">
+              <CardTitle className="text-center text-lg font-semibold text-gray-900 mb-1.5">
                 {__('Connect with SaaS', 'surefeedback')}
               </CardTitle>
-              <CardDescription className="text-center">
+              <CardDescription className="text-center text-sm text-gray-600">
                 {__('Use the modern SureFeedback SaaS platform', 'surefeedback')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-1">•</span>
-                  <span>{__('OAuth-based secure connection', 'surefeedback')}</span>
+            <CardContent className="pt-0 pb-6 px-6">
+              <ul className="space-y-2.5 mb-5 text-sm text-gray-600">
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-[#4253ff] flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('OAuth-based secure connection', 'surefeedback')}</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-1">•</span>
-                  <span>{__('Cloud-based management', 'surefeedback')}</span>
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-[#4253ff] flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('Cloud-based management', 'surefeedback')}</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-1">•</span>
-                  <span>{__('Recommended for new users', 'surefeedback')}</span>
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-[#4253ff] flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('Recommended for new users', 'surefeedback')}</span>
                 </li>
               </ul>
               <Button
                 onClick={handleSaaSChoice}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-[#4253ff] hover:bg-[#3142ef] text-white h-11 text-sm font-medium shadow-sm"
                 size="lg"
                 disabled={saving}
               >
@@ -192,17 +160,66 @@ const ConnectionChoiceView = () => {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Plugin Connection Option - Second (Right Side) */}
+          <Card className="cursor-pointer hover:shadow-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300 bg-white">
+            <CardHeader className="pb-3 pt-6">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                  <Plug className="w-8 h-8 text-gray-600" />
+                </div>
+              </div>
+              <CardTitle className="text-center text-lg font-semibold text-gray-900 mb-1.5">
+                {__('Connect with Plugin', 'surefeedback')}
+              </CardTitle>
+              <CardDescription className="text-center text-sm text-gray-600">
+                {__('Use the legacy SureFeedback plugin connection method', 'surefeedback')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0 pb-6 px-6">
+              <ul className="space-y-2.5 mb-5 text-sm text-gray-600">
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('Manual connection setup', 'surefeedback')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('Direct plugin-to-plugin connection', 'surefeedback')}</span>
+                </li>
+                <li className="flex items-center gap-2.5 justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="leading-relaxed text-center">{__('Traditional setup method', 'surefeedback')}</span>
+                </li>
+              </ul>
+              <Button
+                onClick={handlePluginChoice}
+                variant="outline"
+                className="w-full border-2 border-gray-300 text-gray-700 hover:bg-gray-50 h-11 text-sm font-medium"
+                size="lg"
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {__('Saving...', 'surefeedback')}
+                  </>
+                ) : (
+                  __('Connect with Plugin', 'surefeedback')
+                )}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Help Text */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500" style={{ fontFamily: "'Figtree', sans-serif" }}>
             {__('Not sure which to choose?', 'surefeedback')}{' '}
             <a
               href="https://surefeedback.com/docs"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-[#4253ff] hover:underline font-medium"
             >
               {__('Learn more', 'surefeedback')}
             </a>

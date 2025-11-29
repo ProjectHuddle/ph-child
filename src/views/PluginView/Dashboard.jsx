@@ -10,7 +10,7 @@ import React from 'react';
 import { RouterProvider, Route, useRouter } from '../../utils/Router.jsx';
 
 // Import Plugin views
-import PluginDashboardView from './DashboardView.jsx';
+import PluginDashboardView from '../DashboardView.jsx';
 import PluginConnectionView from './PluginConnectionView.jsx';
 import SettingsView from './SettingsView.jsx';
 

@@ -54,10 +54,9 @@ const NavMenu = () => {
       { label: __("Settings", "surefeedback"), path: "settings", showWhenConnected: true },
     ];
   } else {
-    // SaaS nav items
+    // SaaS nav items - Dashboard, Settings (Widget Control is now in Settings tab)
     allNavItems = [
-      { label: __("Connections", "surefeedback"), path: "connections", showWhenConnected: true },
-      { label: __("Widget Control", "surefeedback"), path: "widget-control", showWhenConnected: true },
+      { label: __("Dashboard", "surefeedback"), path: "dashboard", showWhenConnected: true },
       { label: __("Settings", "surefeedback"), path: "settings", showWhenConnected: true },
     ];
   }
@@ -74,10 +73,10 @@ const NavMenu = () => {
         <Topbar.Left className="gap-3">
           <Topbar.Item>
             <a
-              href={`#${connectionTypePreference === 'plugin' ? 'plugin-dashboard' : 'connections'}`}
+              href={`#${connectionTypePreference === 'plugin' ? 'plugin-dashboard' : 'dashboard'}`}
               onClick={(e) => {
                 e.preventDefault();
-                navigate(connectionTypePreference === 'plugin' ? 'plugin-dashboard' : 'connections');
+                navigate(connectionTypePreference === 'plugin' ? 'plugin-dashboard' : 'dashboard');
               }}
               className="focus:outline-none shrink-0"
             >

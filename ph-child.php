@@ -561,6 +561,10 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			// Localize script with data
 			// Get connection type preference
 			$connection_type_preference = get_option( 'ph_child_connection_type_preference', '' );
+			
+			// Check if SaaS is authenticated (has bearer token)
+			$bearer_token = get_option( 'ph_child_bearer_token', '' );
+			$is_saas_authenticated = ! empty( $bearer_token );
 
 			$localized_data = array(
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
@@ -575,6 +579,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'projectId'    => get_option( 'ph_child_project_id', '' ),
 				'version'      => $plugin_version,
 				'connectionTypePreference' => $connection_type_preference,
+				'isSaaSAuthenticated' => $is_saas_authenticated, // Pass authentication status from PHP
+				'bearerToken'  => $is_saas_authenticated ? $bearer_token : '', // Pass token if authenticated
 				'connection'   => array(
 					'type'      => $is_legacy_connection ? 'legacy' : ( $is_saas_connection ? 'saas' : 'none' ),
 					'is_legacy' => $is_legacy_connection,

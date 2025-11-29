@@ -81,11 +81,11 @@ const Dashboard = ({ containerType: propContainerType = 'dashboard' }) => {
         // Only after preference is confirmed, check for specific page requests
         if (containerType === 'settings') return 'settings';
         if (containerType === 'white-label') return 'white-label';
-        if (containerType === 'connection') {
-            return connectionTypePreference === 'plugin' ? 'plugin-connection' : 'connections';
-        }
         if (containerType === 'widget-control') return 'widget-control';
         if (containerType === 'tools') return 'tools';
+        if (containerType === 'dashboard') {
+            return connectionTypePreference === 'plugin' ? 'plugin-dashboard' : 'dashboard';
+        }
 
         // Check actual connection status
         let connectionType = 'none';
@@ -98,12 +98,12 @@ const Dashboard = ({ containerType: propContainerType = 'dashboard' }) => {
         const hasLegacyConnection = connectionType === 'legacy';
         const hasSaaSConnection = connectionType === 'saas';
         
-        // If already connected, show appropriate view
+        // If already connected, show appropriate dashboard view
         if (hasLegacyConnection && connectionTypePreference === 'plugin') {
-            return 'plugin-connection';
+            return 'plugin-dashboard';
         }
         if (hasSaaSConnection && connectionTypePreference === 'saas') {
-            return 'connections';
+            return 'dashboard';
         }
 
         // If preference is saved but no connection yet, show appropriate setup

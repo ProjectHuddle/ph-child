@@ -82,7 +82,6 @@ const request = async (url, options = {}) => {
         method = 'GET',
         body = null,
         headers = {},
-        requireAuth = false,
     } = options;
 
     const requestHeaders = {
@@ -90,13 +89,7 @@ const request = async (url, options = {}) => {
         ...headers,
     };
 
-    // Add bearer token if required
-    if (requireAuth) {
-        const token = getBearerToken();
-        if (token) {
-            requestHeaders['Authorization'] = `Bearer ${token}`;
-        }
-    }
+    // Nonce is automatically included via getDefaultHeaders()
 
     const config = {
         method,

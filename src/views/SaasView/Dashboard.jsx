@@ -11,9 +11,9 @@ import { RouterProvider, Route, useRouter } from '../../utils/Router.jsx';
 
 // Import SaaS views
 import SetupView from './SetupView.jsx';
-import ConnectionView from './ConnectionView.jsx';
+import DashboardView from '../DashboardView.jsx';
 import SettingsView from './SettingsView.jsx';
-import WidgetControlView from './WidgetControlView.jsx';
+import WidgetControl from '../../components/SaaS/WidgetControl';
 
 // Import navigation
 import NavMenu from '../../components/SaaS/NavMenu.jsx';
@@ -25,7 +25,6 @@ const SaasDashboardContent = () => {
     const { currentRoute } = useRouter();
     
     const isSetupRoute = currentRoute === 'setup';
-    const isConnectionRoute = currentRoute === 'connections';
 
     return (
         <div className="surefeedback-dashboard flex flex-col bg-gray-50 w-full overflow-x-hidden" style={{ margin: 0, padding: 0, width: "100%", maxWidth: "100vw" }}>
@@ -37,19 +36,19 @@ const SaasDashboardContent = () => {
             )}
 
             {/* Main Content Area */}
-            <div className={`flex-1 ${isSetupRoute || isConnectionRoute ? '' : 'bg-white'}`}>
-                <main className={isSetupRoute || isConnectionRoute ? '' : 'p-2'}>
+            <div className={`flex-1 ${isSetupRoute ? '' : 'bg-white'}`}>
+                <main className={isSetupRoute ? '' : 'p-2'}>
                     <Route path="setup" exact>
                         <SetupView />
                     </Route>
-                    <Route path="connections" exact>
-                        <ConnectionView />
+                    <Route path="dashboard" exact>
+                        <DashboardView />
                     </Route>
                     <Route path="settings" exact>
                         <SettingsView />
                     </Route>
                     <Route path="widget-control" exact>
-                        <WidgetControlView />
+                        <WidgetControl />
                     </Route>
                 </main>
             </div>
@@ -64,9 +63,9 @@ const SaasDashboard = ({ containerType = 'dashboard' }) => {
     const getDefaultRoute = () => {
         // Check for specific page requests
         if (containerType === 'settings') return 'settings';
-        if (containerType === 'connection') return 'connections';
         if (containerType === 'widget-control') return 'widget-control';
         if (containerType === 'tools') return 'tools';
+        if (containerType === 'dashboard') return 'dashboard';
 
         // Check actual connection status
         const { getConnectionType } = require('../../utils/connectionType.js');
@@ -79,9 +78,9 @@ const SaasDashboard = ({ containerType = 'dashboard' }) => {
         
         const hasSaaSConnection = connectionType === 'saas';
         
-        // If already connected, show connections view
+        // If already connected, show dashboard view
         if (hasSaaSConnection) {
-            return 'connections';
+            return 'dashboard';
         }
 
         // If not connected, show setup

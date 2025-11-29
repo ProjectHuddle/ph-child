@@ -96,6 +96,34 @@ class PH_Child_REST_API {
             ),
         ));
 
+        // Get bearer token endpoint (for SaaS connections)
+        register_rest_route('ph-child/v1', '/connection/token', array(
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_connection_token'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Get connection status endpoint (proxies to external API)
+        register_rest_route('ph-child/v1', '/connection/status', array(
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_saas_connection_status'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
         // Settings endpoints - register under ph-child/v1 namespace
         $this->register_settings_routes();
     }
@@ -734,6 +762,92 @@ class PH_Child_REST_API {
                 'type' => $preference,
                 'saved_at' => $saved_at,
             ),
+        ));
+    }
+
+    /**
+     * Get connection token (for SaaS connections)
+     */
+    public function get_connection_token($request) {
+        $bearer_token = get_option('ph_child_bearer_token', '');
+        
+        if (empty($bearer_token)) {
+            return rest_ensure_response(array(
+                'success' => false,
+                'message' => __('No bearer token found', 'ph-child'),
+            ));
+        }
+
+        return rest_ensure_response(array(
+            'success' => true,
+            'data' => array(
+                'token' => $bearer_token,
+            ),
+        ));
+    }
+
+    /**
+     * Get SaaS connection status (proxies to external API)
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function get_saas_connection_status($request) {
+        // Get bearer token from WordPress options
+        $bearer_token = get_option('ph_child_bearer_token', '');
+        
+        if (empty($bearer_token)) {
+            return rest_ensure_response(array(
+                'success' => false,
+                'message' => __('Not connected to SaaS platform', 'ph-child'),
+                'data' => null,
+            ));
+        }
+
+        // Get API base URL (same pattern as main plugin file)
+        $api_base_url = defined('PH_CHILD_API_BASE_URL') 
+            ? PH_CHILD_API_BASE_URL 
+            : 'https://api.surefeedback.com/api/v1';
+
+        // Make request to external API from PHP (server-side)
+        $response = wp_remote_get(
+            $api_base_url . '/connections/status',
+            array(
+                'headers' => array(
+                    'Authorization' => 'Bearer ' . $bearer_token,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ),
+                'timeout' => 30,
+            )
+        );
+
+        if (is_wp_error($response)) {
+            return new WP_Error(
+                'connection_status_failed',
+                __('Failed to fetch connection status from SaaS platform', 'ph-child'),
+                array('status' => 500)
+            );
+        }
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_body = wp_remote_retrieve_body($response);
+        $response_data = json_decode($response_body, true);
+
+        if ($response_code !== 200) {
+            return new WP_Error(
+                'connection_status_error',
+                __('SaaS platform returned an error', 'ph-child'),
+                array(
+                    'status' => $response_code,
+                    'data' => $response_data,
+                )
+            );
+        }
+
+        return rest_ensure_response(array(
+            'success' => true,
+            'data' => $response_data['data'] ?? $response_data,
         ));
     }
 
