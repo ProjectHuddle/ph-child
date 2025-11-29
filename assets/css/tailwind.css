@@ -1343,6 +1343,11 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
     border-color: var(--color-gray-200);
   }
 }
+.divide-red-200 {
+  :where(& > :not(:last-child)) {
+    border-color: var(--color-red-200);
+  }
+}
 .self-center {
   align-self: center;
 }
@@ -1730,6 +1735,12 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
 }
 .bg-red-50 {
   background-color: var(--color-red-50);
+}
+.bg-red-50\/50 {
+  background-color: color-mix(in srgb, oklch(97.1% 0.013 17.38) 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-red-50) 50%, transparent);
+  }
 }
 .bg-red-100 {
   background-color: var(--color-red-100);
@@ -3230,6 +3241,13 @@ button, input:where([type='button'], [type='reset'], [type='submit']), ::file-se
   &:hover {
     @media (hover: hover) {
       color: rgb(var(--muted-foreground));
+    }
+  }
+}
+.hover\:text-red-700 {
+  &:hover {
+    @media (hover: hover) {
+      color: var(--color-red-700);
     }
   }
 }

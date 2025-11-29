@@ -11656,6 +11656,38 @@ const RefreshCw = (0,_createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__["default
 
 /***/ }),
 
+/***/ "./node_modules/lucide-react/dist/esm/icons/rotate-ccw.mjs":
+/*!*****************************************************************!*\
+  !*** ./node_modules/lucide-react/dist/esm/icons/rotate-ccw.mjs ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ RotateCcw)
+/* harmony export */ });
+/* harmony import */ var _createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.mjs */ "./node_modules/lucide-react/dist/esm/createLucideIcon.mjs");
+/**
+ * lucide-react v0.0.1 - ISC
+ */
+
+
+
+const RotateCcw = (0,_createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__["default"])("RotateCcw", [
+  [
+    "path",
+    { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }
+  ],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
+]);
+
+
+//# sourceMappingURL=rotate-ccw.mjs.map
+
+
+/***/ }),
+
 /***/ "./node_modules/lucide-react/dist/esm/icons/search.mjs":
 /*!*************************************************************!*\
   !*** ./node_modules/lucide-react/dist/esm/icons/search.mjs ***!
@@ -11816,6 +11848,51 @@ const Ticket = (0,_createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__["default"])
 
 
 //# sourceMappingURL=ticket.mjs.map
+
+
+/***/ }),
+
+/***/ "./node_modules/lucide-react/dist/esm/icons/unlink.mjs":
+/*!*************************************************************!*\
+  !*** ./node_modules/lucide-react/dist/esm/icons/unlink.mjs ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Unlink)
+/* harmony export */ });
+/* harmony import */ var _createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.mjs */ "./node_modules/lucide-react/dist/esm/createLucideIcon.mjs");
+/**
+ * lucide-react v0.0.1 - ISC
+ */
+
+
+
+const Unlink = (0,_createLucideIcon_mjs__WEBPACK_IMPORTED_MODULE_0__["default"])("Unlink", [
+  [
+    "path",
+    {
+      d: "m18.84 12.25 1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5.006 5.006 0 0 0-6.95 0l-1.72 1.71",
+      key: "yqzxt4"
+    }
+  ],
+  [
+    "path",
+    {
+      d: "m5.17 11.75-1.71 1.71a5.004 5.004 0 0 0 .12 7.07 5.006 5.006 0 0 0 6.95 0l1.71-1.71",
+      key: "4qinb0"
+    }
+  ],
+  ["line", { x1: "8", x2: "8", y1: "2", y2: "5", key: "1041cp" }],
+  ["line", { x1: "2", x2: "5", y1: "8", y2: "8", key: "14m1p5" }],
+  ["line", { x1: "16", x2: "16", y1: "19", y2: "22", key: "rzdirn" }],
+  ["line", { x1: "19", x2: "22", y1: "16", y2: "16", key: "ox905f" }]
+]);
+
+
+//# sourceMappingURL=unlink.mjs.map
 
 
 /***/ }),
@@ -52608,9 +52685,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/settings.mjs");
-/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/users.mjs");
-/* harmony import */ var _utils_Router_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/Router.jsx */ "./src/utils/Router.jsx");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/alert-triangle.mjs");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/settings.mjs");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/users.mjs");
+/* harmony import */ var _utils_Router_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/Router.jsx */ "./src/utils/Router.jsx");
 
 
 
@@ -52626,12 +52704,18 @@ var getNavigation = function getNavigation() {
   return [{
     name: __('User Roles', 'surefeedback'),
     slug: 'user-roles',
-    icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_3__["default"], {
       className: "w-5 h-5"
     })
   }, {
     name: __('Widget Control', 'surefeedback'),
     slug: 'widget-control',
+    icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      className: "w-5 h-5"
+    })
+  }, {
+    name: __('Danger Zone', 'surefeedback'),
+    slug: 'danger-zone',
     icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_1__["default"], {
       className: "w-5 h-5"
     })
@@ -52642,7 +52726,7 @@ var NavLink = function NavLink(_ref) {
     path = _ref.path,
     Icon = _ref.icon,
     isActive = _ref.isActive;
-  var router = (0,_utils_Router_jsx__WEBPACK_IMPORTED_MODULE_3__.useRouter)();
+  var router = (0,_utils_Router_jsx__WEBPACK_IMPORTED_MODULE_4__.useRouter)();
   var handleClick = function handleClick(e) {
     e.preventDefault();
     // Navigate to settings with the sub-tab
@@ -55217,6 +55301,162 @@ function authenticateRedirect() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   authenticateRedirect: authenticateRedirect
 });
+
+/***/ }),
+
+/***/ "./src/hooks/useConnection.js":
+/*!************************************!*\
+  !*** ./src/hooks/useConnection.js ***!
+  \************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   useConnection: () => (/* binding */ useConnection)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _services_connectionService_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/connectionService.js */ "./src/services/connectionService.js");
+/* harmony import */ var _utils_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/errors.js */ "./src/utils/errors.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+/**
+ * useConnection Hook
+ * 
+ * React hook for managing connection state and OAuth flow
+ * 
+ * @package SureFeedback
+ */
+
+
+
+
+
+/**
+ * useConnection hook
+ * 
+ * @returns {Object} Connection state and methods
+ */
+var useConnection = function useConnection() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isAuthenticated = _useState2[0],
+    setIsAuthenticated = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    isLoading = _useState4[0],
+    setIsLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    error = _useState6[0],
+    setError = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    connectionData = _useState8[0],
+    setConnectionData = _useState8[1];
+
+  /**
+   * Check authentication status
+   */
+  var checkAuth = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    var authenticated = _services_connectionService_js__WEBPACK_IMPORTED_MODULE_1__["default"].isAuthenticated();
+    setIsAuthenticated(authenticated);
+    return authenticated;
+  }, []);
+
+  /**
+   * Handle OAuth callback
+   */
+  var handleCallback = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var data, errorMessage, _t;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          _context.p = 0;
+          setIsLoading(true);
+          setError(null);
+          _context.n = 1;
+          return _services_connectionService_js__WEBPACK_IMPORTED_MODULE_1__["default"].handleOAuthCallback();
+        case 1:
+          data = _context.v;
+          if (!data) {
+            _context.n = 2;
+            break;
+          }
+          setConnectionData(data);
+          setIsAuthenticated(true);
+          return _context.a(2, data);
+        case 2:
+          return _context.a(2, null);
+        case 3:
+          _context.p = 3;
+          _t = _context.v;
+          errorMessage = _t instanceof _utils_errors_js__WEBPACK_IMPORTED_MODULE_2__.ApiError ? _t.getUserMessage() : _t.message || 'Connection failed';
+          setError(errorMessage);
+          setIsAuthenticated(false);
+          throw _t;
+        case 4:
+          _context.p = 4;
+          setIsLoading(false);
+          return _context.f(4);
+        case 5:
+          return _context.a(2);
+      }
+    }, _callee, null, [[0, 3, 4, 5]]);
+  })), []);
+
+  /**
+   * Initiate connection - redirects to SureFeedback app
+   */
+  var initiateConnection = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    var projectId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    // This redirects immediately, no async needed
+    _services_connectionService_js__WEBPACK_IMPORTED_MODULE_1__["default"].initiateConnection(projectId);
+  }, []);
+
+  /**
+   * Disconnect
+   */
+  var disconnect = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    _services_connectionService_js__WEBPACK_IMPORTED_MODULE_1__["default"].disconnect();
+    setIsAuthenticated(false);
+    setConnectionData(null);
+  }, []);
+
+  // Check auth on mount
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    checkAuth();
+    setIsLoading(false);
+  }, [checkAuth]);
+
+  // Handle OAuth callback on mount if token present
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('oauth_token')) {
+      handleCallback();
+    }
+  }, [handleCallback]);
+  return {
+    isAuthenticated: isAuthenticated,
+    isLoading: isLoading,
+    error: error,
+    connectionData: connectionData,
+    checkAuth: checkAuth,
+    handleCallback: handleCallback,
+    initiateConnection: initiateConnection,
+    disconnect: disconnect
+  };
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useConnection);
 
 /***/ }),
 
@@ -59633,6 +59873,280 @@ var WhiteLabelView = function WhiteLabelView() {
 
 /***/ }),
 
+/***/ "./src/views/SaasView/DangerZoneView.jsx":
+/*!***********************************************!*\
+  !*** ./src/views/SaasView/DangerZoneView.jsx ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_ui_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/ui/card */ "./src/components/ui/card.jsx");
+/* harmony import */ var _components_ui_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/ui/button */ "./src/components/ui/button.jsx");
+/* harmony import */ var _components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/ui/alert-dialog */ "./src/components/ui/alert-dialog.jsx");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/alert-triangle.mjs");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/loader-2.mjs");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/rotate-ccw.mjs");
+/* harmony import */ var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/unlink.mjs");
+/* harmony import */ var _components_ui_toast__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../components/ui/toast */ "./src/components/ui/toast.jsx");
+/* harmony import */ var _api_gateway_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../api/gateway.js */ "./src/api/gateway.js");
+/* harmony import */ var _services_connectionService_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../services/connectionService.js */ "./src/services/connectionService.js");
+/* harmony import */ var _hooks_useConnection_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../hooks/useConnection.js */ "./src/hooks/useConnection.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+
+
+
+
+
+// WordPress i18n fallback
+var __ = function __(text, domain) {
+  if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
+    return window.wp.i18n.__(text, domain);
+  }
+  return text;
+};
+
+/**
+ * Danger Zone View
+ * 
+ * Contains destructive actions:
+ * - Disconnect website
+ * - Reset all connection data
+ */
+var DangerZoneView = function DangerZoneView() {
+  var _useConnection = (0,_hooks_useConnection_js__WEBPACK_IMPORTED_MODULE_11__.useConnection)(),
+    disconnectConnection = _useConnection.disconnect;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isDisconnecting = _useState2[0],
+    setIsDisconnecting = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    isResetting = _useState4[0],
+    setIsResetting = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    showDisconnectDialog = _useState6[0],
+    setShowDisconnectDialog = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    showResetDialog = _useState8[0],
+    setShowResetDialog = _useState8[1];
+  var handleDisconnect = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _t, _t2;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            setIsDisconnecting(true);
+            _context.p = 1;
+            // Disconnect from SaaS (remove bearer token)
+            disconnectConnection();
+
+            // Also call WordPress REST API to clear stored tokens
+            _context.p = 2;
+            _context.n = 3;
+            return _api_gateway_js__WEBPACK_IMPORTED_MODULE_9__["default"].post('connection/reset');
+          case 3:
+            _context.n = 5;
+            break;
+          case 4:
+            _context.p = 4;
+            _t = _context.v;
+            console.warn('Failed to reset connection via REST API:', _t);
+          case 5:
+            _components_ui_toast__WEBPACK_IMPORTED_MODULE_8__.toast.success(__('Site disconnected successfully! Redirecting...', 'surefeedback'));
+            setShowDisconnectDialog(false);
+
+            // Redirect to the connection setup page after a brief delay
+            setTimeout(function () {
+              window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
+            }, 1500);
+            _context.n = 7;
+            break;
+          case 6:
+            _context.p = 6;
+            _t2 = _context.v;
+            _components_ui_toast__WEBPACK_IMPORTED_MODULE_8__.toast.error(__('An error occurred while disconnecting. Please try again.', 'surefeedback'));
+            setShowDisconnectDialog(false);
+          case 7:
+            _context.p = 7;
+            setIsDisconnecting(false);
+            return _context.f(7);
+          case 8:
+            return _context.a(2);
+        }
+      }, _callee, null, [[2, 4], [1, 6, 7, 8]]);
+    }));
+    return function handleDisconnect() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var handleReset = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var data, _t3;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            setIsResetting(true);
+            _context2.p = 1;
+            _context2.n = 2;
+            return _api_gateway_js__WEBPACK_IMPORTED_MODULE_9__["default"].post('connection/reset');
+          case 2:
+            data = _context2.v;
+            if (!data.success) {
+              _context2.n = 3;
+              break;
+            }
+            // Also disconnect locally
+            disconnectConnection();
+            _components_ui_toast__WEBPACK_IMPORTED_MODULE_8__.toast.success(__('Site connection reset successfully! All SureFeedback data has been cleared.', 'surefeedback'));
+            setShowResetDialog(false);
+
+            // Redirect to the connection setup page after a brief delay
+            setTimeout(function () {
+              window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
+            }, 1500);
+            _context2.n = 4;
+            break;
+          case 3:
+            throw new Error(data.message || 'Reset failed');
+          case 4:
+            _context2.n = 6;
+            break;
+          case 5:
+            _context2.p = 5;
+            _t3 = _context2.v;
+            _components_ui_toast__WEBPACK_IMPORTED_MODULE_8__.toast.error(__('Failed to reset site connection', 'surefeedback'));
+            setShowResetDialog(false);
+          case 6:
+            _context2.p = 6;
+            setIsResetting(false);
+            return _context2.f(6);
+          case 7:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 5, 6, 7]]);
+    }));
+    return function handleReset() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_card__WEBPACK_IMPORTED_MODULE_1__.Card, {
+    className: "border-0 shadow-sm border-red-200 bg-red-50/50"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_card__WEBPACK_IMPORTED_MODULE_1__.CardHeader, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex h-10 w-10 items-center justify-center rounded-lg bg-red-100"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    className: "h-5 w-5 text-red-600"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_card__WEBPACK_IMPORTED_MODULE_1__.CardTitle, {
+    className: "text-xl font-semibold text-gray-900"
+  }, __('Danger Zone', 'surefeedback')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_card__WEBPACK_IMPORTED_MODULE_1__.CardDescription, {
+    className: "mt-1 text-gray-600"
+  }, __('Irreversible and destructive actions. Use with caution.', 'surefeedback'))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_card__WEBPACK_IMPORTED_MODULE_1__.CardContent, {
+    className: "space-y-0 pt-0"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "divide-y divide-red-200"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex items-start justify-between gap-4 py-6 first:pt-0"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex-1 space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    className: "h-5 w-5 text-red-600"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "font-semibold text-gray-900"
+  }, __('Disconnect Website', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-gray-600"
+  }, __('Disconnect your website from SureFeedback. All connection settings will be removed. You can reconnect at any time.', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "shrink-0"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "outline",
+    onClick: function onClick() {
+      return setShowDisconnectDialog(true);
+    },
+    disabled: isDisconnecting || isResetting,
+    className: "border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+  }, __('Disconnect', 'surefeedback')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex items-start justify-between gap-4 py-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex-1 space-y-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    className: "h-5 w-5 text-red-600"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "font-semibold text-gray-900"
+  }, __('Reset All Connection Data', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-gray-600"
+  }, __('Permanently delete all SureFeedback connection data and reset website connection. This action cannot be undone.', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "shrink-0"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_button__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "outline",
+    onClick: function onClick() {
+      return setShowResetDialog(true);
+    },
+    disabled: isDisconnecting || isResetting,
+    className: "border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+  }, __('Reset', 'surefeedback'))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialog, {
+    open: showDisconnectDialog,
+    onOpenChange: setShowDisconnectDialog
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogContent, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogHeader, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    className: "h-5 w-5 text-red-600"
+  }), __('Disconnect Website?', 'surefeedback')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogDescription, null, __('This will disconnect your website from SureFeedback. All connection settings will be removed. You can reconnect at any time.', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogFooter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogCancel, {
+    disabled: isDisconnecting
+  }, __('Cancel', 'surefeedback')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogAction, {
+    onClick: handleDisconnect,
+    disabled: isDisconnecting,
+    className: "bg-red-600 hover:bg-red-700"
+  }, isDisconnecting ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: "mr-2 h-4 w-4 animate-spin"
+  }), __('Disconnecting...', 'surefeedback')) : __('Disconnect', 'surefeedback'))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialog, {
+    open: showResetDialog,
+    onOpenChange: setShowResetDialog
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogContent, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogHeader, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    className: "h-5 w-5 text-red-600"
+  }), __('Reset All Connection Data?', 'surefeedback')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogDescription, null, __('This will permanently delete all SureFeedback connection data and reset your website connection. This action cannot be undone. Are you absolutely sure?', 'surefeedback'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogFooter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogCancel, {
+    disabled: isResetting
+  }, __('Cancel', 'surefeedback')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_ui_alert_dialog__WEBPACK_IMPORTED_MODULE_3__.AlertDialogAction, {
+    onClick: handleReset,
+    disabled: isResetting,
+    className: "bg-red-600 hover:bg-red-700"
+  }, isResetting ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    className: "mr-2 h-4 w-4 animate-spin"
+  }), __('Resetting...', 'surefeedback')) : __('Yes, Reset Everything', 'surefeedback'))))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DangerZoneView);
+
+/***/ }),
+
 /***/ "./src/views/SaasView/Dashboard.jsx":
 /*!******************************************!*\
   !*** ./src/views/SaasView/Dashboard.jsx ***!
@@ -60107,12 +60621,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Plugin_SaaSSettingsNavigation_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Plugin/SaaSSettingsNavigation.jsx */ "./src/components/Plugin/SaaSSettingsNavigation.jsx");
 /* harmony import */ var _PermissionsView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PermissionsView */ "./src/views/SaasView/PermissionsView.jsx");
 /* harmony import */ var _components_SaaS_WidgetControl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/SaaS/WidgetControl */ "./src/components/SaaS/WidgetControl.jsx");
+/* harmony import */ var _DangerZoneView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./DangerZoneView */ "./src/views/SaasView/DangerZoneView.jsx");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -60147,8 +60663,8 @@ var SettingsView = function SettingsView() {
     var tabFromHash = hashMatch ? hashMatch[1] : null;
     var activeTabValue = tabParam || tabFromHash || 'user-roles';
 
-    // Valid tabs: user-roles, widget-control
-    if (activeTabValue === 'user-roles' || activeTabValue === 'widget-control') {
+    // Valid tabs: user-roles, widget-control, danger-zone
+    if (activeTabValue === 'user-roles' || activeTabValue === 'widget-control' || activeTabValue === 'danger-zone') {
       return activeTabValue;
     }
     return 'user-roles';
@@ -60193,6 +60709,8 @@ var SettingsView = function SettingsView() {
         }));
       case 'widget-control':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_SaaS_WidgetControl__WEBPACK_IMPORTED_MODULE_4__["default"], null);
+      case 'danger-zone':
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_DangerZoneView__WEBPACK_IMPORTED_MODULE_5__["default"], null);
       default:
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
           className: "mb-6"

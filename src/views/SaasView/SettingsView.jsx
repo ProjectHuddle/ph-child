@@ -3,6 +3,7 @@ import { useRouter } from '../../utils/Router.jsx';
 import SaaSSettingsNavigation from '../../components/Plugin/SaaSSettingsNavigation.jsx';
 import PermissionsView from './PermissionsView';
 import WidgetControl from '../../components/SaaS/WidgetControl';
+import DangerZoneView from './DangerZoneView';
 
 // WordPress i18n fallback
 const __ = (text, domain) => {
@@ -33,8 +34,8 @@ const SettingsView = () => {
         
         const activeTabValue = tabParam || tabFromHash || 'user-roles';
         
-        // Valid tabs: user-roles, widget-control
-        if (activeTabValue === 'user-roles' || activeTabValue === 'widget-control') {
+        // Valid tabs: user-roles, widget-control, danger-zone
+        if (activeTabValue === 'user-roles' || activeTabValue === 'widget-control' || activeTabValue === 'danger-zone') {
             return activeTabValue;
         }
         
@@ -82,6 +83,8 @@ const SettingsView = () => {
                 );
             case 'widget-control':
                 return <WidgetControl />;
+            case 'danger-zone':
+                return <DangerZoneView />;
             default:
                 return (
                     <>

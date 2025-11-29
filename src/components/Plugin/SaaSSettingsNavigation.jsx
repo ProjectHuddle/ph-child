@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Settings } from 'lucide-react';
+import { Users, Settings, AlertTriangle } from 'lucide-react';
 import { useRouter } from '../../utils/Router.jsx';
 
 // WordPress i18n fallback
@@ -20,6 +20,11 @@ const getNavigation = () => [
     name: __('Widget Control', 'surefeedback'),
     slug: 'widget-control',
     icon: <Settings className="w-5 h-5" />,
+  },
+  {
+    name: __('Danger Zone', 'surefeedback'),
+    slug: 'danger-zone',
+    icon: <AlertTriangle className="w-5 h-5" />,
   },
 ];
 
