@@ -8,7 +8,6 @@ import { toast } from '../../components/ui/toast.jsx';
 import apiGateway from '../../api/gateway.js';
 import { WORDPRESS_API } from '../../api/apiurls.js';
 
-// WordPress i18n fallback
 const __ = (text, domain) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
     return window.wp.i18n.__(text, domain);
@@ -16,11 +15,6 @@ const __ = (text, domain) => {
   return text;
 };
 
-/**
- * Plugin Connection View (Legacy)
- * 
- * Shows the old plugin connection form for manual setup
- */
 const PluginConnectionView = () => {
   const [formData, setFormData] = useState({
     parent_url: '',
@@ -35,7 +29,6 @@ const PluginConnectionView = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [connectionData, setConnectionData] = useState(null);
 
-  // Load existing connection data
   useEffect(() => {
     loadConnectionData();
   }, []);
@@ -57,7 +50,6 @@ const PluginConnectionView = () => {
         setConnectionData(connection);
       }
     } catch (error) {
-      console.error('Failed to load connection data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -86,8 +78,7 @@ const PluginConnectionView = () => {
 
     try {
       setIsSaving(true);
-      
-      // Save connection via WordPress REST API
+
       const response = await apiGateway.post('settings/connection', {
         ph_child_parent_url: formData.parent_url,
         ph_child_id: parseInt(formData.project_id),
@@ -99,7 +90,6 @@ const PluginConnectionView = () => {
       if (response.success) {
         toast.success(__('Site connected successfully!', 'surefeedback'));
         setIsConnected(true);
-        // Reload page to show connected state
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -107,7 +97,6 @@ const PluginConnectionView = () => {
         toast.error(response.message || __('Failed to connect', 'surefeedback'));
       }
     } catch (error) {
-      console.error('Connection failed:', error);
       toast.error(__('An error occurred while connecting', 'surefeedback'));
     } finally {
       setIsSaving(false);
@@ -160,10 +149,8 @@ const PluginConnectionView = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8 bg-white min-h-screen">
-      {/* Connected State */}
       {isConnected && connectionData ? (
         <div className="space-y-6">
-          {/* Success Header */}
           <div className="text-center space-y-4">
             <div className="flex justify-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
@@ -180,7 +167,6 @@ const PluginConnectionView = () => {
             </div>
           </div>
 
-          {/* Connection Details Card */}
           <Card className="border border-gray-200 shadow-sm">
             <CardContent className="p-6 space-y-4">
               <div className="space-y-3">
@@ -212,7 +198,6 @@ const PluginConnectionView = () => {
             </CardContent>
           </Card>
 
-          {/* Action Buttons */}
           <div className="flex items-center justify-center gap-4">
             <Button
               variant="outline"
@@ -234,7 +219,6 @@ const PluginConnectionView = () => {
           </div>
         </div>
       ) : (
-        /* Connection Form */
         <div className="space-y-3">
           <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
             <div className="flex items-center gap-2.5">
@@ -257,7 +241,6 @@ const PluginConnectionView = () => {
               <CardTitle className="text-sm">{__('Connection Details', 'surefeedback')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Parent Site URL */}
               <div>
                 <Label htmlFor="parent_url" className="text-xs font-medium text-gray-700 mb-1.5 block">
                   {__('Parent Site URL', 'surefeedback')}
@@ -276,7 +259,6 @@ const PluginConnectionView = () => {
                 </p>
               </div>
 
-              {/* Project ID */}
               <div>
                 <Label htmlFor="project_id" className="text-xs font-medium text-gray-700 mb-1.5 block">
                   {__('Project ID', 'surefeedback')}
@@ -295,7 +277,6 @@ const PluginConnectionView = () => {
                 </p>
               </div>
 
-              {/* API Key and Access Token */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="api_key" className="text-xs font-medium text-gray-700 mb-1.5 block">
@@ -333,7 +314,6 @@ const PluginConnectionView = () => {
                 </div>
               </div>
 
-              {/* Signature */}
               <div>
                 <Label htmlFor="signature" className="text-xs font-medium text-gray-700 mb-1.5 block">
                   {__('Signature', 'surefeedback')}

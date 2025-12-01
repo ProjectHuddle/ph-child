@@ -40,6 +40,9 @@ export const CONNECTION_API = {
     
     // Revoke connection
     REVOKE: (connectionId) => `${getApiBaseUrl()}/connections/${connectionId}/revoke`,
+    
+    // Generate magic link
+    GENERATE_MAGIC_LINK: () => `${getApiBaseUrl()}/auth/magic-link/generate`,
 };
 
 /**
@@ -84,7 +87,18 @@ export const APP_URLS = {
  * Get callback URL for OAuth redirect
  */
 export const getCallbackUrl = () => {
-    const adminUrl = window.sureFeedbackAdmin?.adminUrl || '/wp-admin/admin.php';
+    let adminUrl = window.sureFeedbackAdmin?.adminUrl || '/wp-admin/admin.php';
+    
+    // WordPress admin_url() returns a full URL, so check if it's already complete
+    if (adminUrl.startsWith('http://') || adminUrl.startsWith('https://')) {
+        // If it already has query params, append with &
+        if (adminUrl.includes('?')) {
+            return `${adminUrl}&page=feedback-connection-options`;
+        }
+        return `${adminUrl}?page=feedback-connection-options`;
+    }
+    
+    // If it's just a path, prepend origin
     return `${window.location.origin}${adminUrl}?page=feedback-connection-options`;
 };
 

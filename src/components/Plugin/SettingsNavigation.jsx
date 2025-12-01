@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Users, Palette } from 'lucide-react';
+import { ShieldCheck, Users, Palette, Settings } from 'lucide-react';
 import { useRouter } from '../../utils/Router.jsx';
 
 // WordPress i18n fallback
@@ -26,6 +26,11 @@ const getNavigation = () => [
     slug: 'white-label',
     icon: <Palette className="w-5 h-5" />,
   },
+  {
+    name: __('Migration', 'surefeedback'),
+    slug: 'migration',
+    icon: <Settings className="w-5 h-5" />,
+  },
 ];
 
 const NavLink = ({ label, path, icon: Icon, isActive }) => {
@@ -40,9 +45,12 @@ const NavLink = ({ label, path, icon: Icon, isActive }) => {
     } else if (path === 'commenting') {
       router.navigate('#settings?tab=commenting');
       window.location.hash = '#settings?tab=commenting';
-    } else if (path === 'white-label') {
+    } else     if (path === 'white-label') {
       router.navigate('#settings?tab=white-label');
       window.location.hash = '#settings?tab=white-label';
+    } else if (path === 'migration') {
+      router.navigate('#settings?tab=migration');
+      window.location.hash = '#settings?tab=migration';
     }
   };
 

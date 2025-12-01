@@ -23,9 +23,9 @@ export const Welcome = ({ setCurrentStep }) => {
       <Card className="w-full max-w-5xl text-center border-none shadow-none">
         <CardHeader>
           <img
-            src={window.sureFeedbackAdmin?.surefeedback_icon || ""}
+            src={window.sureFeedbackAdmin?.pluginUrl + 'assets/images/settings/surefeedback-logo-img.svg' || ""}
             alt={__("SureFeedback Logo", "surefeedback")}
-            className="mx-auto h-18 w-18 object-contain pb-4"
+            className="mx-auto h-12 w-auto object-contain pb-4"
           />
           <CardTitle className="text-2xl font-semibold text-foreground mt-3">
             {__("Welcome to the Setup Wizard!", "surefeedback")}

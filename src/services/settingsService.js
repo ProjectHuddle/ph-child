@@ -57,6 +57,13 @@ class SettingsService {
       access_token: connection.ph_child_access_token,
     }, { useWpNonce: true });
   }
+
+  /**
+   * Migrate from legacy connection to SaaS connection
+   */
+  async migrateToSaaS() {
+    return apiGateway.post(WORDPRESS_API.BASE() + '/settings/migrate-to-saas', {}, { useWpNonce: true });
+  }
 }
 
 export const settingsService = new SettingsService();

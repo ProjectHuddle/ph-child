@@ -126,6 +126,9 @@ class PH_Child_REST_API {
 
         // Settings endpoints - register under ph-child/v1 namespace
         $this->register_settings_routes();
+
+        // Page settings endpoints (Widget Control)
+        $this->register_page_settings_routes();
     }
 
     /**
@@ -280,6 +283,20 @@ class PH_Child_REST_API {
                         'sanitize_callback' => 'sanitize_text_field',
                     ),
                 ),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Migrate to SaaS
+        register_rest_route('ph-child/v1', '/settings/migrate-to-saas', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'migrate_to_saas'),
+                'permission_callback' => array($this, 'verify_admin_access'),
             ),
             array(
                 'methods' => 'OPTIONS',
@@ -513,6 +530,44 @@ class PH_Child_REST_API {
     }
 
     /**
+     * Migrate from legacy connection to SaaS connection
+     * 
+     * Saves current legacy connection data and updates connection type preference
+     */
+    public function migrate_to_saas($request) {
+        // Get current legacy connection data
+        $legacy_data = array(
+            'parent_url' => get_option('ph_child_parent_url', ''),
+            'project_id' => get_option('ph_child_id', ''),
+            'api_key' => get_option('ph_child_api_key', ''),
+            'access_token' => get_option('ph_child_access_token', ''),
+            'signature' => get_option('ph_child_signature', ''),
+            'installed' => get_option('ph_child_installed', false),
+            'migrated_at' => current_time('mysql'),
+        );
+
+        // Save legacy data to database (as backup)
+        update_option('ph_child_legacy_migration_data', $legacy_data);
+
+        // Delete old connection type preference
+        delete_option('ph_child_connection_type_preference');
+        delete_option('ph_child_connection_type_preference_time');
+
+        // Set new SaaS preference
+        update_option('ph_child_connection_type_preference', 'saas');
+        update_option('ph_child_connection_type_preference_time', current_time('mysql'));
+
+        return rest_ensure_response(array(
+            'success' => true,
+            'message' => __('Migration completed successfully. Your legacy connection data has been saved.', 'ph-child'),
+            'data' => array(
+                'legacy_data_saved' => true,
+                'migrated_at' => $legacy_data['migrated_at'],
+            ),
+        ));
+    }
+
+    /**
      * Get connection status
      */
     private function get_connection_status() {
@@ -629,15 +684,16 @@ class PH_Child_REST_API {
         $organization_id = isset($params['organization_id']) ? sanitize_text_field($params['organization_id']) : '';
         $project_id = isset($params['project_id']) ? sanitize_text_field($params['project_id']) : '';
         $site_id = isset($params['site_id']) ? sanitize_text_field($params['site_id']) : '';
+        $site_url = isset($params['site_url']) ? esc_url_raw($params['site_url']) : '';
+        $site_api_url = isset($params['site_api_url']) ? esc_url_raw($params['site_api_url']) : '';
+        $script_token = isset($params['script_token']) ? sanitize_text_field($params['script_token']) : '';
 
         if (empty($access_token)) {
             return new WP_Error('rest_invalid_param', __('Access token is required', 'ph-child'), array('status' => 400));
         }
 
-        // Store bearer token
         update_option('ph_child_bearer_token', $access_token);
         
-        // Store connection metadata
         if ($connection_id) {
             update_option('ph_child_connection_id', $connection_id);
         }
@@ -650,6 +706,28 @@ class PH_Child_REST_API {
         if ($site_id) {
             update_option('ph_child_site_id', $site_id);
         }
+        if ($site_url) {
+            update_option('ph_child_site_url', $site_url);
+        }
+        if ($site_api_url) {
+            update_option('ph_child_site_api_url', $site_api_url);
+        }
+        if ($script_token) {
+            update_option('ph_child_script_token', $script_token);
+        }
+
+        update_option('ph_child_connection_type_preference', 'saas');
+        update_option('ph_child_connection_type_preference_time', current_time('mysql'));
+
+        do_action('ph_child_connection_stored', array(
+            'connection_id' => $connection_id,
+            'organization_id' => $organization_id,
+            'project_id' => $project_id,
+            'site_id' => $site_id,
+            'site_url' => $site_url,
+            'site_api_url' => $site_api_url,
+            'script_token' => $script_token,
+        ));
 
         return rest_ensure_response(array(
             'success' => true,
@@ -667,6 +745,9 @@ class PH_Child_REST_API {
         delete_option('ph_child_organization_id');
         delete_option('ph_child_project_id');
         delete_option('ph_child_site_id');
+        delete_option('ph_child_site_url');
+        delete_option('ph_child_site_api_url');
+        delete_option('ph_child_script_token');
 
         return rest_ensure_response(array(
             'success' => true,
@@ -805,9 +886,19 @@ class PH_Child_REST_API {
         }
 
         // Get API base URL (same pattern as main plugin file)
-        $api_base_url = defined('PH_CHILD_API_BASE_URL') 
-            ? PH_CHILD_API_BASE_URL 
-            : 'https://api.surefeedback.com/api/v1';
+        if ( defined( 'SUREFEEDBACK_API_BASE_URL' ) ) {
+            $api_base_url = SUREFEEDBACK_API_BASE_URL;
+            if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+                $api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+            }
+        } elseif ( defined( 'PH_CHILD_API_BASE_URL' ) ) {
+            $api_base_url = PH_CHILD_API_BASE_URL;
+            if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+                $api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+            }
+        } else {
+            $api_base_url = 'https://api.surefeedback.com/api/v1';
+        }
 
         // Make request to external API from PHP (server-side)
         $response = wp_remote_get(
@@ -886,6 +977,510 @@ class PH_Child_REST_API {
             );
         }
         return rest_ensure_response($response);
+    }
+
+    /**
+     * Register page settings routes (Widget Control)
+     */
+    private function register_page_settings_routes() {
+        // Get all pages with widget status
+        register_rest_route('ph-child/v1', '/page-settings', array(
+            array(
+                'methods' => 'GET',
+                'callback' => array($this, 'get_page_settings'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Update page settings
+        register_rest_route('ph-child/v1', '/page-settings', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'update_page_settings'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Enable widget for specific page
+        register_rest_route('ph-child/v1', '/page-settings/enable', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'enable_page_widget'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Disable widget for specific page
+        register_rest_route('ph-child/v1', '/page-settings/disable', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'disable_page_widget'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Enable widget for all pages
+        register_rest_route('ph-child/v1', '/page-settings/enable-all', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'enable_all_pages_widget'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+
+        // Disable widget for all pages
+        register_rest_route('ph-child/v1', '/page-settings/disable-all', array(
+            array(
+                'methods' => 'POST',
+                'callback' => array($this, 'disable_all_pages_widget'),
+                'permission_callback' => array($this, 'verify_admin_access'),
+            ),
+            array(
+                'methods' => 'OPTIONS',
+                'callback' => '__return_null',
+                'permission_callback' => '__return_true',
+            ),
+        ));
+    }
+
+    /**
+     * Get all pages with widget status
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function get_page_settings($request) {
+        try {
+            $pages = $this->get_all_pages_with_status();
+            $settings = $this->get_page_widget_settings();
+
+            return rest_ensure_response(array(
+                'success' => true,
+                'pages' => $pages,
+                'settings' => $settings,
+                'total' => count($pages),
+            ));
+        } catch (\Exception $e) {
+            return new WP_Error(
+                'page_settings_failed',
+                __('Failed to fetch pages', 'ph-child'),
+                array('status' => 500, 'error' => $e->getMessage())
+            );
+        }
+    }
+
+    /**
+     * Update page settings
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function update_page_settings($request) {
+        $params = $request->get_json_params();
+        $settings = isset($params['settings']) ? $params['settings'] : array();
+
+        if (!is_array($settings)) {
+            return new WP_Error(
+                'invalid_settings',
+                __('Invalid settings format', 'ph-child'),
+                array('status' => 400)
+            );
+        }
+
+        $updated = $this->update_page_widget_settings($settings);
+
+        if ($updated) {
+            return rest_ensure_response(array(
+                'success' => true,
+                'message' => __('Page settings updated successfully', 'ph-child'),
+                'settings' => $this->get_page_widget_settings(),
+            ));
+        }
+
+        return new WP_Error(
+            'update_failed',
+            __('Failed to update page settings', 'ph-child'),
+            array('status' => 500)
+        );
+    }
+
+    /**
+     * Enable widget for specific page
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function enable_page_widget($request) {
+        $params = $request->get_json_params();
+        $page_id = isset($params['page_id']) ? sanitize_text_field($params['page_id']) : '';
+
+        if (empty($page_id)) {
+            return new WP_Error(
+                'missing_page_id',
+                __('Page ID is required', 'ph-child'),
+                array('status' => 400)
+            );
+        }
+
+        $updated = $this->enable_widget_for_page($page_id);
+
+        if ($updated) {
+            return rest_ensure_response(array(
+                'success' => true,
+                'message' => __('Widget enabled for page', 'ph-child'),
+                'page_id' => $page_id,
+            ));
+        }
+
+        return new WP_Error(
+            'enable_failed',
+            __('Failed to enable widget', 'ph-child'),
+            array('status' => 500)
+        );
+    }
+
+    /**
+     * Disable widget for specific page
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function disable_page_widget($request) {
+        $params = $request->get_json_params();
+        $page_id = isset($params['page_id']) ? sanitize_text_field($params['page_id']) : '';
+
+        if (empty($page_id)) {
+            return new WP_Error(
+                'missing_page_id',
+                __('Page ID is required', 'ph-child'),
+                array('status' => 400)
+            );
+        }
+
+        $updated = $this->disable_widget_for_page($page_id);
+
+        if ($updated) {
+            return rest_ensure_response(array(
+                'success' => true,
+                'message' => __('Widget disabled for page', 'ph-child'),
+                'page_id' => $page_id,
+            ));
+        }
+
+        return new WP_Error(
+            'disable_failed',
+            __('Failed to disable widget', 'ph-child'),
+            array('status' => 500)
+        );
+    }
+
+    /**
+     * Enable widget for all pages
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function enable_all_pages_widget($request) {
+        $updated = $this->enable_widget_for_all_pages();
+
+        if ($updated) {
+            return rest_ensure_response(array(
+                'success' => true,
+                'message' => __('Widget enabled for all pages', 'ph-child'),
+            ));
+        }
+
+        return new WP_Error(
+            'enable_all_failed',
+            __('Failed to enable widget for all pages', 'ph-child'),
+            array('status' => 500)
+        );
+    }
+
+    /**
+     * Disable widget for all pages
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function disable_all_pages_widget($request) {
+        $updated = $this->disable_widget_for_all_pages();
+
+        if ($updated) {
+            return rest_ensure_response(array(
+                'success' => true,
+                'message' => __('Widget disabled for all pages', 'ph-child'),
+            ));
+        }
+
+        return new WP_Error(
+            'disable_all_failed',
+            __('Failed to disable widget for all pages', 'ph-child'),
+            array('status' => 500)
+        );
+    }
+
+    /**
+     * Get all pages with widget status
+     * 
+     * @return array
+     */
+    private function get_all_pages_with_status() {
+        $pages = $this->get_all_pages();
+        $page_settings = $this->get_page_widget_settings();
+
+        foreach ($pages as &$page) {
+            $page['widget_enabled'] = $this->is_widget_enabled_for_page($page['id'], $page_settings);
+        }
+
+        return $pages;
+    }
+
+    /**
+     * Get all WordPress pages, posts, and special pages
+     * 
+     * @return array
+     */
+    private function get_all_pages() {
+        $pages = array();
+
+        // Get homepage
+        $homepage_id = get_option('page_on_front');
+        if ($homepage_id) {
+            $pages[] = array(
+                'id' => 'home',
+                'title' => __('Homepage', 'ph-child'),
+                'type' => 'home',
+                'url' => home_url('/'),
+            );
+        }
+
+        // Get blog page
+        $blog_page_id = get_option('page_for_posts');
+        if ($blog_page_id) {
+            $pages[] = array(
+                'id' => 'blog',
+                'title' => __('Blog Page', 'ph-child'),
+                'type' => 'blog',
+                'url' => get_permalink($blog_page_id),
+            );
+        }
+
+        // Get all published pages (exclude drafts, pending, private, etc.)
+        $wp_pages = get_pages(array(
+            'post_status' => 'publish', // Only published pages
+            'number' => 1000,
+            'sort_column' => 'post_title',
+            'sort_order' => 'ASC',
+        ));
+
+        foreach ($wp_pages as $wp_page) {
+            $pages[] = array(
+                'id' => 'page_' . $wp_page->ID,
+                'title' => $wp_page->post_title ?: __('(No Title)', 'ph-child'),
+                'type' => 'page',
+                'url' => get_permalink($wp_page->ID),
+                'post_id' => $wp_page->ID,
+            );
+        }
+
+        // Get all published posts (exclude drafts, pending, private, etc.)
+        $wp_posts = get_posts(array(
+            'post_status' => 'publish', // Only published posts
+            'posts_per_page' => 100,
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ));
+
+        foreach ($wp_posts as $wp_post) {
+            $pages[] = array(
+                'id' => 'post_' . $wp_post->ID,
+                'title' => $wp_post->post_title ?: __('(No Title)', 'ph-child'),
+                'type' => 'post',
+                'url' => get_permalink($wp_post->ID),
+                'post_id' => $wp_post->ID,
+            );
+        }
+
+        // Get all custom post types
+        $post_types = get_post_types(array(
+            'public' => true,
+            '_builtin' => false,
+        ), 'objects');
+
+        foreach ($post_types as $post_type) {
+            $cpt_posts = get_posts(array(
+                'post_type' => $post_type->name,
+                'post_status' => 'publish', // Only published custom post types (exclude drafts)
+                'posts_per_page' => 50,
+                'orderby' => 'title',
+                'order' => 'ASC',
+            ));
+
+            foreach ($cpt_posts as $cpt_post) {
+                $pages[] = array(
+                    'id' => $post_type->name . '_' . $cpt_post->ID,
+                    'title' => $cpt_post->post_title ?: __('(No Title)', 'ph-child'),
+                    'type' => $post_type->name,
+                    'type_label' => $post_type->label,
+                    'url' => get_permalink($cpt_post->ID),
+                    'post_id' => $cpt_post->ID,
+                );
+            }
+        }
+
+        // Get archive pages
+        $pages[] = array(
+            'id' => 'archive',
+            'title' => __('All Archives', 'ph-child'),
+            'type' => 'archive',
+            'url' => '',
+        );
+
+        // Get search page
+        $pages[] = array(
+            'id' => 'search',
+            'title' => __('Search Results', 'ph-child'),
+            'type' => 'search',
+            'url' => '',
+        );
+
+        // Get 404 page
+        $pages[] = array(
+            'id' => '404',
+            'title' => __('404 Page', 'ph-child'),
+            'type' => '404',
+            'url' => '',
+        );
+
+        return $pages;
+    }
+
+    /**
+     * Get page widget settings
+     * 
+     * @return array
+     */
+    private function get_page_widget_settings() {
+        return (array) get_option('ph_child_page_widget_settings', array());
+    }
+
+    /**
+     * Check if widget is enabled for a specific page
+     * 
+     * @param string $page_id
+     * @param array|null $settings
+     * @return bool
+     */
+    private function is_widget_enabled_for_page($page_id, $settings = null) {
+        if ($settings === null) {
+            $settings = $this->get_page_widget_settings();
+        }
+
+        // If no settings exist, widget is enabled by default for all pages
+        if (empty($settings)) {
+            return true;
+        }
+
+        // Check if page is explicitly disabled
+        if (isset($settings[$page_id]) && $settings[$page_id] === false) {
+            return false;
+        }
+
+        // Default to enabled
+        return true;
+    }
+
+    /**
+     * Update page widget settings
+     * 
+     * @param array $settings
+     * @return bool
+     */
+    private function update_page_widget_settings($settings) {
+        $sanitized_settings = array();
+
+        foreach ($settings as $page_id => $enabled) {
+            $sanitized_page_id = sanitize_text_field($page_id);
+            $sanitized_settings[$sanitized_page_id] = (bool) $enabled;
+        }
+
+        return update_option('ph_child_page_widget_settings', $sanitized_settings);
+    }
+
+    /**
+     * Enable widget for specific page
+     * 
+     * @param string $page_id
+     * @return bool
+     */
+    private function enable_widget_for_page($page_id) {
+        $settings = $this->get_page_widget_settings();
+        $settings[sanitize_text_field($page_id)] = true;
+        return $this->update_page_widget_settings($settings);
+    }
+
+    /**
+     * Disable widget for specific page
+     * 
+     * @param string $page_id
+     * @return bool
+     */
+    private function disable_widget_for_page($page_id) {
+        $settings = $this->get_page_widget_settings();
+        $settings[sanitize_text_field($page_id)] = false;
+        return $this->update_page_widget_settings($settings);
+    }
+
+    /**
+     * Enable widget for all pages
+     * 
+     * @return bool
+     */
+    private function enable_widget_for_all_pages() {
+        // Clear all settings to enable widget for all pages (default behavior)
+        return update_option('ph_child_page_widget_settings', array());
+    }
+
+    /**
+     * Disable widget for all pages
+     * 
+     * @return bool
+     */
+    private function disable_widget_for_all_pages() {
+        $pages = $this->get_all_pages();
+        $settings = array();
+
+        foreach ($pages as $page) {
+            $settings[$page['id']] = false;
+        }
+
+        return $this->update_page_widget_settings($settings);
     }
 
     // Only add CORS headers for our own endpoints

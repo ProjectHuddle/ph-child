@@ -5,7 +5,6 @@
  * @package SureFeedback Child
  */
 
-// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -61,10 +60,8 @@ class PH_Child_Loader {
 	 * Load required files
 	 */
 	private function load_dependencies() {
-		// Core functions
 		require_once $this->plugin_path . 'includes/core/ph-child-functions.php';
-		
-		// API classes
+
 		require_once $this->plugin_path . 'includes/api/class-ph-child-rest-api.php';
 		require_once $this->plugin_path . 'includes/admin/class-ph-child-admin-api.php';
 	}
@@ -73,12 +70,10 @@ class PH_Child_Loader {
 	 * Initialize services
 	 */
 	private function init_services() {
-		// Initialize REST API
 		if ( class_exists( 'PH_Child_REST_API' ) ) {
 			$this->services['rest_api'] = new PH_Child_REST_API();
 		}
 
-		// Initialize Admin API
 		if ( class_exists( 'PH_Child_Admin_API' ) ) {
 			$this->services['admin_api'] = new PH_Child_Admin_API();
 		}

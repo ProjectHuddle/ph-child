@@ -3,15 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button.jsx';
 import { Badge } from '../components/ui/badge.jsx';
 import { Alert, AlertDescription } from '../components/ui/alert.jsx';
-import { CheckCircle, AlertTriangle, ExternalLink, MessageSquare, Settings as SettingsIcon, Ticket, HelpCircle, Star, Plus, X, RefreshCw, LogOut, ChevronRight } from 'lucide-react';
+import { CheckCircle, AlertTriangle, ExternalLink, MessageSquare, Settings as SettingsIcon, Ticket, HelpCircle, Star, Plus, X, RefreshCw, LogOut, ChevronRight, Link2, Sparkles } from 'lucide-react';
 import { getConnectionType } from '../utils/connectionType.js';
 import { NavLink, useRouter } from '../utils/Router.jsx';
 import { toast } from '../components/ui/toast.jsx';
 import apiGateway from '../api/gateway.js';
-import { WORDPRESS_API } from '../api/apiurls.js';
+import { WORDPRESS_API, CONNECTION_API } from '../api/apiurls.js';
 import connectionService from '../services/connectionService.js';
 
-// WordPress i18n fallback
 const __ = (text, domain) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
     return window.wp.i18n.__(text, domain);
@@ -19,7 +18,6 @@ const __ = (text, domain) => {
   return text;
 };
 
-// Constants
 const PLUGINS_CONFIG = [
   {
     key: 'suremail',
@@ -55,25 +53,17 @@ const VIDEO_ID = 'it16jGnZBus';
 const VIDEO_URL = `https://www.youtube.com/embed/${VIDEO_ID}?showinfo=0&rel=0&autoplay=1`;
 const VIDEO_THUMBNAIL = `https://img.youtube.com/vi/${VIDEO_ID}/hqdefault.jpg`;
 
-/**
- * Dashboard View Component
- * 
- * Unified dashboard for both Plugin and SaaS connections
- * Displays connection status, welcome section, and quick access tools
- */
 const DashboardView = () => {
-  // State Management
   const [connectionStatus, setConnectionStatus] = useState('none');
   const [isLoading, setIsLoading] = useState(true);
   const [popupVideo, setPopupVideo] = useState(null);
-  
-  // Check localStorage for dismissed notice
+
   const [showSaaSNotice, setShowSaaSNotice] = useState(() => {
     try {
       const dismissed = localStorage.getItem('surefeedback_saas_notice_dismissed');
       return dismissed !== 'true';
     } catch (e) {
-      return true; // Default to showing if localStorage is not available
+      return true;
     }
   });
   
@@ -85,12 +75,10 @@ const DashboardView = () => {
   });
   const [saasConnectionStatus, setSaasConnectionStatus] = useState(null);
 
-  // Hooks
   const router = useRouter();
 
-  // Connection Type Detection
   const connectionTypePreference = window.sureFeedbackAdmin?.connectionTypePreference || '';
-  const isSaaS = useMemo(() => 
+  const isSaaS = useMemo(() =>
     connectionStatus === 'saas' || connectionTypePreference === 'saas',
     [connectionStatus, connectionTypePreference]
   );
@@ -100,9 +88,7 @@ const DashboardView = () => {
   );
   const isConnected = useMemo(() => connectionStatus !== 'none', [connectionStatus]);
 
-  // Connection Data Helpers
   const getSaaSConnectionData = useCallback(() => {
-    // Priority: API status > Stored WordPress data
     if (saasConnectionStatus) return saasConnectionStatus;
     
     const storedConnection = window.sureFeedbackAdmin?.connection;
@@ -123,15 +109,11 @@ const DashboardView = () => {
     return isSaaS ? (getSaaSConnectionData() || pluginConnectionData) : pluginConnectionData;
   }, [isSaaS, getSaaSConnectionData]);
 
-  // Data Loading
   const loadSaaSConnectionStatus = useCallback(async () => {
     try {
       const response = await connectionService.getConnectionStatus();
-      // getConnectionStatus returns null if not connected
       setSaasConnectionStatus(response);
     } catch (error) {
-      console.error('Failed to fetch SaaS connection status:', error);
-      // Set to null to show not connected state
       setSaasConnectionStatus(null);
     }
   }, []);
@@ -147,7 +129,6 @@ const DashboardView = () => {
         setPluginStatuses(response.data);
       }
     } catch (error) {
-      console.error('Error loading plugin statuses:', error);
     }
   }, []);
 
@@ -155,23 +136,19 @@ const DashboardView = () => {
     try {
       const status = getConnectionType();
       setConnectionStatus(status);
-      
-      // Load SaaS connection status if it's a SaaS connection
-      // Only call if we have a bearer token (check happens inside loadSaaSConnectionStatus)
+
       if (status === 'saas' || connectionTypePreference === 'saas') {
         await loadSaaSConnectionStatus();
       }
-      
+
       await loadPluginStatuses();
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
       setConnectionStatus('none');
     } finally {
       setIsLoading(false);
     }
   }, [loadSaaSConnectionStatus, loadPluginStatuses, connectionTypePreference]);
 
-  // Plugin Actions
   const handlePluginAction = useCallback(async (pluginKey, action) => {
     try {
       const currentStatus = pluginStatuses[pluginKey];
@@ -191,8 +168,7 @@ const DashboardView = () => {
         const newStatus = response.data.new_status || currentStatus;
         setPluginStatuses(prev => ({ ...prev, [pluginKey]: newStatus }));
         toast.success(response.message);
-        
-        // Auto-activate after install
+
         if (actionToPerform === 'install' && newStatus === 'installed') {
           setTimeout(async () => {
             try {
@@ -201,7 +177,7 @@ const DashboardView = () => {
                 { plugin: pluginKey, action: 'activate' },
                 { useWpNonce: true }
               );
-              
+
               if (activateResponse.success) {
                 setPluginStatuses(prev => ({
                   ...prev,
@@ -210,7 +186,6 @@ const DashboardView = () => {
                 toast.success(activateResponse.message);
               }
             } catch (err) {
-              console.error('Error activating plugin:', err);
             }
           }, 500);
         }
@@ -218,12 +193,10 @@ const DashboardView = () => {
         toast.error(response.message || __('Plugin action failed', 'surefeedback'));
       }
     } catch (error) {
-      console.error('Error performing plugin action:', error);
       toast.error(__('An error occurred while performing the action', 'surefeedback'));
     }
   }, [pluginStatuses]);
 
-  // Connection Actions
   const handleDisconnect = useCallback(async () => {
     const confirmed = confirm(__('Are you sure you want to disconnect? This will remove all connection settings.', 'surefeedback'));
     if (!confirmed) return;
@@ -231,19 +204,17 @@ const DashboardView = () => {
     if (isSaaS) {
       try {
         connectionService.disconnect();
-        
+
         try {
           await apiGateway.post('connection/reset', {}, { useWpNonce: true });
         } catch (e) {
-          console.warn('Failed to reset connection via REST API:', e);
         }
-        
+
         toast.success(__('Site disconnected successfully! Redirecting...', 'surefeedback'));
         setTimeout(() => {
           window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
         }, 1500);
       } catch (error) {
-        console.error('Error disconnecting:', error);
         toast.error(__('An error occurred while disconnecting. Please try again.', 'surefeedback'));
       }
     } else {
@@ -254,11 +225,63 @@ const DashboardView = () => {
     }
   }, [isSaaS]);
 
-  const handleReconnect = useCallback(() => {
-    const route = isSaaS ? 'setup' : 'plugin-connection';
-    router.navigate(route);
-    window.location.hash = route;
-  }, [isSaaS, router]);
+  const handleGenerateMagicLink = useCallback(async () => {
+    try {
+      // Get site_id from connection data
+      const siteId = saasConnectionStatus?.site_id || 
+                     window.sureFeedbackAdmin?.connection?.saas_site_id ||
+                     window.sureFeedbackAdmin?.saas_site_id;
+      
+      if (!siteId) {
+        toast.error(__('Site ID not found. Please reconnect your site.', 'surefeedback'));
+        return;
+      }
+
+      // Get bearer token
+      const bearerToken = connectionService.getBearerToken() || 
+                          window.sureFeedbackAdmin?.bearerToken;
+      
+      if (!bearerToken) {
+        toast.error(__('Authentication token not found. Please reconnect your site.', 'surefeedback'));
+        return;
+      }
+
+      // Call API to generate magic link
+      const response = await fetch(CONNECTION_API.GENERATE_MAGIC_LINK(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bearerToken}`,
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          site_id: siteId,
+          expiration_minutes: 60, // 1 hour
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to generate magic link');
+      }
+
+      // Get redirect URL from response
+      const redirectUrl = data.data?.redirect_url;
+      
+      if (!redirectUrl) {
+        throw new Error('Redirect URL not found in response');
+      }
+
+      // Open redirect URL in new tab
+      window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+      
+      toast.success(__('Magic link generated! Opening in new tab...', 'surefeedback'));
+    } catch (error) {
+      console.error('Failed to generate magic link:', error);
+      toast.error(error.message || __('Failed to generate magic link. Please try again.', 'surefeedback'));
+    }
+  }, [saasConnectionStatus]);
 
   const handleConnectWebsite = useCallback(() => {
     // Initiate SaaS connection
@@ -275,7 +298,6 @@ const DashboardView = () => {
     }
   }, [isSaaS, isPlugin, connectionData]);
 
-  // Status Info
   const statusInfo = useMemo(() => {
     if (connectionStatus === 'legacy' || connectionStatus === 'saas') {
       return {
@@ -302,15 +324,12 @@ const DashboardView = () => {
     };
   }, [connectionStatus, isSaaS]);
 
-  // Effects
   useEffect(() => {
     loadDashboardData();
   }, [loadDashboardData]);
 
-  // Load SaaS connection status when connection type preference is SaaS
   useEffect(() => {
     if (connectionTypePreference === 'saas') {
-      // Small delay to ensure window.sureFeedbackAdmin is fully loaded
       const timer = setTimeout(() => {
         loadSaaSConnectionStatus();
       }, 100);
@@ -329,7 +348,6 @@ const DashboardView = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [popupVideo]);
 
-  // Loading State
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -342,25 +360,21 @@ const DashboardView = () => {
 
   return (
     <div className="p-3 pb-8 xl:p-8 w-full bg-gray-50 min-h-screen">
-      {/* SaaS Platform Launch Notice */}
       {showSaaSNotice && (
         <SaaSLaunchNotice onDismiss={() => setShowSaaSNotice(false)} />
       )}
 
-      {/* Main Content */}
       <div className="grid grid-cols-12 gap-8 max-w-7xl mx-auto">
-        {/* Left Column - Main Content (8/12) */}
         <div className="col-span-12 xl:col-span-8 flex flex-col gap-8">
-          <WelcomeSection 
-            isSaaS={isSaaS} 
+          <WelcomeSection
+            isSaaS={isSaaS}
             isConnected={isConnected}
             saasConnectionStatus={saasConnectionStatus}
             onVideoClick={() => setPopupVideo(VIDEO_URL)}
             onConnect={handleConnectWebsite}
-            onManageConnection={handleReconnect}
+            onManageConnection={handleGenerateMagicLink}
           />
           <VideoModal videoUrl={popupVideo} onClose={() => setPopupVideo(null)} />
-          {/* Show Not Connected card for SaaS when not connected, otherwise show connection status */}
           {isSaaS && (connectionTypePreference === 'saas' || connectionStatus === 'saas') && !saasConnectionStatus ? (
             <NotConnectedCard onConnect={handleConnectWebsite} />
           ) : (
@@ -371,14 +385,13 @@ const DashboardView = () => {
               isSaaS={isSaaS}
               connectionData={connectionData}
               getSaaSSiteUrl={getSaaSSiteUrl}
-              onReconnect={handleReconnect}
+              onReconnect={handleGenerateMagicLink}
               onGoToDashboard={handleGoToDashboard}
               onDisconnect={handleDisconnect}
             />
           )}
         </div>
 
-        {/* Right Column - Sidebar Actions (4/12) */}
         <div className="col-span-12 xl:col-span-4 flex flex-col gap-8">
           <ExtendWebsiteSection
             plugins={PLUGINS_CONFIG}
@@ -392,16 +405,12 @@ const DashboardView = () => {
   );
 };
 
-// Sub-components
 const SaaSLaunchNotice = ({ onDismiss }) => {
   const handleDismiss = () => {
     try {
-      // Save dismissal state to localStorage
       localStorage.setItem('surefeedback_saas_notice_dismissed', 'true');
     } catch (e) {
-      console.warn('Failed to save notice dismissal to localStorage:', e);
     }
-    // Call the parent dismiss handler
     onDismiss();
   };
 
@@ -441,7 +450,6 @@ const SaaSLaunchNotice = ({ onDismiss }) => {
 };
 
 const WelcomeSection = ({ isSaaS, isConnected, saasConnectionStatus, onVideoClick, onConnect, onManageConnection }) => {
-  // Determine if actually connected (for SaaS, check saasConnectionStatus)
   const actuallyConnected = isSaaS ? (saasConnectionStatus !== null) : isConnected;
   
   return (
@@ -463,8 +471,8 @@ const WelcomeSection = ({ isSaaS, isConnected, saasConnectionStatus, onVideoClic
                 className="bg-[#4253ff] hover:bg-[#3142ef] text-white shadow-sm gap-1 px-6 py-2.5"
                 onClick={onManageConnection}
               >
-                <span>{__('Manage Connection', 'surefeedback')}</span>
-                <Plus className="w-4 h-4" />
+                <span>{__('Generate Magic Link', 'surefeedback')}</span>
+                <Link2 className="w-4 h-4" />
               </Button>
             ) : (
               <Button 
@@ -672,12 +680,10 @@ const NotConnectedCard = ({ onConnect }) => {
   return (
     <Card className="bg-white border-2 border-gray-200 rounded-xl shadow-sm">
       <CardContent className="flex flex-col justify-center items-center space-y-3 px-6 py-4">
-        {/* Icon - Red X in circle */}
         <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center">
           <X className="w-7 h-7 text-red-600" />
         </div>
-        
-        {/* Content */}
+
         <div className="space-y-1.5 text-center">
           <h2 className="text-xl font-semibold text-gray-900">
             {__('SureFeedback Not Connected!', 'surefeedback')}
@@ -689,8 +695,7 @@ const NotConnectedCard = ({ onConnect }) => {
             )}
           </p>
         </div>
-        
-        {/* Action Button */}
+
         <Button
           onClick={onConnect}
           className="bg-[#4253ff] hover:bg-[#3142ef] text-white px-6 py-2 text-sm rounded-lg font-medium shadow-sm mt-1"

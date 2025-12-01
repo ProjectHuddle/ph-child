@@ -12,6 +12,7 @@ import SettingsNavigation from '../../components/Plugin/SettingsNavigation.jsx';
 import UserPermissionsView from './UserPermissionsView';
 import CommentingView from './CommentingView';
 import WhiteLabelView from './WhiteLabelView';
+import MigrationView from './MigrationView';
 
 /**
  * Settings View
@@ -39,6 +40,8 @@ const SettingsView = () => {
             return 'commenting';
         } else if (activeTabValue === 'white-label') {
             return 'white-label';
+        } else if (activeTabValue === 'migration') {
+            return 'migration';
         }
         
         return 'permissions';
@@ -75,6 +78,8 @@ const SettingsView = () => {
                 return <CommentingView />;
             case 'white-label':
                 return <WhiteLabelView />;
+            case 'migration':
+                return <MigrationView />;
             default:
                 return <UserPermissionsView />;
         }

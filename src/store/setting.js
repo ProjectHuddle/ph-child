@@ -1,21 +1,7 @@
-/**
- * Settings Store (Zustand)
- * 
- * Global state management for SureFeedback settings
- * 
- * @package SureFeedback
- */
-
 import { create } from 'zustand';
 import settingsService from '../services/settingsService.js';
 
-/**
- * Settings Store
- * 
- * Manages all settings state including general, connection, and white label settings
- */
 export const useSettingsStore = create((set, get) => ({
-  // State
   general: {
     ph_child_role_can_comment: [],
     ph_child_guest_comments_enabled: false,
@@ -45,7 +31,6 @@ export const useSettingsStore = create((set, get) => ({
   errors: {},
   activeTab: 'general',
 
-  // Computed (getters)
   isConnected: () => {
     const { connection } = get();
     return connection.ph_child_id &&
@@ -63,7 +48,6 @@ export const useSettingsStore = create((set, get) => ({
     return '';
   },
 
-  // Actions
   loadSettings: async () => {
     set({ loading: true, errors: {} });
 
@@ -79,7 +63,6 @@ export const useSettingsStore = create((set, get) => ({
         });
       }
     } catch (error) {
-      console.error('Failed to load settings:', error);
       set({
         errors: { general: 'Failed to load settings. Please refresh the page.' },
       });
@@ -102,7 +85,6 @@ export const useSettingsStore = create((set, get) => ({
       }
       return true;
     } catch (error) {
-      console.error('Failed to save general settings:', error);
       set({
         errors: { general: 'Failed to save settings. Please try again.' },
       });
@@ -125,7 +107,6 @@ export const useSettingsStore = create((set, get) => ({
         return false;
       }
 
-      // Update connection status after successful save
       if (response.data?.connectionStatus) {
         set({
           connectionStatus: { ...get().connectionStatus, ...response.data.connectionStatus },
@@ -134,7 +115,6 @@ export const useSettingsStore = create((set, get) => ({
 
       return true;
     } catch (error) {
-      console.error('Failed to save connection settings:', error);
       set({
         errors: { connection: 'Failed to save settings. Please try again.' },
       });
@@ -158,7 +138,6 @@ export const useSettingsStore = create((set, get) => ({
       }
       return true;
     } catch (error) {
-      console.error('Failed to save white label settings:', error);
       set({
         errors: { whiteLabel: 'Failed to save settings. Please try again.' },
       });
@@ -180,7 +159,6 @@ export const useSettingsStore = create((set, get) => ({
         return false;
       }
 
-      // Update connection settings with imported data
       set({
         connection: {
           ...get().connection,
@@ -198,7 +176,6 @@ export const useSettingsStore = create((set, get) => ({
 
       return true;
     } catch (error) {
-      console.error('Failed to import settings:', error);
       set({
         errors: { connection: 'Failed to import settings. Please try again.' },
       });
@@ -226,7 +203,6 @@ export const useSettingsStore = create((set, get) => ({
         return false;
       }
     } catch (error) {
-      console.error('Connection test failed:', error);
       set({
         errors: { connection: 'Failed to test connection. Please try again.' },
       });
@@ -265,7 +241,6 @@ export const useSettingsStore = create((set, get) => ({
     });
   },
 
-  // Helper methods to update nested state
   updateGeneral: (updates) => {
     set((state) => ({
       general: { ...state.general, ...updates },

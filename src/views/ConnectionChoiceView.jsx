@@ -42,7 +42,6 @@ const ConnectionChoiceView = () => {
         return false;
       }
     } catch (error) {
-      console.error('Error saving connection type:', error);
       toast.error(__('Failed to save connection type', 'surefeedback'));
       return false;
     } finally {
@@ -69,12 +68,22 @@ const ConnectionChoiceView = () => {
     const saved = await saveConnectionType('saas');
     
     if (saved) {
-      // Redirect to SaaS welcome/setup screen
+      // Update the preference in window object for immediate effect
+      if (window.sureFeedbackAdmin) {
+        window.sureFeedbackAdmin.connectionTypePreference = 'saas';
+      }
+      
+      // Navigate to SaaS welcome/setup screen
+      // The DashboardContent will detect the preference change and show SaasDashboard
+      // which will route to 'setup' showing the Welcome component
       if (router && router.navigate) {
         router.navigate('setup');
       } else {
         window.location.hash = 'setup';
       }
+      
+      // Force a re-render by triggering a custom event
+      window.dispatchEvent(new CustomEvent('connectionTypeChanged', { detail: { type: 'saas' } }));
     }
   };
 

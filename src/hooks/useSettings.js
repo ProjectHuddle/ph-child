@@ -1,21 +1,8 @@
-/**
- * useSettings Hook
- * 
- * React hook for managing settings state
- * 
- * @package SureFeedback
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import settingsService from '../services/settingsService.js';
 import { toast } from '@/components/ui/toast';
 import { __ } from '@wordpress/i18n';
 
-/**
- * useSettings hook
- * 
- * @returns {Object} Settings state and methods
- */
 export const useSettings = () => {
   const [state, setState] = useState({
     general: {
@@ -49,17 +36,11 @@ export const useSettings = () => {
 
   const [availableRoles, setAvailableRoles] = useState([]);
 
-  /**
-   * Check if connected
-   */
   const isConnected = state.connection.ph_child_id &&
                      state.connection.ph_child_api_key &&
                      state.connection.ph_child_access_token &&
                      state.connection.ph_child_parent_url;
 
-  /**
-   * Load settings
-   */
   const loadSettings = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, errors: {} }));
 
@@ -79,7 +60,6 @@ export const useSettings = () => {
         }
       }
     } catch (error) {
-      console.error('Failed to load settings:', error);
       setState(prev => ({
         ...prev,
         errors: { general: __('Failed to load settings. Please refresh the page.', 'surefeedback') },
@@ -89,9 +69,6 @@ export const useSettings = () => {
     }
   }, []);
 
-  /**
-   * Save general settings
-   */
   const saveGeneralSettings = useCallback(async () => {
     setState(prev => ({ ...prev, saving: true, errors: {} }));
 
@@ -107,7 +84,6 @@ export const useSettings = () => {
       toast.success(__('Settings saved successfully', 'surefeedback'));
       return true;
     } catch (error) {
-      console.error('Failed to save general settings:', error);
       setState(prev => ({
         ...prev,
         errors: { general: __('Failed to save settings. Please try again.', 'surefeedback') },
@@ -118,9 +94,6 @@ export const useSettings = () => {
     }
   }, [state.general]);
 
-  /**
-   * Save connection settings
-   */
   const saveConnectionSettings = useCallback(async () => {
     setState(prev => ({ ...prev, saving: true, errors: {} }));
 
@@ -144,7 +117,6 @@ export const useSettings = () => {
       toast.success(__('Connection settings saved successfully', 'surefeedback'));
       return true;
     } catch (error) {
-      console.error('Failed to save connection settings:', error);
       setState(prev => ({
         ...prev,
         errors: { connection: __('Failed to save settings. Please try again.', 'surefeedback') },
@@ -155,9 +127,6 @@ export const useSettings = () => {
     }
   }, [state.connection]);
 
-  /**
-   * Save white label settings
-   */
   const saveWhiteLabelSettings = useCallback(async () => {
     setState(prev => ({ ...prev, saving: true, errors: {} }));
 
@@ -173,7 +142,6 @@ export const useSettings = () => {
       toast.success(__('White label settings saved successfully', 'surefeedback'));
       return true;
     } catch (error) {
-      console.error('Failed to save white label settings:', error);
       setState(prev => ({
         ...prev,
         errors: { whiteLabel: __('Failed to save settings. Please try again.', 'surefeedback') },
@@ -184,9 +152,6 @@ export const useSettings = () => {
     }
   }, [state.whiteLabel]);
 
-  /**
-   * Manual import
-   */
   const manualImport = useCallback(async (importData) => {
     setState(prev => ({ ...prev, saving: true, errors: {} }));
 
@@ -219,7 +184,6 @@ export const useSettings = () => {
       toast.success(__('Connection imported successfully', 'surefeedback'));
       return true;
     } catch (error) {
-      console.error('Failed to import settings:', error);
       setState(prev => ({
         ...prev,
         errors: { connection: __('Failed to import settings. Please try again.', 'surefeedback') },
@@ -230,9 +194,6 @@ export const useSettings = () => {
     }
   }, []);
 
-  /**
-   * Test connection
-   */
   const testConnection = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, errors: {} }));
 
@@ -253,7 +214,6 @@ export const useSettings = () => {
         return false;
       }
     } catch (error) {
-      console.error('Connection test failed:', error);
       setState(prev => ({
         ...prev,
         errors: { connection: __('Failed to test connection. Please try again.', 'surefeedback') },
@@ -264,23 +224,14 @@ export const useSettings = () => {
     }
   }, [state.connection]);
 
-  /**
-   * Update state
-   */
   const updateState = useCallback((updates) => {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  /**
-   * Clear errors
-   */
   const clearErrors = useCallback(() => {
     setState(prev => ({ ...prev, errors: {} }));
   }, []);
 
-  /**
-   * Update role selection
-   */
   const updateRoleSelection = useCallback((roleName, selected) => {
     setState(prev => {
       const roles = [...prev.general.ph_child_role_can_comment];
@@ -302,7 +253,6 @@ export const useSettings = () => {
     });
   }, []);
 
-  // Load settings on mount
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);

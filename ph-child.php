@@ -17,7 +17,6 @@
  * @author Brainstorm Force, Andre Gagnon
  */
 
-// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -28,25 +27,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 
-// Plugin Folder Path.
 if ( ! defined( 'PH_CHILD_PLUGIN_DIR' ) ) {
 	define( 'PH_CHILD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
-// Plugin Folder URL.
 if ( ! defined( 'PH_CHILD_PLUGIN_URL' ) ) {
 	define( 'PH_CHILD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
-// Plugin Root File.
 if ( ! defined( 'PH_CHILD_PLUGIN_FILE' ) ) {
 	define( 'PH_CHILD_PLUGIN_FILE', __FILE__ );
 }
 
-		// Load the plugin loader
 		require_once 'includes/core/class-ph-child-loader.php';
-		
-		// Include dashboard API
+
 		require_once PH_CHILD_PLUGIN_DIR . 'includes/api/dashboard-api.php';
 
 
@@ -92,7 +86,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
-			// Store option configuration without translations (translations loaded later)
 			$this->whitelist_option_names = array(
 				'ph_child_id'           => array(
 					'description_key'   => 'ph_child_id',
@@ -120,16 +113,13 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				),
 			);
 
-			// options and menu.
 			add_action( 'admin_init', array( $this, 'options' ) );
 			add_action( 'admin_menu', array( $this, 'create_menu' ) );
 
-			// custom inline script and styles.
 			add_action( 'admin_init', array( $this, 'ph_custom_inline_script' ) );
 
 			add_action( 'wp_footer', array( $this, 'ph_user_data' ) );
 
-			// show script on front end and maybe admin.
 			if ( ! is_admin() ) {
 				add_action( 'wp_footer', array( $this, 'script' ) );
 			}
@@ -137,26 +127,19 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				add_action( 'admin_footer', array( $this, 'script' ) );
 			}
 
-			// whitelist our blog options.
 			add_filter( 'xmlrpc_blog_options', array( $this, 'whitelist_option' ) );
 
-			// maybe disconnect from parent site.
 			add_action( 'admin_init', array( $this, 'maybe_disconnect' ) );
 
-			// remove disconnect args after successful disconnect.
 			add_filter( 'removable_query_args', array( $this, 'remove_disconnect_args' ) );
 
-			// update registration option in database for parent site reference.
 			register_activation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'register_installation' ) );
 			register_deactivation_hook( PH_CHILD_PLUGIN_FILE, array( $this, 'deregister_installation' ) );
 
-			// redirect to the options page after activating.
 			add_action( 'activated_plugin', array( $this, 'redirect_options_page' ) );
 
-			// Add settings link to plugins page.
 			add_filter( 'plugin_action_links_' . plugin_basename( PH_CHILD_PLUGIN_FILE ), array( $this, 'add_settings_link' ) );
 
-			// white label text only on plugins page.
 			global $pagenow;
 			if ( is_admin() && 'plugins.php' === $pagenow ) {
 				add_filter( 'gettext', array( $this, 'white_label' ), 20, 3 );
@@ -177,20 +160,15 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$disabled = apply_filters(
 				'ph_disable_for_query_vars',
 				array(
-					// divi.
 					'et_fb',
-					// elementor.
 					'elementor-preview',
-					// beaver builder.
 					'fl_builder',
 					'fl_builder_preview',
-					// fusion.
 					'builder',
 					'fb-edit',
 				)
 			);
 
-			// disable these.
 			if ( ! empty( $_GET ) && is_array( $_GET ) ) {
 				foreach ( $_GET as $arg => $_ ) {
 					if ( in_array( $arg, $disabled ) ) {
@@ -199,14 +177,11 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				}
 			}
 
-			// oxygen is... "special".
 			if ( isset( $_GET['ct_builder'] ) ) {
-				return false; // TODO: remove once we can get pageX, pageY inside iframe.
-				// bail if admin commenting is disabled.
+				return false;
 				if ( ! get_option( 'ph_child_admin', false ) ) {
 					return false;
 				}
-				// bail if not in the iframe.
 				if ( ! isset( $_GET['oxygen_iframe'] ) ) {
 					return false;
 				}
@@ -272,8 +247,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			if ( ! is_admin() || 'plugins.php' !== $pagenow ) {
 				return $translated_text;
 			}
-			// make the changes to the text.
-			if ( 'ph-child' === $domain ) { // added this check to avoid conflicting other plugins.
+			if ( 'ph-child' === $domain ) {
 				switch ( $untranslated_text ) {
 					case 'SureFeedback Client Site':
 						$name = get_option( 'ph_child_plugin_name', false );
@@ -281,7 +255,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							$translated_text = $name;
 						}
 						break;
-					case 'Collect note-style feedback from your client’s websites and sync them with your SureFeedback parent project.':
+					case 'Collect note-style feedback from your client\'s websites and sync them with your SureFeedback parent project.':
 						$description = get_option( 'ph_child_plugin_description', false );
 						if ( $description ) {
 							$translated_text = $description;
@@ -293,7 +267,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 							$translated_text = $author;
 						}
 						break;
-					// add more items.
 				}
 			}
 
@@ -337,7 +310,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
-			// nonce check.
 			if ( ! isset( $_GET['ph-child-site-disconnect-nonce'] ) || ! wp_verify_nonce( $_GET['ph-child-site-disconnect-nonce'], 'ph-child-site-disconnect-nonce' ) ) {
 				wp_die( 'That\'s not allowed' );
 			}
@@ -411,10 +383,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			$menu_title = $plugin_name ? esc_html( $plugin_name ) : __( 'SureFeedback', 'ph-child' );
 			$menu_icon = PH_CHILD_PLUGIN_URL . 'assets/images/settings/surefeedback-icon.svg';
 
-			// Get connection type preference
 			$connection_type = get_option( 'ph_child_connection_type_preference', 'none' );
 
-			// Add main menu page
 			add_menu_page(
 				__( 'SureFeedback', 'ph-child' ),
 				$menu_title,
@@ -425,7 +395,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				30
 			);
 
-			// Add Connection submenu (always visible)
 			add_submenu_page(
 				'feedback-connection-options',
 				__( 'Connection', 'ph-child' ),
@@ -435,9 +404,7 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				array( $this, 'options_page' )
 			);
 
-			// Show different menus based on connection type
 			if ( $connection_type === 'plugin' ) {
-				// Plugin (Legacy) connection - show Settings and White Label
 				add_submenu_page(
 					'feedback-connection-options',
 					__( 'Settings', 'ph-child' ),
@@ -456,7 +423,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					array( $this, 'white_label_page' )
 				);
 			} else {
-				// SaaS connection - show Widget Control and Settings
 				add_submenu_page(
 					'feedback-connection-options',
 					__( 'Widget Control', 'ph-child' ),
@@ -476,7 +442,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				);
 			}
 
-			// Enqueue admin assets
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ), 100 );
 		}
 
@@ -488,7 +453,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @param string $hook Current admin page hook.
 		 */
 		public function enqueue_assets( $hook ) {
-			// Only load on our plugin pages
 			$plugin_pages = array(
 				'toplevel_page_feedback-connection-options',
 				'surefeedback_page_feedback-connection-options',
@@ -501,7 +465,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
-			// Get plugin version
 			$plugin_version = '1.2.10';
 			if ( ! function_exists( 'get_plugin_data' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -511,7 +474,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				$plugin_version = $plugin_data['Version'];
 			}
 
-			// Enqueue Figtree font from Google Fonts (same as SureForms)
 			wp_enqueue_style(
 				'ph-child-figtree-font',
 				'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap',
@@ -519,7 +481,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				null
 			);
 
-			// Enqueue Tailwind CSS if it exists
 			$tailwind_css = PH_CHILD_PLUGIN_URL . 'assets/css/tailwind.css';
 			if ( file_exists( PH_CHILD_PLUGIN_DIR . 'assets/css/tailwind.css' ) ) {
 				wp_enqueue_style(
@@ -530,7 +491,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				);
 			}
 
-			// Enqueue admin CSS for menu icon alignment
 			$admin_css = PH_CHILD_PLUGIN_URL . 'assets/css/admin.css';
 			if ( file_exists( PH_CHILD_PLUGIN_DIR . 'assets/css/admin.css' ) ) {
 				wp_enqueue_style(
@@ -541,7 +501,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				);
 			}
 
-			// Enqueue React app
 			wp_enqueue_script(
 				'ph-child-admin',
 				PH_CHILD_PLUGIN_URL . 'assets/js/admin.js',
@@ -550,21 +509,41 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				true
 			);
 
-			// Get API base URL from constant or default
-			$api_base_url = defined( 'PH_CHILD_API_BASE_URL' ) ? PH_CHILD_API_BASE_URL : 'https://api.surefeedback.com/api/v1';
-			$app_base_url = defined( 'PH_CHILD_APP_BASE_URL' ) ? PH_CHILD_APP_BASE_URL : 'https://app.surefeedback.com';
+			// Check for SUREFEEDBACK_ constants first (new naming), then PH_CHILD_ (legacy), then default
+			if ( defined( 'SUREFEEDBACK_API_BASE_URL' ) ) {
+				$api_base_url = SUREFEEDBACK_API_BASE_URL;
+				// Append /api/v1 if not already present
+				if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+					$api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+				}
+			} elseif ( defined( 'PH_CHILD_API_BASE_URL' ) ) {
+				$api_base_url = PH_CHILD_API_BASE_URL;
+				// Append /api/v1 if not already present
+				if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+					$api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+				}
+			} else {
+				$api_base_url = 'https://api.surefeedback.com/api/v1';
+			}
+			
+			if ( defined( 'SUREFEEDBACK_APP_BASE_URL' ) ) {
+				$app_base_url = SUREFEEDBACK_APP_BASE_URL;
+			} elseif ( defined( 'PH_CHILD_APP_BASE_URL' ) ) {
+				$app_base_url = PH_CHILD_APP_BASE_URL;
+			} else {
+				$app_base_url = 'https://app.surefeedback.com';
+			}
 
-			// Detect connection type
 			$is_legacy_connection = $this->is_legacy_connection();
 			$is_saas_connection   = $this->is_saas_connection();
 
-			// Localize script with data
-			// Get connection type preference
 			$connection_type_preference = get_option( 'ph_child_connection_type_preference', '' );
-			
-			// Check if SaaS is authenticated (has bearer token)
+
 			$bearer_token = get_option( 'ph_child_bearer_token', '' );
 			$is_saas_authenticated = ! empty( $bearer_token );
+
+			$plugin_url = PH_CHILD_PLUGIN_URL;
+			$images_path = $plugin_url . 'assets/images/settings/';
 
 			$localized_data = array(
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
@@ -572,24 +551,33 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'adminUrl'     => admin_url( 'admin.php' ),
 				'siteUrl'      => home_url(),
-				'pluginUrl'    => PH_CHILD_PLUGIN_URL,
+				'pluginUrl'    => $plugin_url,
 				'currentPage'  => $hook,
 				'apiBaseUrl'   => $api_base_url,
 				'appBaseUrl'   => $app_base_url,
 				'projectId'    => get_option( 'ph_child_project_id', '' ),
 				'version'      => $plugin_version,
 				'connectionTypePreference' => $connection_type_preference,
-				'isSaaSAuthenticated' => $is_saas_authenticated, // Pass authentication status from PHP
-				'bearerToken'  => $is_saas_authenticated ? $bearer_token : '', // Pass token if authenticated
+				'isSaaSAuthenticated' => $is_saas_authenticated,
+				'bearerToken'  => $is_saas_authenticated ? $bearer_token : '',
+				'surefeedback_icon' => $images_path . 'surefeedback-icon.svg',
+				'welcome_background' => $images_path . 'welcome_background.png',
+				'welcome' => $images_path . 'welcome.png',
+				'thumbs' => $images_path . 'thumbs.svg',
+				'rocket' => $images_path . 'rocket.svg',
+				'admin' => $images_path . 'admin.svg',
+				'docs' => $images_path . 'docs.svg',
+				'footer' => $images_path . 'footer.png',
 				'connection'   => array(
 					'type'      => $is_legacy_connection ? 'legacy' : ( $is_saas_connection ? 'saas' : 'none' ),
 					'is_legacy' => $is_legacy_connection,
 					'is_saas'   => $is_saas_connection,
+					'connection_id' => get_option( 'ph_child_connection_id', '' ),
 					'site_data' => array(
 						'site_url' => get_option( 'ph_child_parent_url', '' ),
 					),
-					// Legacy connection data
-					'site_id'   => get_option( 'ph_child_id', '' ),
+					'site_id'   => get_option( 'ph_child_id', '' ), // Legacy: project ID
+					'saas_site_id' => get_option( 'ph_child_site_id', '' ), // SaaS: actual site ID
 					'api_key'   => get_option( 'ph_child_api_key', '' ),
 					'access_token' => get_option( 'ph_child_access_token', '' ),
 					'signature' => get_option( 'ph_child_signature', '' ),
@@ -622,7 +610,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return bool
 		 */
 		private function is_saas_connection() {
-			// Check for bearer token in options (stored after OAuth exchange)
 			$bearer_token = get_option( 'ph_child_bearer_token', '' );
 			$connection_id = get_option( 'ph_child_connection_id', '' );
 
@@ -636,22 +623,21 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 */
 		public function options() {
 			add_settings_section(
-				'ph_general_section', // ID.
-				__( 'General Settings', 'ph-child' ), // title.
-				'__return_false', // description.
-				'ph_child_general_options' // Page on which to add this section of options.
+				'ph_general_section',
+				__( 'General Settings', 'ph-child' ),
+				'__return_false',
+				'ph_child_general_options'
 			);
 
 			add_settings_field(
 				'ph_child_enabled_comment_roles',
 				__( 'Comments Visibility Access', 'ph-child' ),
-				array( $this, 'commenters_checklist' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_general_options', // The page on which this option will be displayed.
-				'ph_general_section', // The name of the section to which this field belongs.
+				array( $this, 'commenters_checklist' ),
+				'ph_child_general_options',
+				'ph_general_section',
 				false
 			);
 
-			// Finally, we register the fields with WordPress.
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_enabled_comment_roles',
@@ -661,13 +647,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_allow_guests',
 				__( 'Allow Site Visitors', 'ph-child' ),
-				array( $this, 'allow_guests' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_general_options', // The page on which this option will be displayed.
-				'ph_general_section', // The name of the section to which this field belongs.
+				array( $this, 'allow_guests' ),
+				'ph_child_general_options',
+				'ph_general_section',
 				false
 			);
 
-			// register setting.
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_allow_guests',
@@ -679,13 +664,12 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			add_settings_field(
 				'ph_child_admin',
 				__( 'Dashboard Commenting', 'ph-child' ),
-				array( $this, 'allow_admin' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_general_options', // The page on which this option will be displayed.
-				'ph_general_section', // The name of the section to which this field belongs.
+				array( $this, 'allow_admin' ),
+				'ph_child_general_options',
+				'ph_general_section',
 				false
 			);
 
-			// register setting.
 			register_setting(
 				'ph_child_general_options',
 				'ph_child_admin',
@@ -695,40 +679,39 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			);
 
 			add_settings_section(
-				'ph_connection_status_section', // ID.
-				__( 'Connection', 'ph-child' ), // title.
-				'__return_false', // description.
-				'ph_child_connection_options' // Page on which to add this section of options.
+				'ph_connection_status_section',
+				__( 'Connection', 'ph-child' ),
+				'__return_false',
+				'ph_child_connection_options'
 			);
 
 			add_settings_field(
 				'ph_connection_status',
 				__( 'Connection Status', 'ph-child' ),
-				array( $this, 'connection_status' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_connection_options', // The page on which this option will be displayed.
-				'ph_connection_status_section', // The name of the section to which this field belongs.
+				array( $this, 'connection_status' ),
+				'ph_child_connection_options',
+				'ph_connection_status_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_help_link',
 				'',
-				array( $this, 'help_link' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_connection_options', // The page on which this option will be displayed.
-				'ph_connection_status_section', // The name of the section to which this field belongs.
+				array( $this, 'help_link' ),
+				'ph_child_connection_options',
+				'ph_connection_status_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_manual_connection',
 				__( 'Manual Connection Details', 'ph-child' ),
-				array( $this, 'manual_connection' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_connection_options', // The page on which this option will be displayed.
-				'ph_connection_status_section', // The name of the section to which this field belongs.
+				array( $this, 'manual_connection' ),
+				'ph_child_connection_options',
+				'ph_connection_status_section',
 				false
 			);
 
-			// register setting.
 			register_setting(
 				'ph_child_connection_options',
 				'ph_child_manual_connection',
@@ -739,58 +722,57 @@ if ( ! class_exists( 'PH_Child' ) ) :
 			);
 
 			add_settings_section(
-				'ph_child_white_label_section', // ID.
-				__( 'White Label', 'ph-child' ), // title.
-				'__return_false', // description.
-				'ph_child_white_label_options' // Page on which to add this section of options.
+				'ph_child_white_label_section',
+				__( 'White Label', 'ph-child' ),
+				'__return_false',
+				'ph_child_white_label_options'
 			);
 
 			add_settings_field(
 				'ph_child_plugin_name',
 				__( 'Plugin Name', 'ph-child' ),
-				array( $this, 'plugin_name' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_white_label_options', // The page on which this option will be displayed.
-				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				array( $this, 'plugin_name' ),
+				'ph_child_white_label_options',
+				'ph_child_white_label_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_plugin_description',
 				__( 'Plugin Description', 'ph-child' ),
-				array( $this, 'plugin_description' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_white_label_options', // The page on which this option will be displayed.
-				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				array( $this, 'plugin_description' ),
+				'ph_child_white_label_options',
+				'ph_child_white_label_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_plugin_author',
 				__( 'Plugin Author', 'ph-child' ),
-				array( $this, 'plugin_author' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_white_label_options', // The page on which this option will be displayed.
-				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				array( $this, 'plugin_author' ),
+				'ph_child_white_label_options',
+				'ph_child_white_label_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_plugin_author_url',
 				__( 'Plugin Author URL', 'ph-child' ),
-				array( $this, 'plugin_author_url' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_white_label_options', // The page on which this option will be displayed.
-				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				array( $this, 'plugin_author_url' ),
+				'ph_child_white_label_options',
+				'ph_child_white_label_section',
 				false
 			);
 
 			add_settings_field(
 				'ph_child_plugin_link',
 				__( 'Plugin Link', 'ph-child' ),
-				array( $this, 'plugin_link' ), // The name of the function responsible for rendering the option interface.
-				'ph_child_white_label_options', // The page on which this option will be displayed.
-				'ph_child_white_label_section', // The name of the section to which this field belongs.
+				array( $this, 'plugin_link' ),
+				'ph_child_white_label_options',
+				'ph_child_white_label_section',
 				false
 			);
 
-			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_name',
@@ -798,7 +780,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					'type' => 'string',
 				)
 			);
-			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_description',
@@ -806,7 +787,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 					'type' => 'string',
 				)
 			);
-			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_author',
@@ -823,7 +803,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				)
 			);
 
-			// register setting.
 			register_setting(
 				'ph_child_white_label_options',
 				'ph_child_plugin_link',
@@ -897,7 +876,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		public function manual_import( $val ) {
 			$settings = json_decode( $val, true );
 
-			// update manual import.
 			if ( ! empty( $settings ) ) {
 				foreach ( $settings as $key => $value ) {
 					if ( array_key_exists( 'ph_child_' . $key, $this->whitelist_option_names ) ) {
@@ -1066,7 +1044,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				<?php
 		}
 
-		// Add custom js.
 		/**
 		 * Add custom inline script.
 		 *
@@ -1114,10 +1091,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function options_page() {
-			// Enqueue admin scripts and styles
 			$this->enqueue_admin_scripts();
 
-			// Render React app container
 			?>
 			<div id="ph-child-app" data-container-type="connection"></div>
 			<?php
@@ -1129,10 +1104,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function widget_control_page() {
-			// Enqueue admin scripts and styles
 			$this->enqueue_admin_scripts();
 
-			// Render React app container
 			?>
 			<div id="ph-child-app" data-container-type="widget-control"></div>
 			<?php
@@ -1144,10 +1117,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function settings_page() {
-			// Enqueue admin scripts and styles
 			$this->enqueue_admin_scripts();
 
-			// Render React app container
 			?>
 			<div id="ph-child-app" data-container-type="settings"></div>
 			<?php
@@ -1159,10 +1130,8 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function white_label_page() {
-			// Enqueue admin scripts and styles
 			$this->enqueue_admin_scripts();
 
-			// Render React app container
 			?>
 			<div id="ph-child-app" data-container-type="white-label"></div>
 			<?php
@@ -1178,8 +1147,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 * @return void
 		 */
 		public function enqueue_admin_scripts() {
-			// Assets are already enqueued via enqueue_assets() method
-			// This method exists for compatibility and can be used for page-specific logic if needed
 		}
 
 		/**
@@ -1193,7 +1160,6 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return false;
 			}
 
-			// get token from url.
 			$url_token = isset( $_GET['ph_access_token'] ) ? sanitize_text_field( $_GET['ph_access_token'] ) : '';
 
 			if ( ! $url_token ) {
@@ -1211,10 +1177,76 @@ if ( ! class_exists( 'PH_Child' ) ) :
 		 *
 		 * @return void
 		 */
+		/**
+		 * Check if widget should be displayed on current page
+		 * 
+		 * @return bool
+		 */
+		private function should_display_widget_on_current_page() {
+			$page_settings = get_option( 'ph_child_page_widget_settings', array() );
+
+			if ( empty( $page_settings ) ) {
+				return true;
+			}
+
+			$current_page_id = $this->get_current_page_id();
+
+			if ( ! $current_page_id ) {
+				return true;
+			}
+
+			if ( isset( $page_settings[ $current_page_id ] ) && $page_settings[ $current_page_id ] === false ) {
+				return false;
+			}
+
+			return true;
+		}
+		
+		/**
+		 * Get current page ID based on WordPress query
+		 * 
+		 * @return string|null
+		 */
+		private function get_current_page_id() {
+			if ( is_front_page() ) {
+				return 'home';
+			}
+			
+			if ( is_home() ) {
+				return 'blog';
+			}
+			
+			if ( is_singular() ) {
+				$post_type = get_post_type();
+				$post_id   = get_the_ID();
+				
+				if ( $post_type === 'page' ) {
+					return 'page_' . $post_id;
+				} elseif ( $post_type === 'post' ) {
+					return 'post_' . $post_id;
+				} else {
+					return $post_type . '_' . $post_id;
+				}
+			}
+			
+			if ( is_archive() ) {
+				return 'archive';
+			}
+			
+			if ( is_search() ) {
+				return 'search';
+			}
+			
+			if ( is_404() ) {
+				return '404';
+			}
+			
+			return null;
+		}
+
 		public function script() {
 			static $loaded;
 
-			// make sure we only load once.
 			if ( $loaded ) {
 				return;
 			}
@@ -1223,74 +1255,222 @@ if ( ! class_exists( 'PH_Child' ) ) :
 				return;
 			}
 
-			// settings must be set.
-			$url = get_option( 'ph_child_parent_url' );
-			if ( ! $url ) {
-				echo '<!-- SureFeedback: parent url not set -->';
-				return;
-			}
-			$id = get_option( 'ph_child_id' );
-			if ( ! $id ) {
-				echo '<!-- SureFeedback: project id not set -->';
+			if ( ! $this->should_display_widget_on_current_page() ) {
+				echo '<!-- SureFeedback: widget disabled for this page -->';
 				return;
 			}
 
 			$allowed = false;
 			$allowed = ph_child_is_current_user_allowed_to_comment() || $this->has_valid_cookie();
 
-			// always have project and public api key.
-			$args = array(
-				'p'         => (int) $id,
-				'ph_apikey' => get_option( 'ph_child_api_key', '' ),
-			);
+			$current_page_id = $this->get_current_page_id();
+			$page_settings = get_option( 'ph_child_page_widget_settings', array() );
 
-			// auto-add access token and signature if current user is allowed to comment.
-			if ( $allowed ) {
-				$args['ph_access_token'] = get_option( 'ph_child_access_token', '' );
-				$args['ph_signature']    = hash_hmac( 'sha256', 'guest', get_option( 'ph_child_signature', false ) );
-				// if user is logged in, add name and email data.
-				if ( is_user_logged_in() ) {
-					$user                  = wp_get_current_user();
-					$args['ph_user_name']  = urlencode( $user->display_name );
-					$args['ph_user_email'] = sanitize_email( str_replace( '+', '%2B', $user->user_email ) );
-					$args['ph_signature']  = hash_hmac( 'sha256', sanitize_email( $user->user_email ), get_option( 'ph_child_signature', false ) );
-					$args['ph_query_vars'] = filter_var( get_option( 'ph_child_admin', false ), FILTER_VALIDATE_BOOLEAN );
-				}
+			// Check connection type
+			$is_saas_connection = $this->is_saas_connection();
+			$is_legacy_connection = $this->is_legacy_connection();
+
+			// Get access token
+			$access_token = get_option( 'ph_child_access_token', '' );
+
+		// Determine base URL and site ID based on connection type
+		if ( $is_saas_connection ) {
+			// SaaS Connection: Use new SDK pattern
+			$site_id = get_option( 'ph_child_site_id', '' );
+			
+			// SDK is served from Laravel, not Next.js
+			// Get API base URL and remove /api/v1 to get Laravel base URL
+			if ( defined( 'SUREFEEDBACK_API_BASE_URL' ) ) {
+				$sdk_base_url = SUREFEEDBACK_API_BASE_URL;
+			} elseif ( defined( 'PH_CHILD_API_BASE_URL' ) ) {
+				$sdk_base_url = PH_CHILD_API_BASE_URL;
+			} else {
+				$sdk_base_url = 'https://api.surefeedback.com';
+			}
+			
+			// Remove /api/v1 if present to get base Laravel URL
+			$sdk_base_url = preg_replace( '#/api/v1/?$#', '', rtrim( $sdk_base_url, '/' ) );
+			
+			// For app base URL (used for other purposes), use Next.js URL
+			if ( defined( 'SUREFEEDBACK_APP_BASE_URL' ) ) {
+				$app_base_url = SUREFEEDBACK_APP_BASE_URL;
+			} elseif ( defined( 'PH_CHILD_APP_BASE_URL' ) ) {
+				$app_base_url = PH_CHILD_APP_BASE_URL;
+			} else {
+				$app_base_url = 'https://app.surefeedback.com';
+			}
+			
+			if ( ! $site_id ) {
+				echo '<!-- SureFeedback: site ID not set for SaaS connection -->';
+				return;
 			}
 
-			$url = add_query_arg( $args, $url );
+			$sdk_url = $sdk_base_url . '/sdk/ws/' . $site_id . '.js';
+			// Use SDK base URL (Laravel) for data-base-url, not app base URL (Next.js)
+			$base_url = $sdk_base_url;
+			} elseif ( $is_legacy_connection ) {
+				// Legacy Connection: Use old pattern for backward compatibility
+				$parent_url = get_option( 'ph_child_parent_url' );
+				$id = get_option( 'ph_child_id' );
+				
+				if ( ! $parent_url || ! $id ) {
+					echo '<!-- SureFeedback: parent url or project id not set -->';
+					return;
+				}
 
-			// remove protocol for ssl and non ssl.
-			$url = preg_replace( '(^https?://)', '', $url );
+				$args = array(
+					'p'         => (int) $id,
+					'ph_apikey' => get_option( 'ph_child_api_key', '' ),
+				);
 
-			// we've loaded.
+				if ( $allowed ) {
+					$args['ph_access_token'] = $access_token;
+					$args['ph_signature']    = hash_hmac( 'sha256', 'guest', get_option( 'ph_child_signature', false ) );
+					if ( is_user_logged_in() ) {
+						$user                  = wp_get_current_user();
+						$args['ph_user_name']  = urlencode( $user->display_name );
+						$args['ph_user_email'] = sanitize_email( str_replace( '+', '%2B', $user->user_email ) );
+						$args['ph_signature']  = hash_hmac( 'sha256', sanitize_email( $user->user_email ), get_option( 'ph_child_signature', false ) );
+						$args['ph_query_vars'] = filter_var( get_option( 'ph_child_admin', false ), FILTER_VALIDATE_BOOLEAN );
+					}
+				}
+
+				$url = add_query_arg( $args, $parent_url );
+				$url = preg_replace( '(^https?://)', '', $url );
+				$sdk_url = '//' . $url;
+				$base_url = $parent_url;
+			} else {
+				echo '<!-- SureFeedback: no connection configured -->';
+				return;
+			}
+
 			$loaded = true;
 			?>
 
 			<script>
-				(function(d, t, g, k) {
-					var ph = d.createElement(t),
-						s = d.getElementsByTagName(t)[0],
-						l = <?php echo $allowed ? 'true' : 'false'; ?>,
-						t = (new URLSearchParams(window.location.search)).get(k);
+				(function() {
+					var shouldDisplayWidget = function() {
+						var pageSettings = <?php echo json_encode( $page_settings ); ?>;
+						var currentPageId = <?php echo json_encode( $current_page_id ); ?>;
+
+						if (!pageSettings || Object.keys(pageSettings).length === 0) {
+							return true;
+						}
+
+						if (!currentPageId) {
+							return true;
+						}
+
+						if (pageSettings[currentPageId] === false) {
+							return false;
+						}
+
+						return true;
+					};
+
+					if (!shouldDisplayWidget()) {
+						return;
+					}
+
+					<?php if ( $is_saas_connection ) : ?>
+					// SaaS Connection: Load new SDK pattern
+					var script = document.createElement('script');
+					script.src = '<?php echo esc_url_raw( $sdk_url ); ?>';
+					script.async = true;
+					script.defer = true;
+					script.charset = 'UTF-8';
+					
+					<?php if ( $access_token ) : ?>
+					script.setAttribute('data-token', '<?php echo esc_js( $access_token ); ?>');
+					<?php endif; ?>
+					
+					script.setAttribute('data-base-url', '<?php echo esc_js( $base_url ); ?>');
+					
+					// Also pass token via URL parameter for SDK to pick up
+					<?php if ( $access_token ) : ?>
+					var urlParams = new URLSearchParams(script.src.split('?')[1] || '');
+					urlParams.set('api_token', '<?php echo esc_js( $access_token ); ?>');
+					script.src = script.src.split('?')[0] + '?' + urlParams.toString();
+					<?php endif; ?>
+					
+					document.head.appendChild(script);
+					<?php else : ?>
+					// Legacy Connection: Use old pattern for backward compatibility
+					var l = <?php echo $allowed ? 'true' : 'false'; ?>;
+					var k = 'ph_access_token';
+					var t = (new URLSearchParams(window.location.search)).get(k);
 					t && localStorage.setItem(k, t);
-					t = localStorage.getItem(k)
+					t = localStorage.getItem(k);
 					if (!l && !t) return;
+					
+					var ph = document.createElement('script');
+					var s = document.getElementsByTagName('script')[0];
 					ph.type = 'text/javascript';
 					ph.async = true;
 					ph.defer = true;
 					ph.charset = 'UTF-8';
-					ph.src = g + '&v=' + (new Date()).getTime();
+					ph.src = '<?php echo esc_url_raw( $sdk_url ); ?>' + '&v=' + (new Date()).getTime();
 					ph.src += t ? '&' + k + '=' + t : '';
 					s.parentNode.insertBefore(ph, s);
-				})(document, 'script', '<?php echo esc_url_raw( "//$url" ); ?>', 'ph_access_token');
+					<?php endif; ?>
+				})();
 			</script>
 			<?php
 		}
 	}
 
-	// Initialize the plugin loader
 	PH_Child_Loader::get_instance();
-	
+
 	$plugin = new PH_Child();
+
+	function ph_child_update_connection_status_after_store( $connection_data ) {
+		$bearer_token = get_option( 'ph_child_bearer_token', '' );
+		if ( empty( $bearer_token ) ) {
+			return;
+		}
+
+		$plugin_version = '1.2.10';
+		$plugin_data = get_file_data( PH_CHILD_PLUGIN_FILE, array( 'Version' => 'Version' ) );
+		if ( ! empty( $plugin_data['Version'] ) ) {
+			$plugin_version = $plugin_data['Version'];
+		}
+
+		$site_id = $connection_data['site_id'] ?? get_option( 'ph_child_site_id', '' );
+		if ( empty( $site_id ) ) {
+			return;
+		}
+
+		// Check for SUREFEEDBACK_ constants first (new naming), then PH_CHILD_ (legacy), then default
+		if ( defined( 'SUREFEEDBACK_API_BASE_URL' ) ) {
+			$api_base_url = SUREFEEDBACK_API_BASE_URL;
+			// Append /api/v1 if not already present
+			if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+				$api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+			}
+		} elseif ( defined( 'PH_CHILD_API_BASE_URL' ) ) {
+			$api_base_url = PH_CHILD_API_BASE_URL;
+			// Append /api/v1 if not already present
+			if ( strpos( $api_base_url, '/api/v1' ) === false ) {
+				$api_base_url = rtrim( $api_base_url, '/' ) . '/api/v1';
+			}
+		} else {
+			$api_base_url = 'https://api.surefeedback.com/api/v1';
+		}
+		$url = $api_base_url . '/connections/status';
+
+		wp_remote_request( $url, array(
+			'method'  => 'PATCH',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bearer ' . $bearer_token,
+			),
+			'body'    => wp_json_encode( array(
+				'site_id'       => $site_id,
+				'plugin_version' => $plugin_version,
+				'sites_count'   => 1,
+			) ),
+			'timeout' => 10,
+		) );
+	}
+	add_action( 'ph_child_connection_stored', 'ph_child_update_connection_status_after_store', 20, 1 );
 endif;

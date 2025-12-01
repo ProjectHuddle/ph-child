@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
 import { toast } from "../../components/ui/toast";
-// WordPress i18n fallback
+
 const __ = (text, domain) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
     return window.wp.i18n.__(text, domain);
@@ -29,11 +29,6 @@ import apiGateway from '../../api/gateway.js';
 import { useConnection } from '../../hooks/useConnection.js';
 import { APP_URLS } from '../../api/apiurls.js';
 
-/**
- * Connected Component (SaaS)
- * 
- * Shows connection UI for SaaS (new OAuth) connections
- */
 const Connected = ({ connectionData }) => {
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -48,20 +43,16 @@ const Connected = ({ connectionData }) => {
     setIsDisconnecting(true);
 
     try {
-      // Disconnect from SaaS (remove bearer token)
       disconnectConnection();
-      
-      // Also call WordPress REST API to clear stored tokens
+
       try {
         await apiGateway.post('connection/reset');
       } catch (e) {
-        console.warn('Failed to reset connection via REST API:', e);
       }
 
       toast.success(__("Site disconnected successfully! Redirecting...", "surefeedback"));
       setIsDialogOpen(false);
-      
-      // Redirect to the connection setup page after a brief delay
+
       setTimeout(() => {
         window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
       }, 1500);
@@ -83,12 +74,10 @@ const Connected = ({ connectionData }) => {
     window.open(appUrl, "_blank");
   };
 
-  // Get connection info from connectionData or window
-  const siteUrl = connectionData?.site_url || 
-                  window.sureFeedbackAdmin?.connection?.site_data?.site_url || 
+  const siteUrl = connectionData?.site_url ||
+                  window.sureFeedbackAdmin?.connection?.site_data?.site_url ||
                   window.location.origin;
-  
-  // Images - using data from PHP localization
+
   const ConnectedConnection = window.sureFeedbackAdmin?.connection?.connected_image || '';
   const PowerOff = window.sureFeedbackAdmin?.connection?.power_off_image || '';
 
@@ -96,9 +85,7 @@ const Connected = ({ connectionData }) => {
     <div className="flex justify-center items-start bg-background p-4 pt-8">
       <Card className="shadow-sm text-center max-w-2xl w-full rounded-lg border border-border">
         <CardContent className="flex flex-col justify-center items-center space-y-6 px-16 py-8 min-h-[400px]">
-          {/* Success Icon */}
             {ConnectedConnection && <img src={ConnectedConnection} alt="Connected" className="w-18 h-18" />}
-          {/* Message */}
           <div className="space-y-4 text-center">
             <h2 className="text-2xl font-semibold text-[#0F172A] ">
               {__("Website Connected Successfully!", "surefeedback")}
@@ -111,7 +98,6 @@ const Connected = ({ connectionData }) => {
             </p>
           </div>
 
-          {/* Connection Info */}
           <div className="w-full bg-muted border border-border rounded-lg p-4 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-foreground">
@@ -148,7 +134,6 @@ const Connected = ({ connectionData }) => {
             )}
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <Button
               size="sm"
@@ -164,7 +149,6 @@ const Connected = ({ connectionData }) => {
                 </>
               ) : (
                 <>
-                  {/* <Unplug className="mr-2 h-4 w-4" /> */}
                   {PowerOff && <img src={PowerOff} alt="Disconnect" className="h-4 w-4" />}
                   {__("Disconnect", "surefeedback")}
                 </>
@@ -180,7 +164,6 @@ const Connected = ({ connectionData }) => {
         </CardContent>
       </Card>
 
-      {/* Disconnect Confirmation Dialog */}
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

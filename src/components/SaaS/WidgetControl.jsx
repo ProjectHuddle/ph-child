@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
 } from '../ui/alert-dialog.jsx';
 import { toast, Toaster } from '../ui/toast.jsx';
-// WordPress i18n fallback
+
 const __ = (text, domain) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
     return window.wp.i18n.__(text, domain);
@@ -29,7 +29,6 @@ const sprintf = (format, ...args) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n && window.wp.i18n.sprintf) {
     return window.wp.i18n.sprintf(format, ...args);
   }
-  // Simple sprintf fallback
   return format.replace(/%[sdj%]/g, (match) => {
     if (match === '%%') return '%';
     const arg = args.shift();
@@ -37,7 +36,7 @@ const sprintf = (format, ...args) => {
   });
 };
 import apiGateway from '../../api/gateway.js';
-// Images - using data from PHP localization
+
 const SyncedMonitor = window.sureFeedbackAdmin?.connection?.sync_saved_locally_image || '';
 const SyncedMonitorOff = window.sureFeedbackAdmin?.connection?.sync_saved_locally_off_image || '';
 
@@ -54,7 +53,6 @@ const WidgetControl = () => {
   const [showDisableAllDialog, setShowDisableAllDialog] = useState(false);
   const itemsPerPage = 4;
 
-  // Load pages and settings
   const loadPagesSettings = async () => {
     try {
       setLoading(true);
@@ -75,7 +73,6 @@ const WidgetControl = () => {
     loadPagesSettings();
   }, []);
 
-  // Handle toggle change
   const handleToggleChange = (pageId, enabled) => {
     setSettings((prev) => ({
       ...prev,
@@ -84,7 +81,6 @@ const WidgetControl = () => {
     setHasUnsavedChanges(true);
   };
 
-  // Save settings
   const saveSettings = async () => {
     try {
       setSaving(true);
@@ -95,7 +91,6 @@ const WidgetControl = () => {
       if (response.success) {
         toast.success(__('Page settings saved successfully', 'surefeedback'));
         setHasUnsavedChanges(false);
-        // Reload to get updated data
         await loadPagesSettings();
       }
     } catch (error) {
@@ -105,7 +100,6 @@ const WidgetControl = () => {
     }
   };
 
-  // Enable all pages
   const handleEnableAllClick = () => {
     setShowEnableAllDialog(true);
   };
@@ -128,7 +122,6 @@ const WidgetControl = () => {
     }
   };
 
-  // Disable all pages
   const handleDisableAllClick = () => {
     setShowDisableAllDialog(true);
   };
@@ -144,7 +137,6 @@ const WidgetControl = () => {
         await loadPagesSettings();
       }
     } catch (error) {
-      console.error('Error disabling all pages:', error);
       toast.error(__('Failed to disable widget for all pages', 'surefeedback'));
     } finally {
       setSaving(false);
@@ -152,7 +144,6 @@ const WidgetControl = () => {
     }
   };
 
-  // Get page icon based on type
   const getPageIcon = (type) => {
     switch (type) {
       case 'home':
@@ -170,26 +161,25 @@ const WidgetControl = () => {
     }
   };
 
-  // Get page type badge color
   const getPageTypeBadge = (type, typeLabel) => {
+    const displayText = (typeLabel || type).toLowerCase();
     return (
-      <Badge variant="outline" className="text-xs font-medium">
-        {typeLabel || type}
+      <Badge
+        variant="outline"
+        className="text-xs font-normal text-gray-900 border-gray-300 bg-white px-2 py-0.5 rounded-full"
+      >
+        {displayText}
       </Badge>
     );
   };
 
-  // Check if page is enabled (default to true if no setting exists)
   const isPageEnabled = (pageId) => {
-    // If no settings exist at all, widget is enabled for all pages
     if (Object.keys(settings).length === 0) {
       return true;
     }
-    // If page has explicit setting, use it; otherwise default to true
     return settings[pageId] !== false;
   };
 
-  // Filter pages
   const filteredPages = pages.filter((page) => {
     const matchesSearch = page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       page.type.toLowerCase().includes(searchTerm.toLowerCase());
@@ -201,93 +191,88 @@ const WidgetControl = () => {
     return matchesSearch && page.type === filterType;
   });
 
-  // Pagination
   const totalPages = Math.ceil(filteredPages.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedPages = searchTerm ? filteredPages : filteredPages.slice(startIndex, endIndex);
 
-  // Reset to page 1 when search or filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterType]);
 
-  // Count enabled/disabled pages
   const enabledCount = pages.filter((p) => isPageEnabled(p.id)).length;
   const disabledCount = pages.length - enabledCount;
 
   if (loading) {
     return (
-      <div className="flex justify-center items-start bg-background p-4 pt-8">
-        <Card className="shadow-sm w-full rounded-lg border border-border max-w-4xl">
-          <CardContent className="flex flex-col space-y-6 py-8 w-full">
-            <div className="space-y-4 sm:space-y-6">
-              {/* Header Skeleton */}
-              <div>
-                <Skeleton className="h-7 w-40 mb-2" />
-                <Skeleton className="h-4 w-80" />
+      <div className="space-y-6">
+        <div>
+          <Skeleton className="h-8 w-40 mb-2 border-0" />
+          <Skeleton className="h-4 w-96 border-0" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="border-0 shadow-sm !border-0">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24 border-0" />
+                    <Skeleton className="h-7 w-16 border-0" />
+                  </div>
+                  <Skeleton className="h-10 w-10 rounded-full border-0" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="border-0 shadow-sm !border-0">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-32 border-0" />
+                <Skeleton className="h-4 w-64 border-0" />
               </div>
+              <Skeleton className="h-9 w-32 border-0" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <Skeleton className="h-10 flex-1 border-0" />
+              <Skeleton className="h-10 w-32 border-0" />
+            </div>
 
-              {/* Stats Cards Skeleton */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-                {[1, 2, 3].map((i) => (
-                  <Card key={i} className="overflow-hidden rounded-lg bg-[#F9FAFBF9] shadow-none">
-                    <CardContent className="p-3 sm:p-4 flex items-center gap-4 h-full">
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-8 w-12" />
-                      </div>
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Page List Card Skeleton */}
-              <Card className="w-full rounded-lg border border-border shadow-none">
-                <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 !pb-0">
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-4 w-64" />
-                  </div>
-                  <Skeleton className="h-9 w-32" />
-                </CardHeader>
-                <CardContent className="px-6 !pt-4">
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4">
-                    <Skeleton className="h-10 flex-1" />
-                    <Skeleton className="h-10 w-32" />
-                  </div>
-
-                  {/* Pages List Skeleton */}
-                  <div className="space-y-2 mb-4">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 border-[0.5px] border-[#E5E7EB] rounded-lg h-auto sm:h-[72px]">
-                        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 space-y-2">
-                          <div className="flex-1 min-w-0 space-y-2">
-                            <Skeleton className="h-5 w-48" />
-                            <Skeleton className="h-4 w-full" />
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
-                          <Skeleton className="h-5 w-20 rounded-full" />
-                          <Skeleton className="h-6 w-11 rounded-full" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Save Actions Bar Skeleton */}
-                  <div className="border-t pt-3 sm:pt-4 mt-4 bg-gray-50 -mx-4 sm:-mx-6 px-4 sm:px-6 -mb-4 sm:-mb-6 pb-4 sm:pb-6 rounded-b-lg">
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                      <Skeleton className="h-6 w-32" />
-                      <div className="flex gap-2 sm:gap-3">
-                        <Skeleton className="h-9 w-24" />
-                        <Skeleton className="h-9 w-32" />
-                      </div>
+            <div className="divide-y divide-gray-200 rounded-lg">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-4 p-4 first:rounded-t-lg last:rounded-b-lg"
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <Skeleton className="h-8 w-8 rounded-md border-0" />
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <Skeleton className="h-4 w-48 border-0" />
+                      <Skeleton className="h-3 w-full max-w-xs border-0" />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <Skeleton className="h-5 w-16 rounded-full border-0" />
+                    <Skeleton className="h-6 w-11 rounded-full border-0" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between mt-6 pt-4">
+              <Skeleton className="h-4 w-32 border-0" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-9 w-20 border-0" />
+                <Skeleton className="h-9 w-8 border-0" />
+                <Skeleton className="h-9 w-8 border-0" />
+                <Skeleton className="h-9 w-8 border-0" />
+                <Skeleton className="h-9 w-20 border-0" />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -297,7 +282,6 @@ const WidgetControl = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-gray-900">{__('Widget Control', 'surefeedback')}</h2>
         <p className="text-sm text-gray-600 mt-1.5">
@@ -305,7 +289,6 @@ const WidgetControl = () => {
         </p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-0 shadow-sm">
           <CardContent className="p-6">
@@ -358,7 +341,6 @@ const WidgetControl = () => {
         </Card>
       </div>
 
-      {/* Page List Card */}
       <Card className="border-0 shadow-sm">
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -427,7 +409,6 @@ const WidgetControl = () => {
             </select>
           </div>
 
-          {/* Pages List */}
           <div className="space-y-2">
             {paginatedPages.length === 0 ? (
               <div className="text-center py-12">
@@ -467,7 +448,6 @@ const WidgetControl = () => {
             )}
           </div>
 
-          {/* Pagination - only show when not searching */}
           {!searchTerm && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-gray-200 pt-4">
               <div className="text-sm text-gray-600">
@@ -521,7 +501,6 @@ const WidgetControl = () => {
             </div>
           )}
 
-          {/* Save Actions Bar */}
           <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-6">
             <div className="flex items-center gap-2">
               {hasUnsavedChanges ? (
@@ -563,7 +542,6 @@ const WidgetControl = () => {
         </CardContent>
       </Card>
 
-      {/* Toast Notifications */}
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -572,7 +550,6 @@ const WidgetControl = () => {
         }}
       />
 
-      {/* Enable All Confirmation Dialog */}
       <AlertDialog open={showEnableAllDialog} onOpenChange={setShowEnableAllDialog}>
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -597,7 +574,6 @@ const WidgetControl = () => {
               </AlertDialogContent>
             </AlertDialog>
 
-      {/* Disable All Confirmation Dialog */}
       <AlertDialog open={showDisableAllDialog} onOpenChange={setShowDisableAllDialog}>
               <AlertDialogContent>
                 <AlertDialogHeader>

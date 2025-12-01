@@ -17,7 +17,6 @@ import apiGateway from '../../api/gateway.js';
 import connectionService from '../../services/connectionService.js';
 import { useConnection } from '../../hooks/useConnection.js';
 
-// WordPress i18n fallback
 const __ = (text, domain) => {
   if (typeof window !== 'undefined' && window.wp && window.wp.i18n) {
     return window.wp.i18n.__(text, domain);
@@ -25,13 +24,6 @@ const __ = (text, domain) => {
   return text;
 };
 
-/**
- * Danger Zone View
- * 
- * Contains destructive actions:
- * - Disconnect website
- * - Reset all connection data
- */
 const DangerZoneView = () => {
     const { disconnect: disconnectConnection } = useConnection();
     const [isDisconnecting, setIsDisconnecting] = useState(false);
@@ -42,20 +34,16 @@ const DangerZoneView = () => {
     const handleDisconnect = async () => {
         setIsDisconnecting(true);
         try {
-            // Disconnect from SaaS (remove bearer token)
             disconnectConnection();
-            
-            // Also call WordPress REST API to clear stored tokens
+
             try {
                 await apiGateway.post('connection/reset');
             } catch (e) {
-                console.warn('Failed to reset connection via REST API:', e);
             }
 
             toast.success(__('Site disconnected successfully! Redirecting...', 'surefeedback'));
             setShowDisconnectDialog(false);
-            
-            // Redirect to the connection setup page after a brief delay
+
             setTimeout(() => {
                 window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
             }, 1500);
@@ -70,17 +58,14 @@ const DangerZoneView = () => {
     const handleReset = async () => {
         setIsResetting(true);
         try {
-            // Reset all connection data
             const data = await apiGateway.post('connection/reset');
 
             if (data.success) {
-                // Also disconnect locally
                 disconnectConnection();
-                
+
                 toast.success(__('Site connection reset successfully! All SureFeedback data has been cleared.', 'surefeedback'));
                 setShowResetDialog(false);
-                
-                // Redirect to the connection setup page after a brief delay
+
                 setTimeout(() => {
                     window.location.href = window.sureFeedbackAdmin.admin_url + 'admin.php?page=feedback-connection-options';
                 }, 1500);
@@ -113,7 +98,6 @@ const DangerZoneView = () => {
                 </CardHeader>
                 <CardContent className="space-y-0 pt-0">
                     <div className="divide-y divide-red-200">
-                        {/* Disconnect Website */}
                         <div className="flex items-start justify-between gap-4 py-6 first:pt-0">
                             <div className="flex-1 space-y-1">
                                 <div className="flex items-center gap-2">
@@ -136,7 +120,6 @@ const DangerZoneView = () => {
                             </div>
                         </div>
 
-                        {/* Reset All Connection Data */}
                         <div className="flex items-start justify-between gap-4 py-6">
                             <div className="flex-1 space-y-1">
                                 <div className="flex items-center gap-2">
@@ -162,7 +145,6 @@ const DangerZoneView = () => {
                 </CardContent>
             </Card>
 
-            {/* Disconnect Confirmation Dialog */}
             <AlertDialog open={showDisconnectDialog} onOpenChange={setShowDisconnectDialog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -196,7 +178,6 @@ const DangerZoneView = () => {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Reset Confirmation Dialog */}
             <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

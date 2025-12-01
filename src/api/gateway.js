@@ -1,54 +1,54 @@
-/**
- * API Gateway
- * 
- * Centralized API client for making requests to WordPress REST API
- * 
- * @package SureFeedback
- */
-
 import { ApiError } from '../utils/errors.js';
 import { HTTP_STATUS, ERROR_CODES } from '../constants/api.js';
 
-/**
- * Get default headers for API requests
- */
-const getDefaultHeaders = () => {
+const isExternalApiCall = (url) => {
+    // Check if URL is external (starts with http/https and is not WordPress REST API)
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        return false; // Relative URL, assume WordPress REST API
+    }
+    
+    const restUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
+    const restBaseUrl = restUrl.startsWith('http') 
+        ? restUrl 
+        : `${window.location.origin}${restUrl}`;
+    
+    // If URL doesn't start with WordPress REST API base URL, it's external
+    return !url.startsWith(restBaseUrl);
+};
+
+const getDefaultHeaders = (url = '') => {
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     };
-    const nonce = window.sureFeedbackAdmin?.nonce || '';
-    if (nonce) {
-        headers['X-WP-Nonce'] = nonce;
+    
+    // Only add WordPress nonce for WordPress REST API calls, not external APIs
+    if (!isExternalApiCall(url)) {
+        const nonce = window.sureFeedbackAdmin?.nonce || '';
+        if (nonce) {
+            headers['X-WP-Nonce'] = nonce;
+        }
     }
+    
     return headers;
 };
 
-/**
- * Get bearer token from storage
- */
 const getBearerToken = () => {
-    // Try to get from secure cookie or localStorage
     if (window.sureFeedbackAdmin?.bearerToken) {
         return window.sureFeedbackAdmin.bearerToken;
     }
-    
-    // Try localStorage
+
     try {
         const stored = localStorage.getItem('surefeedback_bearer_token');
         if (stored) {
             return stored;
         }
     } catch (e) {
-        // localStorage not available
     }
-    
+
     return null;
 };
 
-/**
- * Store bearer token
- */
 const storeBearerToken = (token) => {
     try {
         localStorage.setItem('surefeedback_bearer_token', token);
@@ -56,13 +56,9 @@ const storeBearerToken = (token) => {
             window.sureFeedbackAdmin.bearerToken = token;
         }
     } catch (e) {
-        console.error('Failed to store bearer token:', e);
     }
 };
 
-/**
- * Remove bearer token
- */
 const removeBearerToken = () => {
     try {
         localStorage.removeItem('surefeedback_bearer_token');
@@ -70,13 +66,9 @@ const removeBearerToken = () => {
             delete window.sureFeedbackAdmin.bearerToken;
         }
     } catch (e) {
-        console.error('Failed to remove bearer token:', e);
     }
 };
 
-/**
- * Make API request
- */
 const request = async (url, options = {}) => {
     const {
         method = 'GET',
@@ -85,11 +77,9 @@ const request = async (url, options = {}) => {
     } = options;
 
     const requestHeaders = {
-        ...getDefaultHeaders(),
+        ...getDefaultHeaders(url),
         ...headers,
     };
-
-    // Nonce is automatically included via getDefaultHeaders()
 
     const config = {
         method,
@@ -103,11 +93,10 @@ const request = async (url, options = {}) => {
 
     try {
         const response = await fetch(url, config);
-        
-        // Handle non-JSON responses
+
         const contentType = response.headers.get('content-type');
         const isJson = contentType && contentType.includes('application/json');
-        
+
         let data;
         if (isJson) {
             data = await response.json();
@@ -116,7 +105,6 @@ const request = async (url, options = {}) => {
             data = { message: text || 'Request failed' };
         }
 
-        // Handle error responses
         if (!response.ok) {
             throw new ApiError(
                 data.message || `HTTP ${response.status}: ${response.statusText}`,
@@ -129,7 +117,6 @@ const request = async (url, options = {}) => {
 
         return data;
     } catch (error) {
-        // Handle network errors
         if (error instanceof TypeError && error.message === 'Failed to fetch') {
             throw new ApiError(
                 'Network error: Unable to connect to the server',
@@ -139,12 +126,10 @@ const request = async (url, options = {}) => {
             );
         }
 
-        // Re-throw ApiError instances
         if (error instanceof ApiError) {
             throw error;
         }
 
-        // Wrap other errors
         throw new ApiError(
             error.message || 'An unexpected error occurred',
             0,
@@ -154,68 +139,41 @@ const request = async (url, options = {}) => {
     }
 };
 
-/**
- * API Gateway object
- */
 const apiGateway = {
-    /**
-     * GET request
-     */
     get: async (endpoint, options = {}) => {
         const baseUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
         const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}/${endpoint}`;
         return request(url, { ...options, method: 'GET' });
     },
 
-    /**
-     * POST request
-     */
     post: async (endpoint, body = null, options = {}) => {
         const baseUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
         const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}/${endpoint}`;
         return request(url, { ...options, method: 'POST', body });
     },
 
-    /**
-     * PUT request
-     */
     put: async (endpoint, body = null, options = {}) => {
         const baseUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
         const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}/${endpoint}`;
         return request(url, { ...options, method: 'PUT', body });
     },
 
-    /**
-     * PATCH request
-     */
     patch: async (endpoint, body = null, options = {}) => {
         const baseUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
         const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}/${endpoint}`;
         return request(url, { ...options, method: 'PATCH', body });
     },
 
-    /**
-     * DELETE request
-     */
     delete: async (endpoint, options = {}) => {
         const baseUrl = window.sureFeedbackAdmin?.restUrl || '/wp-json/ph-child/v1';
         const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}/${endpoint}`;
         return request(url, { ...options, method: 'DELETE' });
     },
 
-    /**
-     * Get bearer token
-     */
     getBearerToken,
 
-    /**
-     * Store bearer token
-     */
     storeBearerToken,
 
-    /**
-     * Remove bearer token
-     */
     removeBearerToken,
 };
 
